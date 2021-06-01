@@ -1,0 +1,24 @@
+<style>
+main > .shopify-section {
+  margin-bottom: {{settings.baseSectionMargin}}px;
+}
+
+#shopify-section-footer, #shopify-section-subfooter {
+  margin-bottom: 0px;
+}
+
+.gallery__default {
+  display: block;
+}
+
+.gallery__vertical {
+  display: none;
+}
+
+.wrapper--bottom {
+  padding-top: 0px;
+}
+</style>
+{{ content_for_index }}
+
+{% section 'api__upsell' %}
