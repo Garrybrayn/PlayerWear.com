@@ -66,7 +66,9 @@ case block.type
         render 'block__product-page--badges', block: block
     when 'productPageDelivery'
         render 'block__product-page--delivery', block: block
-        
+    when 'productPageSpace'
+        render 'block__product-page--space', block: block
+
     when 'contactFormText'
         render 'block__contact--text', block: block, i: i
     when 'contactFormEmail'
@@ -88,7 +90,7 @@ case block.type
         render 'block__slider--slide-image--responsive', block: block, first: first
     when 'videoSlide'
         render 'block__slider--slide-video', block: block, first: first
-    
+
     when 'gridCTA'
         render 'block__grid--cta' with block as block
     when 'gridImage'
@@ -123,4 +125,4 @@ case block.type
     when 'footerPayment'
         render 'block__footer--payment-icons' with block as block
 endcase
-%}
+%}
