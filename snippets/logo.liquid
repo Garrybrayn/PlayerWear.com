@@ -27,22 +27,42 @@
 {% endif %}
 
 
-{% if logoStyle != '' %}
-    <a href="{{ routes.root_url }}" class="logo-img {{ logoStyle }}">
-        {{ defaultLogo }}
-        {{ mobileLogo }}
-        {{ transparentLogo }}
-        {{ collection.title }}
-    </a>
-{% elsif settings.textLogo != blank %}
-    <a href="{{ routes.root_url }}" class="logo-text">
-        {{ settings.textLogo }}
-        {{ collection.title }}
-    </a>
+
+{% if collection.title %}
+    {% capture logoUrl %}collection_logo_{{ collection.title | downcase }}.png{% endcapture %}
+    {% capture collectionLogo %}
+        <br />
+        <a href="{{ collection.url }}">
+            <img src="{{ logoUrl | asset_url }}" style="max-width:120px; max-height: 50px;"/>
+        </a>
+    {% endcapture %}
+    {% assign logoContainerClasses = 'with-collection' %}
 {% else %}
-    <a href="{{ routes.root_url }}" class="logo-text">
-        {{ shop.name }}
-        {{ collection.title }}
-    </a>
+    {% assign logoContainerClasses = 'without-collection' %}
+{% endif %}
+
+{% if logoStyle != '' %}
+    <div class="{{ logoContainerClasses }}">
+        <a href="{{ routes.root_url }}" class="logo-img {{ logoStyle }}">
+            {{ defaultLogo }}
+            {{ mobileLogo }}
+            {{ transparentLogo }}
+        </a>
+        {{ collectionLogo }}
+    </div>
+{% elsif settings.textLogo != blank %}
+    <div class="{{ logoContainerClasses }}">
+        <a href="{{ routes.root_url }}" class="logo-text">
+            {{ settings.textLogo }}
+        </a>
+        {{ collectionLogo }}
+    </div>
+{% else %}
+    <div class="{{ logoContainerClasses }}">
+        <a href="{{ routes.root_url }}" class="logo-text">
+            {{ shop.name }}
+        </a>
+        {{ collectionLogo }}
+    </div>
 {% endif %}
 
