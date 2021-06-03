@@ -19,7 +19,11 @@
         {%- endif -%}
     {% else %}
         {% if section.settings.personalizedOffers %}
-            <div class="row {{ section.settings.layout -}}" id="s--product-page__recommended"></div>
+            <div class="row col-12 max-width">
+                <div class="row col-12 max-width {{ section.settings.layout -}}" id="s--product-page__recommended">
+
+                </div>
+            </div>
             <script>
               function initRecommended() {
                 fetch(`/recommendations/products?section_id=product-page__recommended&limit=5&product_id={{- product.id -}}`)
