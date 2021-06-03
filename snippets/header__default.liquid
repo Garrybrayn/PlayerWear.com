@@ -10,7 +10,7 @@
 
 {% capture layoutConfig %}{% render 'common-layout' with section as section %}{% endcapture %}
 
-{%- if collection.title -%}
+{%- if collection.title and collection.id != nil -%}
     {% capture primaryNavMenu %}brand-menu-{{collection.title | downcase}}{% endcapture %}
 {%- else -%}
     {% assign primaryNavMenu = 'main-menu' %}

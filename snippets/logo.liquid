@@ -26,9 +26,7 @@
     {% assign logoStyle = logoStyle | append: ' logo--transparent-available' %}
 {% endif %}
 
-
-
-{% if collection.title %}
+{% if collection.title and collection.id != nil %}
     {% capture logoUrl %}collection_logo_{{ collection.title | downcase }}.png{% endcapture %}
     {% capture collectionLogo %}
         <br />
