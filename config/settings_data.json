@@ -1,7 +1,7 @@
 {
   "current": {
     "demo": false,
-    "textLogo": "Amplify",
+    "textLogo": "Amplified Merch",
     "defaultLogo": "shopify:\/\/shop_images\/snowboard2.png",
     "darkLogo": "",
     "transparentLogo": "shopify:\/\/shop_images\/snowboard.png",
@@ -13,25 +13,25 @@
     "baseLayout": "stretchBg",
     "baseMaxWidth": "1180",
     "baseBorderRadius": 0,
-    "baseBorderRadiusSmall": 0,
+    "baseBorderRadiusSmall": 6,
     "baseBorderWidth": 0,
     "baseSectionMargin": 82,
     "pagination": "pages",
-    "breadcrumbs": true,
+    "breadcrumbs": false,
     "emptySearch": "",
     "baseBackground": "#ffffff",
     "baseText": "#2e2e2e",
     "baseTitle": "#000000",
     "baseSecondaryBackground": "#efefef",
     "baseSecondaryText": "#989898",
-    "baseLink": "#f8da1c",
+    "baseLink": "#404040",
     "primaryAccentBackground": "#000000",
     "primaryAccentText": "#ffffff",
-    "secondaryAccentBackground": "#f8da1c",
+    "secondaryAccentBackground": "#40668b",
     "secondaryAccentText": "#ffffff",
-    "baseAlert": "#f8da1c",
+    "baseAlert": "#40668b",
     "primaryFont": "work_sans_n4",
-    "secondaryFont": "maven_pro_n5",
+    "secondaryFont": "montserrat_n7",
     "smallFontSize": 14,
     "baseFontSize": 17,
     "mediumFontSize": 26,
@@ -63,10 +63,10 @@
     "secondaryButtonBorderWidth": 2,
     "inputFill": "#efefef",
     "inputContent": "#000000",
-    "inputBorderColor": "#e2e2e2",
+    "inputBorderColor": "#000000",
     "inputCustomBorder": false,
     "inputBorderRadius": 0,
-    "inputBorderWidth": 1,
+    "inputBorderWidth": 3,
     "addToCartColor": "primary",
     "addToCartType": "default",
     "addToCartIcon": "shopping-basket",
@@ -107,7 +107,7 @@
     "tagPosition": "top-left",
     "tagOffset": 5,
     "tagSale": true,
-    "tagSaleColor": "#f8da1c",
+    "tagSaleColor": "#40668b",
     "tagSoldOut": true,
     "tagSoldOutColor": "#000",
     "blogCardStyle": "wrapped",
@@ -117,8 +117,8 @@
     "swatchCustomColors": "red: #EF0000, blue: #00e",
     "swatchFileExt": "jpg",
     "cartStyle": "sidebar",
-    "ajaxType": "api",
-    "dynamicCheckout": true,
+    "ajaxType": "form",
+    "dynamicCheckout": false,
     "cartAction": "message",
     "geolocation": true,
     "multilanguage": true,
@@ -127,8 +127,8 @@
     "countdown": true,
     "countdownCard": true,
     "countdownTime": "24",
-    "countdownTimeFormat": "days",
-    "countdownRandom": 15,
+    "countdownTimeFormat": "hours",
+    "countdownRandom": 10,
     "recentlyBought": true,
     "recentlyBoughtMobile": false,
     "recentlyBoughtCollection": "frontpage",
@@ -143,11 +143,11 @@
     "recentlyBoughtNameFormat": "shorten",
     "recentlyBoughtNamesList": "Alissa Ashford, Carroll Calley, Augustina Angulo, Kenna Kuntz, Hailey Hinkle, Breann Beckham, Raquel Roles, Bernetta Beeks, Sol Silverio, Somer Sherrell, Yadira Yann, Belva Bumpus, Arlen Atherton, Huey Hanway, Suzette Stayton, Jeffry Jason, Libby Levasseur, Shaun Sparkman, Alison Almon, Rocco Rexroat",
     "reviewApp": "shopifyReviews",
-    "messenger": true,
-    "optimizedMessenger": true,
+    "messenger": false,
+    "optimizedMessenger": false,
     "messengerID": "102988488011611",
     "messengerLang": "en_US",
-    "messengerColor": "#000000",
+    "messengerColor": "#2ab3e6",
     "messengerGreeting": "What can we help you with?",
     "gdpr": true,
     "gdprText": "<p>This site requires cookies in order to provide all of its&nbsp;functionality.<\/p>",
@@ -190,7 +190,7 @@
             "settings": {
               "enabled": true,
               "enabledMobile": true,
-              "align": "auto",
+              "align": "center",
               "messages": "<p>This is one message<\/p><p>This is another one<\/p>"
             }
           }
@@ -201,10 +201,10 @@
         "settings": {
           "enabled": false,
           "enabledMobile": false,
-          "layout": "default",
-          "height": 30,
+          "layout": "stretchContent",
+          "height": 40,
           "fontSize": "font__size--small",
-          "colorCombo": "customCombo",
+          "colorCombo": "primaryCombo",
           "customFillColor": "#efefef",
           "customContentColor": "#000000"
         }
@@ -229,12 +229,12 @@
           "transparent": false,
           "transparentContentColor": "#000000",
           "barContentColor": "#000000",
-          "activeFillColor": "#f8da1c",
+          "activeFillColor": "rgba(0,0,0,0)",
           "activeContentColor": "#000000",
           "hoverStyle": "fill",
-          "fontSize": "medium",
+          "fontSize": "base",
           "customFont": true,
-          "fontFamily": "maven_pro_n5",
+          "fontFamily": "montserrat_n5",
           "logoPosition": "left",
           "barFillColor": "rgba(0,0,0,0)",
           "topBarFillColor": "rgba(0,0,0,0)",
@@ -268,8 +268,8 @@
           "height": 35,
           "fontSize": "font__size--small",
           "colorCombo": "customCombo",
-          "customFillColor": "#f8da1c",
-          "customContentColor": "#000000"
+          "customFillColor": "#408b66",
+          "customContentColor": "#ffffff"
         }
       },
       "product-page__product": {
@@ -288,12 +288,18 @@
             "type": "productPagePrice",
             "settings": {
               "noMargin": false,
-              "color": "#f8da1c",
+              "color": "#40668b",
               "newPriceColor": "rgba(0,0,0,0)",
               "oldPriceColor": "rgba(0,0,0,0)",
               "fontFamily": "title",
               "fontSize": "medium",
               "saleType": "text"
+            }
+          },
+          "4ec69d03-93ed-46a7-b0df-93c99f3edf3d": {
+            "type": "productPageReviewStars",
+            "settings": {
+              "noMargin": false
             }
           },
           "865387c5-e15c-47c5-9343-1399be85b4b5": {
@@ -307,7 +313,13 @@
             "settings": {
               "noMargin": true,
               "stockLeft": "10",
-              "reduce": 8
+              "reduce": 30
+            }
+          },
+          "69878f26-7d96-4ec4-95a0-b66cd7be2ba3": {
+            "type": "productPageSpace",
+            "settings": {
+              "height": 16
             }
           },
           "1597014607547": {
@@ -316,6 +328,12 @@
               "noMargin": true,
               "stickyDesktop": true,
               "stickyMobile": true
+            }
+          },
+          "ae451b5e-7fb2-40bf-8803-99b93a26687f": {
+            "type": "productPageSpace",
+            "settings": {
+              "height": 16
             }
           },
           "50eff6a9-efce-4ed0-a503-4e3c05652f3a": {
@@ -333,7 +351,7 @@
               "noMargin": true,
               "max": "100",
               "customMax": "",
-              "interval": 8,
+              "interval": 30,
               "iconColor": "rgba(0,0,0,0)",
               "textColor": "rgba(0,0,0,0)"
             }
@@ -342,9 +360,9 @@
             "type": "productPageInCart",
             "settings": {
               "noMargin": true,
-              "max": "100",
+              "max": "10",
               "customMax": "",
-              "interval": 8,
+              "interval": 30,
               "iconColor": "rgba(0,0,0,0)",
               "textColor": "rgba(0,0,0,0)"
             }
@@ -359,7 +377,7 @@
               "textColor": "rgba(0,0,0,0)"
             }
           },
-          "24f768ac-b5f1-4135-af8c-fc4edf218c78": {
+          "54200f98-c293-49fe-8209-17446cb8fd9c": {
             "type": "productPageBadge",
             "settings": {
               "noMargin": false
@@ -369,7 +387,7 @@
             "type": "productPageTab",
             "settings": {
               "showInline": false,
-              "heading": "Details",
+              "heading": "Product Details",
               "content": "description",
               "metafieldNS": "global",
               "metafieldKey": "",
@@ -388,34 +406,24 @@
               "page": "",
               "customContent": "<p>Add custom content here!<\/p>"
             }
-          },
-          "a24a2ab7-2690-4d53-a48c-4e95f4a8d57e": {
-            "type": "productPageTab",
-            "settings": {
-              "showInline": false,
-              "heading": "This is another tab",
-              "content": "page",
-              "metafieldNS": "global",
-              "metafieldKey": "",
-              "page": "",
-              "customContent": "<p>Add custom content here!<\/p>"
-            }
           }
         },
         "block_order": [
           "1597014541184",
           "1597014566862",
+          "4ec69d03-93ed-46a7-b0df-93c99f3edf3d",
           "865387c5-e15c-47c5-9343-1399be85b4b5",
           "f2d671b9-cfac-4320-bcee-4462c82e4c04",
+          "69878f26-7d96-4ec4-95a0-b66cd7be2ba3",
           "1597014607547",
+          "ae451b5e-7fb2-40bf-8803-99b93a26687f",
           "50eff6a9-efce-4ed0-a503-4e3c05652f3a",
           "e1ced79b-4979-4486-b751-2396c0239cf0",
           "0a2b1367-ec94-4845-8e24-2e73c6ce29a6",
           "63cc004c-7925-4937-aeda-1b0a95bd0da5",
-          "24f768ac-b5f1-4135-af8c-fc4edf218c78",
+          "54200f98-c293-49fe-8209-17446cb8fd9c",
           "74d70cc8-e941-4fb4-83f8-710c7929a2f8",
-          "c402a087-ea33-4d8d-9206-1bd8912d408d",
-          "a24a2ab7-2690-4d53-a48c-4e95f4a8d57e"
+          "c402a087-ea33-4d8d-9206-1bd8912d408d"
         ],
         "settings": {
           "view": "default",
@@ -431,22 +439,6 @@
       },
       "api__upsell--inline": {
         "type": "api__upsell--inline",
-        "blocks": {
-          "8bded916-f012-41a3-8218-38a86264be21": {
-            "type": "productSpecific",
-            "settings": {
-              "handle": "",
-              "upsellProduct1": "",
-              "upsellProduct2": "",
-              "upsellProduct3": "",
-              "heading": "",
-              "subheading": ""
-            }
-          }
-        },
-        "block_order": [
-          "8bded916-f012-41a3-8218-38a86264be21"
-        ],
         "settings": {}
       },
       "product-page__recommended": {
@@ -455,8 +447,8 @@
           "enabled": true,
           "personalizedOffers": true,
           "layout": "max-width",
-          "heading": "Recommended for you",
-          "subheading": "CHERRY PICKED PRODUCTS",
+          "heading": "Customers also purchased",
+          "subheading": "",
           "subheadingPosition": "above",
           "textAlignment": "start",
           "defaultCollection": "lunch-and-food-storage"
@@ -503,15 +495,15 @@
           "height": 0,
           "padding": 0,
           "lineMargin": 0,
-          "backgroundColor": "#f8da1c",
+          "backgroundColor": "#40668b",
           "backgroundPosition": "middle",
           "backgroundFilter": "none",
           "backdropIntensity": 50,
           "parallax": false,
           "backgroundPattern": false,
           "overlayOpacity": 0,
-          "overlayColor": "#000000",
-          "contentColor": "rgba(0,0,0,0)",
+          "overlayColor": "#ffffff",
+          "contentColor": "#ffffff",
           "horizontalAlignment": "center",
           "verticalAlignment": "middle",
           "iconPosition": "icon--left"
@@ -594,7 +586,7 @@
           "height": 0,
           "horizontalAlignment": "center",
           "verticalAlignment": "middle",
-          "showTitle": true,
+          "showTitle": false,
           "fontSize": "base",
           "showDescription": false,
           "truncateReadMore": true,

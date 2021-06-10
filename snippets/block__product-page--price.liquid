@@ -3,26 +3,29 @@
     .product__price--{{block.id}} .product__price {
         color: {{block.settings.color}};
     }
+
     {%- endunless -%}
 
     {%- unless block.settings.newPriceColor contains "rgba(0,0,0,0)" -%}
     .product__price--{{block.id}} .product__price.product__price--sale {
         color: {{block.settings.newPriceColor}};
     }
+
     {%- endunless -%}
 
     {%- unless block.settings.oldPriceColor contains "rgba(0,0,0,0)" -%}
     .product__price--{{block.id}} .product__price--old {
         color: {{block.settings.oldPriceColor}};
     }
+
     {%- endunless -%}
 </style>
 
 {% assign current_variant = product.selected_or_first_available_variant %}
 <div
-        class="product__price--holder product__price--{{block.id}}
-font__family--{{-block.settings.fontFamily}} font__size--{{-block.settings.fontSize}}
-{% if block.settings.noMargin %}margin__bottom--reduced{%endif-%}" {{block.shopify_attributes}}>
+        class="product__price--holder product__price--{{ block.id }}
+font__family--{{- block.settings.fontFamily }} font__size--{{- block.settings.fontSize }}
+{% if block.settings.noMargin %}margin__bottom--reduced{% endif -%}" {{ block.shopify_attributes }}>
     {% if product.compare_at_price_min > 0 %}
         {% assign sale = true %}
         {% if current_variant.compare_at_price > 0 %}
@@ -34,22 +37,29 @@ font__family--{{-block.settings.fontFamily}} font__size--{{-block.settings.fontS
         {% assign sale = false %}
         {% assign currsale = false %}
     {% endif %}
-    <span data-product-price class="product__price {% if currsale %}product__price--sale{% endif %} jsPrice">{{ current_variant.price | money | strip_html }}</span>
-    <span data-product-price-sale class="product__price--old jsPrice">{% if currsale %}{{ current_variant.compare_at_price | money | strip_html }}{% endif %}</span>
-    {% if sale %}
-        {%- unless block.settings.saleType == 'none' or sale == false %}
-            <span data-tag-type="{{block.settings.saleType}}" class="tag tag--sale {% unless currsale %}hide{% endunless %}">
-{% if currsale %}
-    {%- case block.settings.saleType %}
-        {% when 'percent' %}
-            {{ current_variant.price | minus: current_variant.compare_at_price | times: 100 | divided_by: current_variant.compare_at_price }}% OFF
-        {% when 'amount' %}
-            - <span class="jsPrice">{{ current_variant.compare_at_price | minus: current_variant.price | money | strip_html }}</span> OFF
-        {% when 'text' %}
-            {{'general.tags.sale' | t}}
-    {%- endcase -%}
-{% endif %}
-</span>
-        {%- endunless -%}
-    {% endif %}
+    <div style="line-height:1.4em">
+        {% if sale %}
+            {%- unless block.settings.saleType == 'none' or sale == false %}
+                <span data-tag-type="{{ block.settings.saleType }}"
+                      class="tag tag--sale {% unless currsale %}hide{% endunless %}">
+                    {% if currsale %}
+                        {%- case block.settings.saleType %}
+                            {% when 'percent' %}
+                                {{ current_variant.price | minus: current_variant.compare_at_price | times: 100 | divided_by: current_variant.compare_at_price }}% OFF
+                            {% when 'amount' %}
+                                - <span
+                                    class="jsPrice">{{ current_variant.compare_at_price | minus: current_variant.price | money | strip_html }}</span> OFF
+                            {% when 'text' %}
+                                {{ 'general.tags.sale' | t }}
+                        {%- endcase -%}
+                    {% endif %}
+                </span><br />
+            {%- endunless -%}
+        {% endif %}
+        <span data-product-price-sale
+              class="product__price--old jsPrice">{% if currsale %}{{ current_variant.compare_at_price | money | strip_html }}{% endif %}</span>
+        {% if currsale %}<br/>{% endif %}
+        <span data-product-price
+              class="product__price {% if currsale %}product__price--sale{% endif %} jsPrice">{{ current_variant.price | money | strip_html }}</span>
+    </div>
 </div>
