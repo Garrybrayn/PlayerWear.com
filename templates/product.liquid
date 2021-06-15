@@ -1,3 +1,5 @@
+{% render 'shogun-products', content: product %}
+{{product.metafields.shogun.above}}
 <div class="row" style="height: 43px">
 
 </div>
@@ -14,3 +16,7 @@
 {% section 'product-page__recommended' %}
 
 {% comment %} PRODUCT FORM CAN BE FOUND INSIDE 'product-page__product.liquid' {% endcomment %}
+
+
+{{product.metafields.shogun.below}}
+

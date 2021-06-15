@@ -71,7 +71,13 @@
       {{ settings.headJS }}
       </script>
     {% endunless %}
-  
+
+
+    {% if collection.title and collection.id != nil %}
+        {% capture stylesheetFilename %}{{ collection.title | downcase }}.css{% endcapture %}
+        {{ stylesheetFilename | asset_url | stylesheet_tag }}
+    {%  endif %}
+
   {% render 'shogun-head' %}
 </head>
   <body>
@@ -280,7 +286,6 @@
     <script src="https://static.boostertheme.co/js/supportscreen.min.js,theme_5_1_3.min.js"
             onload="initTheme();"></script>
     {{ 'unicons.css' | asset_url | stylesheet_tag }}
-
     {% unless settings.bodyHTML == blank %}
         {{ settings.bodyHTML }}
     {% endunless %}
@@ -310,5 +315,8 @@
   888   d88P Y88..88P Y88..88P      X88 Y88b. Y8b.     888     888     888  888 Y8b.     888  888  888 Y8b.
   8888888P"   "Y88P"   "Y88P"   88888P'  "Y888 "Y8888  888     888     888  888  "Y8888  888  888  888  "Y8888
   -->
+    {{ 'theme.js' | asset_url | script_tag }}
+    {% include 'mw_CS_objects' %}
+
     </body>
 </html>

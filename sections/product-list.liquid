@@ -6,23 +6,34 @@
 {% endif %}
 
 {% paginate collection.products by section.settings.cardsPerPage %}
-  {% for product in collection.products %}
-    {% unless product.tags contains 'featured' %}
-      <div class="center col-{{mobile}} col-md-{{desktop}} card--holder">
-        {% render 'product-card-default' with product as product %}
-      </div>
-    {%endunless%}
-  {% else %}
-    <h2 class="font__size--medium font__family--title col-12 product-list__empty">No products match your criteria</h2>
-  {% endfor %}
+  <div class="product-grid">
+    {% for product in collection.products %}
+      {% unless product.tags contains 'featured' %}
+        <div class="center card--holder">
+          {% render 'product-card-default' with product as product %}
+        </div>
+      {%endunless%}
+    {% else %}
+      <h2 class="font__size--medium font__family--title product-list__empty">No products match your criteria</h2>
+    {% endfor %}
+  </div>
 
   {% render 'pagination', paginate: paginate, section: 'shopify-section-product-list' %}
 {% endpaginate %}
 
+<style>
+  .card--holder{
+
+  }
+  .product-grid{
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+</style>
 {% schema %}
   {
     "name": "Product list",
-    "class": "row--product col-12 product__list top",
+    "class": "row--product product__list top",
     "settings": [
       {
             "type": "header",
@@ -53,7 +64,7 @@
         "max": 50,
         "step": 1
       }
-    ] 
+    ]
   }
 {% endschema%}
 

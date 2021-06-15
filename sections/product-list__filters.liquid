@@ -71,11 +71,11 @@
             <span class="filter__tag filter__tag--text filter__vendor filter__vendor--current">{{collection.current_type}}</span>
         {% else %}
           {% for type in collection.all_types %}
-            <a href="{{type | url_for_type}}" class="filter__tag filter__tag--text filter__vendor">{{-type-}}</a>
+            <a href="{{type | url_for_type }}" class="filter__tag filter__tag--text filter__vendor">{{-type-}}</a>
           {% endfor %}
         {% endif %}
     </div>
-  
+
   {% when 'image' %}
     <input id="{{group.id}}{{forloop.index}}" checked type="checkbox" class="hide filter__toggle">
     <div id="{{group.id}}" class="filter__group">
@@ -99,10 +99,10 @@
 <label for="filterToggle" class="filter__mobile--button hide-desktop"><i class="uil uil-filter"></i><span class="filter__mobile--current">0</span></label>
 
 <style>
+
 @media only screen and (min-width: 768px) {
     .product__list, .filter__bar {
-        max-width: 75%;
-        flex-basis: 75%;
+
     }
 
     .filter__overlay {
@@ -120,7 +120,7 @@
 {% schema %}
   {
     "name": "Sidebar & Filters",
-    "class": "col-12 col-md-3 unflex",
+    "class": "col-md-3 unflex",
     "settings": [
       {
             "type": "header",

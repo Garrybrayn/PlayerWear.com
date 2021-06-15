@@ -29,10 +29,10 @@
 {% if collection.title and collection.id != nil %}
     {% capture logoUrl %}collection_logo_{{ collection.title | downcase }}.png{% endcapture %}
     {% capture collectionLogo %}
-        <br />
         <a href="{{ collection.url }}">
             <img src="{{ logoUrl | asset_url }}" style="max-width:120px; max-height: 50px;"/>
         </a>
+        <br />
     {% endcapture %}
     {% assign logoContainerClasses = 'with-collection' %}
 {% else %}
@@ -41,26 +41,26 @@
 
 {% if logoStyle != '' %}
     <div class="{{ logoContainerClasses }}">
+        {{ collectionLogo }}
         <a href="{{ routes.root_url }}" class="logo-img {{ logoStyle }}">
             {{ defaultLogo }}
             {{ mobileLogo }}
             {{ transparentLogo }}
         </a>
-        {{ collectionLogo }}
     </div>
 {% elsif settings.textLogo != blank %}
     <div class="{{ logoContainerClasses }}">
-        <a href="{{ routes.root_url }}" class="logo-text">
-            {{ settings.textLogo }}
-        </a>
         {{ collectionLogo }}
+        <a href="{{ routes.root_url }}" class="logo-text">
+            Amplified Merch
+        </a>
     </div>
 {% else %}
     <div class="{{ logoContainerClasses }}">
-        <a href="{{ routes.root_url }}" class="logo-text">
-            {{ shop.name }}
-        </a>
         {{ collectionLogo }}
+        <a href="{{ routes.root_url }}" class="logo-text">
+            Amplified Merch
+        </a>
     </div>
 {% endif %}
 

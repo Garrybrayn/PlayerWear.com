@@ -308,14 +308,6 @@
               "noMargin": false
             }
           },
-          "f2d671b9-cfac-4320-bcee-4462c82e4c04": {
-            "type": "productPageStock",
-            "settings": {
-              "noMargin": true,
-              "stockLeft": "10",
-              "reduce": 30
-            }
-          },
           "69878f26-7d96-4ec4-95a0-b66cd7be2ba3": {
             "type": "productPageSpace",
             "settings": {
@@ -343,28 +335,6 @@
               "style": "compact",
               "title": "LIMITED TIME OFFER",
               "text": "The price of this item will revert back to %price% at the end of this countdown."
-            }
-          },
-          "e1ced79b-4979-4486-b751-2396c0239cf0": {
-            "type": "productPageWatching",
-            "settings": {
-              "noMargin": true,
-              "max": "100",
-              "customMax": "",
-              "interval": 30,
-              "iconColor": "rgba(0,0,0,0)",
-              "textColor": "rgba(0,0,0,0)"
-            }
-          },
-          "0a2b1367-ec94-4845-8e24-2e73c6ce29a6": {
-            "type": "productPageInCart",
-            "settings": {
-              "noMargin": true,
-              "max": "10",
-              "customMax": "",
-              "interval": 30,
-              "iconColor": "rgba(0,0,0,0)",
-              "textColor": "rgba(0,0,0,0)"
             }
           },
           "63cc004c-7925-4937-aeda-1b0a95bd0da5": {
@@ -413,13 +383,10 @@
           "1597014566862",
           "4ec69d03-93ed-46a7-b0df-93c99f3edf3d",
           "865387c5-e15c-47c5-9343-1399be85b4b5",
-          "f2d671b9-cfac-4320-bcee-4462c82e4c04",
           "69878f26-7d96-4ec4-95a0-b66cd7be2ba3",
           "1597014607547",
           "ae451b5e-7fb2-40bf-8803-99b93a26687f",
           "50eff6a9-efce-4ed0-a503-4e3c05652f3a",
-          "e1ced79b-4979-4486-b751-2396c0239cf0",
-          "0a2b1367-ec94-4845-8e24-2e73c6ce29a6",
           "63cc004c-7925-4937-aeda-1b0a95bd0da5",
           "54200f98-c293-49fe-8209-17446cb8fd9c",
           "74d70cc8-e941-4fb4-83f8-710c7929a2f8",
@@ -433,7 +400,7 @@
           "autoZoom": false,
           "autoChange": false,
           "galleryImageFit": "cover",
-          "galleryImageGap": 16,
+          "galleryImageGap": 17,
           "productNavigation": true
         }
       },
@@ -462,23 +429,23 @@
             "settings": {
               "icon": "history",
               "heading": "30 DAYS EASY RETURNS",
-              "subheading": ""
+              "subheading": "<a href=\"\/pages\/shipping-and-returns\">Read our Return Policy<\/a>"
             }
           },
           "9fdcf6be-2447-46b1-b288-d84ceac2be21": {
             "type": "infoBadge",
             "settings": {
               "icon": "box",
-              "heading": "FREE SHIPPING WORLDWIDE",
-              "subheading": ""
+              "heading": "FREE SHIPPING",
+              "subheading": "<a href=\"\/pages\/shipping-and-returns\">Restrictions apply<\/a>"
             }
           },
           "692bc360-76a5-4705-8837-ffd7540e96e1": {
             "type": "infoBadge",
             "settings": {
               "icon": "comment-alt-question",
-              "heading": "24\/7 SUPPORT",
-              "subheading": ""
+              "heading": "CHAT SUPPORT",
+              "subheading": "Leave a Message"
             }
           }
         },
@@ -512,51 +479,41 @@
       "footer": {
         "type": "footer",
         "blocks": {
-          "1597012953315": {
-            "type": "footerImage",
-            "settings": {
-              "width": "3",
-              "horizontalAlignment": "start",
-              "verticalAlignment": "middle",
-              "imageWidth": 100
-            }
-          },
-          "1600353802182": {
-            "type": "footerText",
+          "1600606685812": {
+            "type": "footerLinks",
             "settings": {
               "width": "4",
               "horizontalAlignment": "start",
-              "verticalAlignment": "middle",
-              "heading": "Products",
-              "text": "<p>All of the product used in this demo store can be found<\/p>"
+              "verticalAlignment": "top",
+              "heading": "Amplified Merch",
+              "links": "footer"
             }
           },
           "1600606598131": {
             "type": "footerLinks",
             "settings": {
               "width": "auto",
-              "horizontalAlignment": "center",
-              "verticalAlignment": "middle",
-              "heading": "TITLE",
-              "links": "main-menu"
+              "horizontalAlignment": "start",
+              "verticalAlignment": "top",
+              "heading": "SHOP BY BRAND",
+              "links": "all-brands"
             }
           },
-          "1600606685812": {
+          "bb8025c0-3937-4d75-a2b5-c3113d485df8": {
             "type": "footerLinks",
             "settings": {
-              "width": "auto",
-              "horizontalAlignment": "center",
-              "verticalAlignment": "middle",
-              "heading": "TITLE",
-              "links": "main-menu"
+              "width": "4",
+              "horizontalAlignment": "start",
+              "verticalAlignment": "top",
+              "heading": "SHOP BY TYPE",
+              "links": ""
             }
           }
         },
         "block_order": [
-          "1597012953315",
-          "1600353802182",
+          "1600606685812",
           "1600606598131",
-          "1600606685812"
+          "bb8025c0-3937-4d75-a2b5-c3113d485df8"
         ],
         "settings": {
           "layout": "default",
@@ -567,6 +524,21 @@
       },
       "subfooter": {
         "type": "subfooter",
+        "blocks": {
+          "f49bfaa1-2d89-482d-9ab8-c1e4f0e87564": {
+            "type": "footerText",
+            "settings": {
+              "width": "auto",
+              "horizontalAlignment": "center",
+              "verticalAlignment": "middle",
+              "heading": "",
+              "text": "<p>© Copyright Amplified Merch 2021 All Rights Reserved.<\/p><p><a href=\"\/pages\/terms-and-conditions\" title=\"Terms and Conditions\">Terms of Use<\/a> | <a href=\"\/pages\/privacy-policy\" title=\"Privacy Policy\">Privacy Policy<\/a><\/p>"
+            }
+          }
+        },
+        "block_order": [
+          "f49bfaa1-2d89-482d-9ab8-c1e4f0e87564"
+        ],
         "settings": {
           "fillColor": "#1a1a1a",
           "contentColor": "#ffffff",
