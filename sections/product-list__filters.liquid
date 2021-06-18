@@ -1,5 +1,6 @@
 {% if section.settings.filter %}
 
+
 <input type="checkbox" id="filterToggle" class="hide">
 <label for="filterToggle" class="overlay filter__overlay"></label>
 <div id="filterSidebar" class="disable-select">
@@ -28,7 +29,7 @@
                 {% endfor %}
                 {% assign style = style | replace: '{{color}}', replaceValue %}
             {% endif %}
-            <span {{style}} class="filter__tag filter__tag--{{-group.settings.style-}}" id="{{-group.id-}}-{{forloop.index}}" data-parent="{{group.id}}" data-filter="{{-tag-}}"><span>{{-tag-}}</span></span>
+            <a class="filter__tag filter__tag--text filter__collection {% if current_tags contains tag %}selected{% endif %}" href="{{collection.url}}/{{ tag | downcase }}">{{tag | replace: '-and-', ' & ' | replace: '-', ' ' }}</a>
         {% endfor %}
     </div>
   {% when 'collectionList' %}

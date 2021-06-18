@@ -5,13 +5,13 @@
     background-size: cover !important;
     background-position: center center !important;
 }
-.header .links{
+#shopify-section-header .links{
     background: #000000 !important;
 }
-.header a{
+#shopify-section-header .links a{
     color: #fff !important;
 }
-.header a:hover{
+#shopify-section-header .links a:hover{
     color: #fff !important;
 }
 
@@ -29,6 +29,12 @@ main{
 
 #filterSidebar a{
     color: #fff !important;
+    text-transform: capitalize;
+
+}
+#filterSidebar a.selected{
+    font-weight: bolder;
+    color: #adff2f !important;
 }
 
 #shopify-section-product-list__filters{

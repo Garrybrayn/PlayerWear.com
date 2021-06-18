@@ -1,71 +1,70 @@
 {% assign mobile = settings.cardMobile %}
 {% if section.settings.cardDesktop == "default" %}
-{% assign desktop = settings.cardDesktop %}
+    {% assign desktop = settings.cardDesktop %}
 {% else %}
-{% assign desktop = section.settings.cardDesktop %}
+    {% assign desktop = section.settings.cardDesktop %}
 {% endif %}
 
 {% paginate collection.products by section.settings.cardsPerPage %}
-  <div class="product-grid">
-    {% for product in collection.products %}
-      {% unless product.tags contains 'featured' %}
-        <div class="center card--holder">
-          {% render 'product-card-default' with product as product %}
-        </div>
-      {%endunless%}
-    {% else %}
-      <h2 class="font__size--medium font__family--title product-list__empty">No products match your criteria</h2>
-    {% endfor %}
-  </div>
+    <div class="product-grid">
+        {% for product in collection.products %}
+            <div class="center card--holder">
+                {% render 'product-card-default' with product as product %}
+            </div>
+        {% else %}
+            <h2 class="font__size--medium font__family--title product-list__empty">No products match your criteria</h2>
+        {% endfor %}
+    </div>
 
-  {% render 'pagination', paginate: paginate, section: 'shopify-section-product-list' %}
+    {% render 'pagination', paginate: paginate, section: 'shopify-section-product-list' %}
 {% endpaginate %}
 
 <style>
-  .card--holder{
+    .card--holder {
 
-  }
-  .product-grid{
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
+    }
+
+    .product-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+    }
 </style>
 {% schema %}
-  {
-    "name": "Product list",
-    "class": "row--product product__list top",
-    "settings": [
-      {
-            "type": "header",
-            "content": "Help"
-        },
-        {
-        "type": "paragraph",
-        "content": "[Click here to follow an interactive Tutorial](https://vimeo.com/458187473)"
-        },
-        {
-        "type": "select",
-        "id": "cardDesktop",
-        "label": "How many cards per row (Desktop)",
-        "options": [
-          {"value": "default", "label": "Global default"},
-          {"value": "1-5", "label": "5"},
-          {"value": "3", "label": "4"},
-          {"value": "4", "label": "3"}
-        ],
-        "default": "default"
-      },
-      {
-        "type": "range",
-        "label": "How many cards per page",
-        "id": "cardsPerPage",
-        "default": 15,
-        "min": 3,
-        "max": 50,
-        "step": 1
-      }
-    ]
-  }
-{% endschema%}
+{
+"name": "Product list",
+"class": "row--product product__list top",
+"settings": [
+{
+"type": "header",
+"content": "Help"
+},
+{
+"type": "paragraph",
+"content": "[Click here to follow an interactive Tutorial](https://vimeo.com/458187473)"
+},
+{
+"type": "select",
+"id": "cardDesktop",
+"label": "How many cards per row (Desktop)",
+"options": [
+{"value": "default", "label": "Global default"},
+{"value": "1-5", "label": "5"},
+{"value": "3", "label": "4"},
+{"value": "4", "label": "3"}
+],
+"default": "default"
+},
+{
+"type": "range",
+"label": "How many cards per page",
+"id": "cardsPerPage",
+"default": 15,
+"min": 3,
+"max": 50,
+"step": 1
+}
+]
+}
+{% endschema %}
 
-<span class="hide JSON-collectionTotalItems">{{collection.products_count}}</span>
+<span class="hide JSON-collectionTotalItems">{{ collection.products_count }}</span>

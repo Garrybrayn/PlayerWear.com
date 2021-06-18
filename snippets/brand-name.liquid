@@ -1,0 +1,26 @@
+{% liquid
+    assign brands = "korg,peavey,ghs"
+    assign isCollection = false
+    assign isBrandCollection = false
+    assign collectionName = ""
+    assign isPage = false
+    assign isBrandPage = false
+    assign pageHandle = ""
+    assign brandName = ""
+
+    if collection.title and collection.id != nil
+        assign isCollection = true
+        assign collectionName = collection.title |  downcase
+        if brands contains collectionName
+            assign isBrandCollection = true
+            assign brandName = collectionName
+        endif
+    elsif page.id != nil
+        assign isPage = true
+        assign pageHandle = page.handle | downcase
+        if brands contains pageHandle
+            assign isBrandPage = true
+            assign brandName = pageHandle
+        endif
+    endif
+%}{{ brandName }}
