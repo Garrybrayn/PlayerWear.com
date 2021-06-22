@@ -10,8 +10,8 @@
     "storeLocation": "",
     "storeEmail": "support@amplifyswag.com",
     "storePhone": "",
-    "baseLayout": "stretchBg",
-    "baseMaxWidth": "1180",
+    "baseLayout": "stretchContent",
+    "baseMaxWidth": "",
     "baseBorderRadius": 0,
     "baseBorderRadiusSmall": 6,
     "baseBorderWidth": 0,
@@ -129,7 +129,7 @@
     "countdownTime": "24",
     "countdownTimeFormat": "hours",
     "countdownRandom": 10,
-    "recentlyBought": true,
+    "recentlyBought": false,
     "recentlyBoughtMobile": false,
     "recentlyBoughtCollection": "frontpage",
     "recentlyBoughtInterval": 30,
@@ -165,9 +165,9 @@
     "headJS": "",
     "bodyJS": "",
     "checkout_header_image": "",
-    "checkout_logo_image": "",
+    "checkout_logo_image": "shopify:\/\/shop_images\/Screen_Shot_2021-06-18_at_2.23.58_AM.png",
     "checkout_logo_position": "left",
-    "checkout_logo_size": "medium",
+    "checkout_logo_size": "small",
     "checkout_body_background_image": "",
     "checkout_body_background_color": "#fff",
     "checkout_input_background_color_mode": "white",
@@ -175,8 +175,8 @@
     "checkout_sidebar_background_color": "#fafafa",
     "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
     "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
-    "checkout_accent_color": "#197bbd",
-    "checkout_button_color": "#197bbd",
+    "checkout_accent_color": "#000000",
+    "checkout_button_color": "#000000",
     "checkout_error_color": "#e32c2b",
     "facebookLink": "#",
     "instagramLink": "#",
@@ -254,7 +254,7 @@
               "enabled": true,
               "enabledMobile": true,
               "align": "auto",
-              "messages": "<p><strong>PROMO CODE 20% OFF - WINTER20<\/strong><\/p><p><strong>FREE SHIPPING WORLDWIDE<\/strong><\/p><p><strong>30 DAYS EASY RETURNS<\/strong><\/p>"
+              "messages": "<p><strong>FREE SHIPPING orders over $49<\/strong><\/p><p><strong>30 DAYS EASY RETURNS<\/strong><\/p>"
             }
           }
         },
@@ -268,8 +268,8 @@
           "height": 35,
           "fontSize": "font__size--small",
           "colorCombo": "customCombo",
-          "customFillColor": "#408b66",
-          "customContentColor": "#ffffff"
+          "customFillColor": "#adff2f",
+          "customContentColor": "#000000"
         }
       },
       "product-page__product": {
@@ -288,7 +288,7 @@
             "type": "productPagePrice",
             "settings": {
               "noMargin": false,
-              "color": "#40668b",
+              "color": "#000000",
               "newPriceColor": "rgba(0,0,0,0)",
               "oldPriceColor": "rgba(0,0,0,0)",
               "fontFamily": "title",
@@ -328,31 +328,6 @@
               "height": 16
             }
           },
-          "50eff6a9-efce-4ed0-a503-4e3c05652f3a": {
-            "type": "productPageCountdown",
-            "settings": {
-              "noMargin": false,
-              "style": "compact",
-              "title": "LIMITED TIME OFFER",
-              "text": "The price of this item will revert back to %price% at the end of this countdown."
-            }
-          },
-          "63cc004c-7925-4937-aeda-1b0a95bd0da5": {
-            "type": "productPageDelivery",
-            "settings": {
-              "noMargin": false,
-              "icon": "",
-              "iconColor": "rgba(0,0,0,0)",
-              "text": "<p>Products are usually delivered in 3-7 days.<\/p>",
-              "textColor": "rgba(0,0,0,0)"
-            }
-          },
-          "54200f98-c293-49fe-8209-17446cb8fd9c": {
-            "type": "productPageBadge",
-            "settings": {
-              "noMargin": false
-            }
-          },
           "74d70cc8-e941-4fb4-83f8-710c7929a2f8": {
             "type": "productPageTab",
             "settings": {
@@ -386,9 +361,6 @@
           "69878f26-7d96-4ec4-95a0-b66cd7be2ba3",
           "1597014607547",
           "ae451b5e-7fb2-40bf-8803-99b93a26687f",
-          "50eff6a9-efce-4ed0-a503-4e3c05652f3a",
-          "63cc004c-7925-4937-aeda-1b0a95bd0da5",
-          "54200f98-c293-49fe-8209-17446cb8fd9c",
           "74d70cc8-e941-4fb4-83f8-710c7929a2f8",
           "c402a087-ea33-4d8d-9206-1bd8912d408d"
         ],
@@ -401,7 +373,7 @@
           "autoChange": false,
           "galleryImageFit": "cover",
           "galleryImageGap": 17,
-          "productNavigation": true
+          "productNavigation": false
         }
       },
       "api__upsell--inline": {
@@ -429,7 +401,7 @@
             "settings": {
               "icon": "history",
               "heading": "30 DAYS EASY RETURNS",
-              "subheading": "<a href=\"\/pages\/shipping-and-returns\">Read our Return Policy<\/a>"
+              "subheading": "<a href=\"\/pages\/returns\">Read our Return Policy<\/a>"
             }
           },
           "9fdcf6be-2447-46b1-b288-d84ceac2be21": {
@@ -437,15 +409,15 @@
             "settings": {
               "icon": "box",
               "heading": "FREE SHIPPING",
-              "subheading": "<a href=\"\/pages\/shipping-and-returns\">Restrictions apply<\/a>"
+              "subheading": "<a href=\"\/pages\/shipping\">on domestic orders over $49<\/a>"
             }
           },
           "692bc360-76a5-4705-8837-ffd7540e96e1": {
             "type": "infoBadge",
             "settings": {
               "icon": "comment-alt-question",
-              "heading": "CHAT SUPPORT",
-              "subheading": "Leave a Message"
+              "heading": "Got a question?",
+              "subheading": "<a href=\"\/pages\/support\">We're here to help.<\/a>"
             }
           }
         },
@@ -462,7 +434,7 @@
           "height": 0,
           "padding": 0,
           "lineMargin": 0,
-          "backgroundColor": "#40668b",
+          "backgroundColor": "#000000",
           "backgroundPosition": "middle",
           "backgroundFilter": "none",
           "backdropIntensity": 50,
@@ -488,36 +460,14 @@
               "heading": "Amplified Merch",
               "links": "footer"
             }
-          },
-          "1600606598131": {
-            "type": "footerLinks",
-            "settings": {
-              "width": "auto",
-              "horizontalAlignment": "start",
-              "verticalAlignment": "top",
-              "heading": "SHOP BY BRAND",
-              "links": "all-brands"
-            }
-          },
-          "bb8025c0-3937-4d75-a2b5-c3113d485df8": {
-            "type": "footerLinks",
-            "settings": {
-              "width": "4",
-              "horizontalAlignment": "start",
-              "verticalAlignment": "top",
-              "heading": "SHOP BY TYPE",
-              "links": ""
-            }
           }
         },
         "block_order": [
-          "1600606685812",
-          "1600606598131",
-          "bb8025c0-3937-4d75-a2b5-c3113d485df8"
+          "1600606685812"
         ],
         "settings": {
           "layout": "default",
-          "fillColor": "#000000",
+          "fillColor": "#1a1a1a",
           "contentColor": "#ffffff",
           "spacing": 16
         }
@@ -547,8 +497,23 @@
       },
       "api__upsell": {
         "type": "api__upsell",
+        "blocks": {
+          "55ee68fa-ad9c-490a-a635-e50bd666d0f3": {
+            "type": "tagSpecific",
+            "settings": {
+              "tag": "Upsell",
+              "upsellCollection": "korg",
+              "upsellProduct": "",
+              "heading": "",
+              "subheading": ""
+            }
+          }
+        },
+        "block_order": [
+          "55ee68fa-ad9c-490a-a635-e50bd666d0f3"
+        ],
         "settings": {
-          "defaultCollection": ""
+          "defaultCollection": "korg"
         }
       },
       "banner--collection": {
@@ -573,36 +538,28 @@
       "product-list__filters": {
         "type": "product-list__filters",
         "blocks": {
-          "e89f138f-9465-452a-9b04-420cdacab290": {
-            "type": "typeList",
-            "settings": {
-              "expanded": true,
-              "name": "Category"
-            }
-          },
-          "f96e2263-7ff3-4c77-8c00-1faa1aec0f0f": {
+          "4130d150-8a3c-4259-ac98-bf9787241c52": {
             "type": "filter",
             "settings": {
               "expanded": true,
-              "style": "color",
-              "name": "Color",
-              "tags": "Red, Black, White, Olive"
+              "style": "text",
+              "name": "TYPES",
+              "tags": "shirts, tanks, hats, hoodies-and-jackets, bags-and-accessories, pants"
             }
           },
-          "37e0f5a5-b187-4b94-8c4a-eb8656c0673f": {
+          "dd1b3ef8-d193-4e80-8da7-2047637a92dd": {
             "type": "filter",
             "settings": {
               "expanded": true,
-              "style": "swatch",
-              "name": "Size",
-              "tags": "XS, S, M, L, XL, 2XL, 3XL, 4XL"
+              "style": "text",
+              "name": "Season",
+              "tags": "summer, winter"
             }
           }
         },
         "block_order": [
-          "e89f138f-9465-452a-9b04-420cdacab290",
-          "f96e2263-7ff3-4c77-8c00-1faa1aec0f0f",
-          "37e0f5a5-b187-4b94-8c4a-eb8656c0673f"
+          "4130d150-8a3c-4259-ac98-bf9787241c52",
+          "dd1b3ef8-d193-4e80-8da7-2047637a92dd"
         ],
         "settings": {
           "filter": true
@@ -654,6 +611,7 @@
       },
       "1600173949356": {
         "type": "section__cta",
+        "disabled": true,
         "blocks": {
           "1600175253039": {
             "type": "customTitle",
@@ -746,15 +704,44 @@
           "horizontalAlignment": "center",
           "verticalAlignment": "middle",
           "fontSize": "medium",
-          "contentColor": "rgba(0, 0, 0, 0)",
+          "contentColor": "rgba(0,0,0,0)",
           "fillColor": "rgba(0,0,0,0)",
-          "defaultBackgroundImage": "",
           "overlayOpacity": 0,
           "overlayColor": "#000000"
         }
       },
       "contact": {
         "type": "contact",
+        "blocks": {
+          "cae4e318-3637-45fb-9331-9787c3f92c18": {
+            "type": "contactFormEmail",
+            "settings": {
+              "name": "Your Email",
+              "placeholder": "Enter your email address"
+            }
+          },
+          "a5182f45-b00a-4d36-a370-5172cde90fa5": {
+            "type": "contactFormDropdown",
+            "settings": {
+              "required": true,
+              "name": "How can we help?",
+              "options": "I have a question about a product.,\nI have a question about shipping.,\nI have a question about returns.,\nI have a question about my order.,\nI found a problem with the website.,\nSomething else"
+            }
+          },
+          "d99f5876-6a4c-4993-9547-a5025f7e42cb": {
+            "type": "contactFormTextarea",
+            "settings": {
+              "name": "Your Message",
+              "required": true,
+              "placeholder": ""
+            }
+          }
+        },
+        "block_order": [
+          "cae4e318-3637-45fb-9331-9787c3f92c18",
+          "a5182f45-b00a-4d36-a370-5172cde90fa5",
+          "d99f5876-6a4c-4993-9547-a5025f7e42cb"
+        ],
         "settings": {}
       },
       "placeholder_section": {
@@ -764,44 +751,21 @@
       "16039060299d416772": {
         "type": "section__slider",
         "blocks": {
-          "16039060299d416772-0": {
+          "7cbdb31e-e7c4-49b3-8772-bf67713e7188": {
             "type": "imageSlide",
             "settings": {
-              "horizontalAlignment": "end",
-              "verticalAlignment": "bottom",
+              "horizontalAlignment": "center",
+              "verticalAlignment": "middle",
               "padding": 16,
               "contentSpacing": 12,
-              "backgroundColor": "rgba(0,0,0,0)",
+              "backgroundColor": "#404040",
               "backgroundPosition": "middle",
-              "overlayOpacity": 10,
+              "overlayOpacity": 40,
               "overlayColor": "#000000",
-              "heading": "",
-              "headingColor": "rgba(0,0,0,0)",
-              "content": "<p><strong>THE MOUNTAIN IS THE ONLY PLACE YOU HAVE TO LIVE<\/strong><\/p>",
-              "contentColor": "#000000",
-              "button1Text": "",
-              "button1Style": "primary",
-              "button1Type": "default",
-              "button2Text": "",
-              "button2Style": "secondary",
-              "button2Type": "default"
-            }
-          },
-          "eb49c125-30d6-4133-bfe0-422c32707dbf": {
-            "type": "imageSlide",
-            "settings": {
-              "horizontalAlignment": "end",
-              "verticalAlignment": "bottom",
-              "padding": 16,
-              "contentSpacing": 12,
-              "backgroundColor": "rgba(0,0,0,0)",
-              "backgroundPosition": "bottom",
-              "overlayOpacity": 5,
-              "overlayColor": "#000000",
-              "heading": "",
-              "headingColor": "rgba(0,0,0,0)",
-              "content": "<p><strong>THE FUTURE DEPENDS ON WHAT WE DO IN THE PRESENT.<\/strong><\/p>",
-              "contentColor": "#000000",
+              "heading": "Coming Soon.",
+              "headingColor": "#ffffff",
+              "content": "",
+              "contentColor": "#a4a4a4",
               "button1Text": "",
               "button1Style": "primary",
               "button1Type": "default",
@@ -812,13 +776,12 @@
           }
         },
         "block_order": [
-          "16039060299d416772-0",
-          "eb49c125-30d6-4133-bfe0-422c32707dbf"
+          "7cbdb31e-e7c4-49b3-8772-bf67713e7188"
         ],
         "settings": {
           "displayFor": "display--both",
           "layout": "default",
-          "nomargin": false,
+          "nomargin": true,
           "height": 800,
           "contentColor": "#000000",
           "autoplay": true,
@@ -828,6 +791,7 @@
       },
       "161039290159433e7d": {
         "type": "section__featured-collection",
+        "disabled": true,
         "settings": {
           "displayFor": "display--both",
           "layout": "default",
@@ -849,6 +813,7 @@
       },
       "1610393443d12bcfd0": {
         "type": "section__cta",
+        "disabled": true,
         "blocks": {
           "1610393443d12bcfd0-0": {
             "type": "title",
@@ -909,6 +874,14 @@
           "useCollectionImage": false,
           "overlayOpacity": 0,
           "overlayColor": "#000000"
+        }
+      },
+      "exit-intent-modal": {
+        "type": "exit-intent-modal",
+        "settings": {
+          "enabled": false,
+          "title": "Wait!",
+          "content": "<p>Don't go!<\/p>"
         }
       }
     },

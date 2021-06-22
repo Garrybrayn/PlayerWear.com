@@ -8,8 +8,7 @@
     {% assign currentCollection = collection %}
 {% elsif product.collections[0] %}
     {% assign currentCollection = product.collections[0] %}
-{% endif
-
+{% endif %}
 
 <div class="card--default {% unless product.available %}card--soldout{% endunless %} card--{{ settings.cardStyle }}">
 
