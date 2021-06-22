@@ -26,14 +26,10 @@ main{
 #filterSidebar {
     background: #000000 !important;
 }
-
 #filterSidebar a{
     color: #fff !important;
-    text-transform: capitalize;
-
 }
 #filterSidebar a.selected{
-    font-weight: bolder;
     color: #adff2f !important;
 }
 

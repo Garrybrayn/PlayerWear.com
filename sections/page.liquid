@@ -1,6 +1,6 @@
 {% capture layoutConfig %}{% render 'common-layout' with section as section %}{% endcapture %}
 
-<div class="row layout__{{-layoutConfig}}">
+<div class="row max-width layout__{{-layoutConfig}}">
     <div class="col-12 unflex layout__content section__page booster--revert">
       {% if section.settings.enableShortcodes %}
         {% assign c = page.content %}
@@ -53,7 +53,7 @@
               {% assign nc = nc | append: rsection %}
             {% else %}
               {% capture error %}
-                  <br>  
+                  <br>
                   <h2>An error occurred while rendering {{params[0]}}</h2><br>
                   Syntax for this section:<br>
                   <code>{{syntax}}</code><br><br>

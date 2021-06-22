@@ -1,0 +1,36 @@
+{% capture brandName %}{% render 'brand-name' %}{% endcapture %}
+{% assign brandName = brandName | strip_newlines |  strip %}
+
+{% capture relatedBrands %}{% render 'related-brands' %}{% endcapture %}
+{% assign relatedBrands = relatedBrands | strip_newlines |  strip |  split: ',' %}
+
+{% if relatedBrands.size > 0 %}
+    <div class="brand-family-container">
+        <h1>More Merch Options!</h1>
+        <div class="families">
+            {% for relatedBrand in relatedBrands %}
+                {% capture relatedBrandLogoUrl %}brand-family-{{ relatedBrand | strip |  downcase }}.jpg{% endcapture %}
+                <div class="related-brand">
+                    <a href="/pages/{{ relatedBrand }}">
+                        <img src="{{ relatedBrandLogoUrl | asset_url }}"/>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <style>
+        .brand-family-container {
+            text-align: center;
+            background: #ddd;
+            padding: 2em 0 1em 0;
+        }
+        .brand-family-container h1{
+            text-transform: uppercase;
+            font-weight: 600 !important;
+        }
+        .related-brand {
+            display: inline-block;
+            margin: 1em;
+        }
+    </style>
+{% endif %}

@@ -1,5 +1,5 @@
 {% capture brandName %}{% render 'brand-name' %}{% endcapture %}
-{% assign brandName = brandName | strip_newlines |  strip %}
+{% assign brandName = brandName | strip | strip_newlines %}
 
 {% assign logoStyle = '' %}
 {% if settings.defaultLogo != nil %}
@@ -28,10 +28,10 @@
     {% assign logoStyle = logoStyle | append: ' logo--transparent-available' %}
 {% endif %}
 
-{% if brandName %}
-    {% capture logoUrl %}collection_logo_{{ brandName |  strip }}.png{% endcapture %}
+{% if brandName.size > 1 %}
+    {% capture logoUrl %}collection_logo_{{ brandName | strip }}.png{% endcapture %}
     {% capture collectionLogo %}
-        <a href="/collections/{{ brandName }}">
+        <a href="/pages/{{ brandName }}">
             <img src="{{ logoUrl | asset_url }}" style="max-width:120px; max-height: 50px;"/>
         </a>
         <br />
@@ -53,15 +53,15 @@
 {% elsif settings.textLogo != blank %}
     <div class="{{ logoContainerClasses }}">
         {{ collectionLogo }}
-        <a href="{{ routes.root_url }}" class="logo-text">
-            Amplified Merch
+        <a href="{{ routes.root_url }}">
+            <img src="{{ 'amplified-merch-logo.png' | asset_url }}" class="amplified-merch-logo"/>
         </a>
     </div>
 {% else %}
     <div class="{{ logoContainerClasses }}">
         {{ collectionLogo }}
-        <a href="{{ routes.root_url }}" class="logo-text">
-            Amplified Merch
+        <a href="{{ routes.root_url }}">
+            <img src="{{ 'amplified-merch-logo.png' | asset_url }}" class="amplified-merch-logo" />
         </a>
     </div>
 {% endif %}
