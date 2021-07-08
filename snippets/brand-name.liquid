@@ -6,21 +6,30 @@
     assign isPage = false
     assign isBrandPage = false
     assign pageHandle = ""
-    assign brandName = ""
+    assign foundBrandName = ""
 
     if collection.title and collection.id != nil
         assign isCollection = true
         assign collectionName = collection.title |  downcase
         if brands contains collectionName
             assign isBrandCollection = true
-            assign brandName = collectionName
+            assign foundBrandName = collectionName
         endif
     elsif page.id != nil
         assign isPage = true
         assign pageHandle = page.handle | downcase
         if brands contains pageHandle
             assign isBrandPage = true
-            assign brandName = pageHandle
+            assign foundBrandName = pageHandle
+        else
+            assign brandArray = brands | split: ','
+            for brandName in brandArray
+                if pageHandle contains brandName
+                    assign isBrandPage = true
+                    assign foundBrandName = brandName
+                    break
+                endif
+            endfor
         endif
     endif
-%}{{ brandName }}
+%}{{ foundBrandName }}

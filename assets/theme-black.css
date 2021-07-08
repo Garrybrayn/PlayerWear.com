@@ -14,15 +14,12 @@
 #shopify-section-header .links a:hover{
     color: #fff !important;
 }
-
 main{
     flex: none !important;
 }
-
 .with-collection .logo-text{
     color: greenyellow !important;
 }
-
 #filterSidebar {
     background: #000000 !important;
 }
@@ -32,13 +29,11 @@ main{
 #filterSidebar a.selected{
     color: #adff2f !important;
 }
-
 #shopify-section-product-list__filters{
     border: none !important;
     max-width: 300px;
     background: #000 !important;
 }
-
 @media only screen and (min-width:767px){
     .container > main{
         /* background: linear-gradient(90deg, #000 50%, #fff 51%) */
