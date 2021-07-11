@@ -46,7 +46,7 @@
                     </button>
                     <button data-slider-next class="slider__button slider__button--next hide-mobile"><i
                                 class="uil uil-angle-right-b"></i></button>
-                    <div data-slider-holder class="card__slider">
+                    <div data-slider-holder class="card__slider {% if product.tags contains "crop" %}crop{% endif %}">
                         {% for image in product.images %}
                             {% render 'card-image', image: image.src, alt: image.alt, desktop: dsize, class: 'card__img--gallery' %}
                         {% endfor %}

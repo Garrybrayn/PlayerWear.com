@@ -32,6 +32,6 @@
 {%- assign desktopSize = "33vw" -%}
 {%- endcase -%}
 
-<img loading="lazy" src="{{image | img_url: '10x'}}" 
-data-srcset="{{bgset | slice: 0, strlen }}" data-sizes="(max-width: 767px) {{mobileSize}}, {{desktopSize}}" 
+<img loading="lazy" src="{{image | img_url: '10x'}}"
+data-srcset="{{bgset | slice: 0, strlen }}" data-sizes="(max-width: 767px) {{mobileSize}}, {{desktopSize}}"
 alt="{{alt}}" class="lazyload {{class}}">
