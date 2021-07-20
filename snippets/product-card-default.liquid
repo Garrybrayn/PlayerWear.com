@@ -14,7 +14,7 @@
 
     <a class="card__img--container" href="{{ product.url | within: currentCollection }}">
         <div class="card__img--ratio">
-            <div class="card__img" {% if settings.cardShowGallery and product.images.size > 1 %}data-booster-slider data-current-slide=0
+            <div class="card__img {% if product.tags contains "crop" %}crop{% endif %}" {% if settings.cardShowGallery and product.images.size > 1 %}data-booster-slider data-current-slide=0
                  data-total-slides={{ product.images.size }}{% endif %}>
                 {% if settings.tagEnabled %}
                     <div class="card__tags">
@@ -46,10 +46,12 @@
                     </button>
                     <button data-slider-next class="slider__button slider__button--next hide-mobile"><i
                                 class="uil uil-angle-right-b"></i></button>
-                    <div data-slider-holder class="card__slider {% if product.tags contains "crop" %}crop{% endif %}">
-                        {% for image in product.images %}
-                            {% render 'card-image', image: image.src, alt: image.alt, desktop: dsize, class: 'card__img--gallery' %}
-                        {% endfor %}
+                    <div class="card_slider_container {% if product.tags contains "crop" %}crop{% endif %}">
+                        <div data-slider-holder class="card__slider">
+                            {% for image in product.images %}
+                                {% render 'card-image', image: image.src, alt: image.alt, desktop: dsize, class: 'card__img--gallery' %}
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endunless %}
                 {% if product.compare_at_price_min > 0 and settings.countdownCard and settings.countdown %}

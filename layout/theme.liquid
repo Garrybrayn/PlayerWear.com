@@ -62,16 +62,19 @@
       {{ settings.headJS }}
       </script>
     {% endunless %}
-
+    {{ 'utilities.js' | asset_url | script_tag }}
 
     {% capture brandName %}{% render 'brand-name' %}{% endcapture %}
     {% assign brandName = brandName | strip_newlines |  strip |  downcase %}
-    {% if brandName %}
+    {% if brandName.size > 0 %}
         {% capture stylesheetFilename %}{{ brandName }}.css{% endcapture %}
         {{ stylesheetFilename | asset_url | stylesheet_tag }}
         {% if brandName == "korg" or brandName == "vox" or brandName == "blackstar" %}
             {{ 'theme-black.css' | asset_url | stylesheet_tag }}
         {%  endif %}
+    {% else %}
+        {{ 'theme-black.css' | asset_url | stylesheet_tag }}
+        {{ 'house-brand.css' | asset_url | stylesheet_tag }}
     {%  endif %}
 
   {% render 'shogun-head' %}

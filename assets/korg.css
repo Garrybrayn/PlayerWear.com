@@ -1,0 +1,9 @@
+.header{
+    background-image: url(korg_header_background.jpg) !important;
+}
+
+
+.logo .with-collection img.korg_usa-logo{
+    width:224px !important;
+    max-width: 224px;
+}

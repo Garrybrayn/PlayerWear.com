@@ -1,0 +1,60 @@
+{% capture brandName %}{% render 'brand-name' %}{% endcapture %}
+{%liquid
+    assign brandName = brandName | strip_newlines |  strip
+    assign featuredProducts = ""
+    for product in collections[brandName].products
+        if product.tags contains 'featured'
+            assign featuredProducts = featuredProducts | append: product.handle | append: ","
+        endif
+    endfor
+    assign featuredProducts = featuredProducts | split: ","
+
+    assign featuredTags = "shirts,hats,bags-and-accessories,pants,hoodies-and-jackets" | split: ','
+
+
+
+    for featuredTag in featuredTags
+        if collections[brandName].all_tags contains featuredTag
+            for product in collections[brandName].products
+                if product.tags contains featuredTag
+                    assign foundTags = foundTags |  append: featuredTag | append: ","
+                    assign foundTagsProducts = foundTagsProducts |  append: product.handle | append: ","
+                    break
+                endif
+            endfor
+        endif
+    endfor
+    assign foundTags = foundTags | split: ","
+    assign foundTagsProducts = foundTagsProducts | split: ","
+
+%}
+
+{% if foundTags.size > 0 %}
+    <div class="row cards max-width">
+        {% for foundTag in foundTags %}
+            <div class="col-sm-12 col-md-4 middle center">
+                <a href="/collections/{{ brandName }}/{{ foundTag }}">
+                    <img src="{{ all_products[foundTagsProducts[forloop.index0]].images[0].src | product_img_url: 'large' }}">
+                    <span class="label">
+                        {{ foundTag |  replace: ' and ', ' & ' |  replace: '-', ' ' }}
+                    </span>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <br />
+{% endif %}
+
+{% if featuredProducts.size > 0 %}
+    <div class="row cards black">
+        {% for featuredProduct in featuredProducts %}
+            <div class="col-sm-12 col-md-4 middle center">
+                <a href="/collections/{{ brandName }}{{ all_products[featuredProduct].url }}">
+                    <img src="{{ all_products[featuredProduct].images[0].src | product_img_url: 'large' }}">
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% section 'page' %}

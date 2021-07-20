@@ -1,5 +1,8 @@
 {% capture brandName %}{% render 'brand-name' %}{% endcapture %}
 {% assign brandName = brandName | strip | strip_newlines %}
+{% if brandName == "korg" and page.url contains "korg-usa" %}
+    {% assign brandName = "korg_usa" %}
+{% endif %}
 
 {% assign logoStyle = '' %}
 {% if settings.defaultLogo != nil %}
@@ -32,7 +35,7 @@
     {% capture logoUrl %}collection_logo_{{ brandName | strip }}.png{% endcapture %}
     {% capture collectionLogo %}
         <a href="/pages/{{ brandName }}">
-            <img src="{{ logoUrl | asset_url }}" style="max-width:120px; max-height: 50px;"/>
+            <img src="{{ logoUrl | asset_url }}" class="{{ brandName }}-logo"/>
         </a>
         <br />
     {% endcapture %}

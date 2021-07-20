@@ -55,6 +55,9 @@
         {% unless cart.items.size == 0 %}
             <div class="minicart__bottom">
                 <span class="minicart__total">
+                    Estimated Shipping: <span id="chimping">Loading...</span>
+                </span>
+                <span class="minicart__total">
                     Subtotal ({{ cart.item_count }} item{% unless cart.item_count == 1 %}s{% endunless %}): <span
                             class="jsPrice"><b>{{ cart.total_price | money | strip_html }}</b></span></span>
                 <a class="button button--primary button--filled button--primary__filled button--full-width"

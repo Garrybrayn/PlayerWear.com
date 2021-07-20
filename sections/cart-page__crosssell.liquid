@@ -3,7 +3,7 @@
     assign itemsInCart = cart.items | map: 'product_id' | uniq | join: ','
     assign upsellProducts = ""
     for product in collections.all.products
-        if product.tags contains 'Upsell' and brandsInCart contains product.vendor
+        if product.tags contains 'upsell' and brandsInCart contains product.vendor
             unless itemsInCart contains product.id
                 assign upsellProducts = upsellProducts | append: product.handle | append: ","
             endunless
