@@ -2,3 +2,4 @@ development:
   password: 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
   theme_id: "123446821023"
   store: amplify-11-swag-store.myshopify.com
+  directory: src

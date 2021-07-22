@@ -1,0 +1,32 @@
+<div class="pre-checkout-upsell-container">
+    <div class="col-12 max-width">
+        <div style="width: 100%; text-align: right">
+            <a class="button button--secondary button--filled button--secondary__filled" href="/checkout">
+                Continue to Checkout
+                <i class="uil uil-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    {% section 'cart-page__crosssell' %}
+    <div class="col-12 max-width">
+        <div class="max-width bar">
+            <a class="button button--secondary button--filled button--secondary__filled" href="/checkout">
+                Continue to Checkout
+                <i class="uil uil-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pre-checkout-upsell-container{
+        margin: 2rem 0;
+    }
+    .pre-checkout-upsell-container .bar{
+        background: rgba(0, 0, 0, 0.05);
+        padding: 1rem;
+        overflow: auto;
+        margin: 1em 0;
+        text-align: right;
+    }
+</style>

@@ -1,0 +1,60 @@
+<!-- /templates/customers/register.liquid -->
+<div class="customer__form">
+    <div id="form-register">
+        <h1>Create an Account <br /><br /></h1>
+
+        {% form 'create_customer' %}
+            {% capture createCustomerFormErrors %}{{ form.errors | default_errors }}{% endcapture %}
+            {% if createCustomerFormErrors contains "reset" %}
+                {% assign showWelcomeBackForm = true %}
+            {% endif %}
+            {{ form.errors | default_errors }}
+            <label for="first_name">First Name</label>
+            <input type="text" value="" name="customer[first_name]" />
+
+            <label for="last_name">Last Name</label>
+            <input type="text" value="" name="customer[last_name]"/>
+
+            <label for="email">{{'customer_area.forms.email' | t}}</label>
+            <input type="email" value="" name="customer[email]" />
+
+            <label for="password">{{'customer_area.forms.password' | t}}</label>
+            <input type="password" value="" name="customer[password]" />
+
+            {% assign regt = 'customer_area.forms.register' | t %}
+            {% render 'submit-button', text: regt, type: 'primary', class: 'button--submit' %}
+            <a href="{{routes.account_login_url}}" class="button--notice">{{'customer_area.forms.already_member' | t}}</a>
+        {% endform %}
+    </div>
+    <div id="form-welcome-back" style="display: none;">
+        <h1>Welcome back.<br /><br /></h1>
+
+        <a href="/pages/pre-checkout" class="button button--primary button--filled button--primary__filled button--full-width">Checkout as guest</a><br /><br />
+        <a href="{{routes.account_login_url}}" class="button button--primary button--filled button--primary__filled button--full-width">Sign in</a><br /><br />
+        {% form 'recover_customer_password' %}
+            <input type="hidden" name="email" id="emailInput"/>
+            <input class="button button--primary button--filled button--primary__filled" type="submit" value="Set account Password" />
+        {% endform %}
+        <br />
+    </div>
+</div>
+<script>
+    const showWelcomeBackForm = "{{ showWelcomeBackForm }}";
+    const registerForm = document.getElementById('form-register');
+    const welcomeBackForm = document.getElementById('form-welcome-back');
+    const emailElement = document.getElementById('emailInput');
+    const emailValue = localStorage.getItem('email');
+
+    if(showWelcomeBackForm){
+      registerForm.style.display = 'none';
+        if(emailElement && emailValue){
+          welcomeBackForm.style.display = 'block';
+          emailElement.value = emailValue;
+        }
+    }
+</script>
+<style>
+    .customer__form{
+        padding: 2em 0;
+    }
+</style>
