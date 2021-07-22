@@ -6,7 +6,10 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "sync" ""
+    "edit-live": "theme watch --allow-live",
+    "download": "theme download",
+    "deploy": "theme deploy",
+    "download-dont-use-this-now": "theme get -p=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 -s=amplify-11-swag-store.myshopify.com --themeid=123446821023"
   },
   "dependencies": {
     "core-js": "^3.6.5",
