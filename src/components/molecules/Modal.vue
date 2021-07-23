@@ -25,7 +25,7 @@ export default Vue.extend({
     align-items: center;
     justify-content: center;
     background: white;
-    z-index: 1;
+    z-index: 12;
   }
   button{
     position: absolute;

@@ -15,14 +15,23 @@
           <div class="product-price">
             ${{ selectedVariant.price }} USD
           </div>
-          <label>Select a Size:</label>
-          <ProductPageSizeSelector
-            v-if="showSizeSelector"
-            :options="product.options"
-            :variants="product.variants"
-            :selected-variant-id="selectedVariantId"
-            @select="selectedVariantId = $event"
-          />
+          <div>
+            <label>Select a Color:</label>
+            <ProductColorSelector
+              :options="product.colors"
+              :value="product.handle"
+              @select="selectColor($event)"
+            />
+          </div>
+          <div v-if="showSizeSelector">
+            <label>Select a Size:</label>
+            <ProductPageSizeSelector
+              :options="product.options"
+              :variants="product.variants"
+              :selected-variant-id="selectedVariantId"
+              @select="selectedVariantId = $event"
+            />
+          </div>
           <form class="buy-button-container">
             <InputNumber :value="quantity" @change="quantity=$event" v-if="false"/>
             <input type="number" :value="quantity" data-qty-input @change="quantity=$event" v-show="false"/>
@@ -45,6 +54,7 @@ import InputNumber from '../atoms/InputNumber.vue';
 import Button from '../atoms/Button.vue';
 import ProductPageImageGrid from '../molecules/ProductPageImageGrid.vue';
 import Breadcrumbs from '../molecules/Breadcrumbs.vue';
+import ProductColorSelector from '../molecules/ProductColorSelector.vue';
 import ProductPageSizeSelector from '../molecules/ProductPageSizeSelector.vue';
 import VueStickyDirective from '@renatodeleao/vue-sticky-directive'
 
@@ -53,6 +63,7 @@ export default Vue.extend({
     Strip,
     Breadcrumbs,
     ProductPageImageGrid,
+    ProductColorSelector,
     ProductPageSizeSelector,
     InputNumber,
     Button
@@ -105,18 +116,35 @@ export default Vue.extend({
         // Select the first variant by default
         this.selectedVariantId = this.product.variants[0].id
       }
-    },
-    selectedVariantId(selectedVariantId){
-      console.log({selectedVariantId})
     }
   },
-  beforeCreate() {
-    this.$store.dispatch('getProductByHandle', this.$route.params.productHandle).then(product => {
-      this.product = product;
-      console.log(product);
+  beforeRouteEnter(to, from, next) {
+    console.log('route enter', to.params.productHandle);
+    next(vm => {
+      vm.fetchProductData(to.params.productHandle);
     })
   },
+  beforeRouteUpdate(to, from, next) {
+    console.log('route updating', to.params.productHandle);
+    this.fetchProductData(to.params.productHandle);
+    next();
+  },
   methods: {
+    fetchProductData(productHandle){
+      console.log('fetching product handle', productHandle);
+      this.$store.dispatch('getProductByHandle', productHandle).then(product => {
+        this.product = product;
+      })
+    },
+    selectColor(productHandle){
+      this.$router.push({
+        name: this.$route.name,
+        params: {
+          collection: this.$route.params.collection ? this.$route.params.collection : null,
+          productHandle: productHandle
+        }
+      })
+    },
     addToCart(event){
       event.preventDefault();
       boosterCart.addToCart(event.currentTarget, event)
@@ -140,6 +168,9 @@ export default Vue.extend({
   .product-price{
     color: @gray1;
     font-weight: 800;
+    margin-bottom: 1em;
+  }
+  .product-color-selector{
     margin-bottom: 1em;
   }
   .product-size-selector{
