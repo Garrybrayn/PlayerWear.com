@@ -9,6 +9,11 @@ const routes = [
     path: '/products/:productHandle',
     name: 'Product',
     component: ProductPage,
+  },
+  {
+    path: '/collections/:collectionHandle/products/:productHandle',
+    name: 'ProductInCollection',
+    component: ProductPage,
   }
 ];
 

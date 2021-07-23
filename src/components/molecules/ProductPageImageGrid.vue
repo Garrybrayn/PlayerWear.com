@@ -92,7 +92,7 @@ export default Vue.extend({
     }
   }
 
-  @media(min-width: @thirdbreakpoint){
+  @media(min-width: @secondbreakpoint){
     .VueCarousel{
       display: none;
     }

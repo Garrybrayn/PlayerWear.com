@@ -106,6 +106,7 @@ export default Vue.extend({
     box-shadow: 0px 3px 5px rgba(0,0,0,0.1);
     color: #fff;
     white-space: nowrap;
+      box-sizing: border-box;
     &.full-width{
       width: 100%;
     }

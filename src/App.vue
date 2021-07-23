@@ -14,6 +14,10 @@
     color: #2c3e50;
   }
 
+  #vue-app{
+    line-height: 1.5em;
+  }
+
   #nav {
     padding: 30px;
   }
