@@ -276,7 +276,6 @@
         }
     </script>
 
-
     {{ "/services/javascripts/currencies.js" | script_tag }}
     <script src="https://static.boostertheme.co/js/supportscreen.min.js,theme_5_1_3.min.js"
             onload="initTheme();"></script>
@@ -300,8 +299,13 @@
                 integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
                 crossorigin="anonymous"></script>
     {% endif %}
+    <script>
+        window.assetUrl = "{{ 'theme.js' | asset_url }}/".replace('theme.js','').split('?')[0];
+    </script>
 
     {{ 'theme.js' | asset_url | script_tag }}
+    {{ 'app.js' | asset_url | script_tag }}
+    {{ 'chunk-vendors.js' | asset_url | script_tag }}
     {% include 'mw_CS_objects' %}
 
     </body>

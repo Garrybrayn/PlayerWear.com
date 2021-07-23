@@ -4,17 +4,19 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && cp -r ./dist/js/* ./src/assets",
     "lint": "vue-cli-service lint",
-    "edit-live": "theme watch --allow-live",
+    "watch": "theme watch --allow-live",
     "download": "theme download",
-    "deploy": "theme deploy",
+    "deploy": "theme deploy --allow-live",
     "download-dont-use-this-now": "theme get -p=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 -s=amplify-11-swag-store.myshopify.com --themeid=123446821023"
   },
   "dependencies": {
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
+    "shopify-buy": "^2.11.0",
     "vue": "^2.6.11",
+    "vue-carousel": "^0.18.0",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
@@ -30,6 +32,8 @@
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^6.2.2",
+    "less": "^4.1.1",
+    "less-loader": "^5.0.0",
     "vue-template-compiler": "^2.6.11"
   }
 }

@@ -3,9 +3,12 @@ module.exports = {
   env: {
     node: true,
   },
+  globals: {
+    assetUrl: true
+  },
   extends: [
     'plugin:vue/essential',
-    '@vue/airbnb',
+    'eslint:recommended',
   ],
   parserOptions: {
     parser: 'babel-eslint',
