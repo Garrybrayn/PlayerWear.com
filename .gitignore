@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 /dist
+/src/config/settings_data.json
 .theme-backup
 
 # local env files
