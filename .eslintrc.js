@@ -4,7 +4,8 @@ module.exports = {
     node: true,
   },
   globals: {
-    assetUrl: true
+    assetUrl: true,
+    boosterCart: true
   },
   extends: [
     'plugin:vue/essential',

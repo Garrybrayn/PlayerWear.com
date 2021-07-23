@@ -1,6 +1,6 @@
 <template>
   <div class="product-image">
-    <img :src="src" loading="lazy" :alt="alt" />
+    <img :src="src" loading="lazy" :alt="alt" @load="$event.target.style.opacity=1"/>
   </div>
 </template>
 <script lang="ts">
@@ -34,8 +34,10 @@ export default Vue.extend({
       top: 0;
       height: 100%;
       width: 100%;
-      object-fit: cover;
       filter: brightness(94%);
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 250ms;
     }
   }
 </style>

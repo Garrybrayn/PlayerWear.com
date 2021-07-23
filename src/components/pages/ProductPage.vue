@@ -3,8 +3,9 @@
     <Strip class="breadcrumbs">
       <Breadcrumbs :breadcrumbs="breadcrumbs" />
     </Strip>
-    <Strip class="product-page" v-sticky-container>
+    <Strip class="product-page" data-v-sticky-container>
       <ProductPageImageGrid
+        class="product-images"
         :images="product.images"/>
       <div class="product-details">
         <div v-sticky="{topSpacing: 150, bottomSpacing:40}">
@@ -22,10 +23,14 @@
             :selected-variant-id="selectedVariantId"
             @select="selectedVariantId = $event"
           />
-          <InputNumber :value="quantity" @change="quantity=$event" v-show="false"/>
-          <div class="buy-button-container">
-            <Button class="buy-button full-width">Add to cart - ${{ total }}</Button>
-          </div>
+          <form class="buy-button-container">
+            <InputNumber :value="quantity" @change="quantity=$event" v-if="false"/>
+            <input type="number" :value="quantity" data-qty-input @change="quantity=$event" v-show="false"/>
+            <input name="id" type="hidden" :value="selectedVariantIdDecoded" :data-variant-id="selectedVariantIdDecoded" />
+            <Button type="submit" class="buy-button full-width" @click.native="addToCart($event)" :data-original-text="buyButtonLabel">
+              <span data-button-text>{{buyButtonLabel}}</span>
+            </Button>
+          </form>
           <label>Description:</label>
           <div v-html="product.descriptionHtml" class="description"/>
         </div>
@@ -66,8 +71,14 @@ export default Vue.extend({
     selectedVariant(){
       return this.product.variants.find(variant => variant.id === this.selectedVariantId)
     },
+    selectedVariantIdDecoded(){
+      return this.selectedVariantId ? atob(this.selectedVariantId).split('/').slice(-1)[0] : false;
+    },
     showSizeSelector(){
       return this.product.options.find(option => option.name === 'Size');
+    },
+    buyButtonLabel(){
+      return `Add to cart - $${ this.total }`
     },
     total(){
       return this.selectedVariant.price * this.quantity;
@@ -104,6 +115,12 @@ export default Vue.extend({
       this.product = product;
       console.log(product);
     })
+  },
+  methods: {
+    addToCart(event){
+      event.preventDefault();
+      boosterCart.addToCart(event.currentTarget, event)
+    }
   }
 });
 </script>
@@ -112,7 +129,7 @@ export default Vue.extend({
   .breadcrumbs{
     display: none;
   }
-  .product-page-image-grid-container{
+  .product-images{
     margin-bottom: 1em;
   }
   .product-title{
@@ -164,7 +181,7 @@ export default Vue.extend({
       grid-template-columns: repeat(12, 1fr);
       grid-gap: 40px;
     }
-    .product-page-image-grid-container{
+    .product-images{
       grid-column: span 7;
     }
     .buy-button-container{
@@ -182,7 +199,7 @@ export default Vue.extend({
     .product-page{
       grid-gap: 70px;
     }
-    .product-page-image-grid-container{
+    .product-images{
       grid-column: span 8;
     }
     .product-details{

@@ -63,6 +63,7 @@ export default Vue.extend({
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
       &.selected{
         color: #fff;
         background: #000;
