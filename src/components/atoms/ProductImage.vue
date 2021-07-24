@@ -1,6 +1,6 @@
 <template>
   <div class="product-image">
-    <img :src="src" loading="lazy" :alt="alt" @load="$event.target.style.opacity=1"/>
+    <img :src="src" loading="lazy" :class="{loaded: loaded}" :alt="alt" @load="loaded = true"/>
   </div>
 </template>
 <script lang="ts">
@@ -16,6 +16,35 @@ export default Vue.extend({
       type: String,
       required: true,
       default: "Product Image"
+    },
+    preload: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data(){
+    return {
+      loaded: false
+    }
+  },
+  watch:{
+    src:{
+      immediate: true,
+      handler(){
+        this.loaded = false;
+        if(this.preload){
+          this.preloadImage();
+        }
+      }
+    }
+  },
+  methods: {
+    preloadImage(){
+      const image = new Image();
+      image.src = this.src;
+      image.onLoad = function(){
+        console.log('preloaded image')
+      }
     }
   }
 });
@@ -37,7 +66,10 @@ export default Vue.extend({
       filter: brightness(94%);
       object-fit: cover;
       opacity: 0;
-      transition: opacity 250ms;
+      transition: opacity 150ms;
+      &.loaded {
+        opacity: 1;
+      }
     }
   }
 </style>

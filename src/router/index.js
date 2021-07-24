@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import ProductPage from '../components/pages/ProductPage.vue';
+import CollectionPage from '../components/pages/CollectionPage.vue';
 
 Vue.use(VueRouter);
 
@@ -14,6 +15,16 @@ const routes = [
     path: '/collections/:collectionHandle/products/:productHandle',
     name: 'ProductInCollection',
     component: ProductPage,
+  },
+  {
+    path: '/collections/:collectionHandle',
+    name: 'Collection',
+    component: CollectionPage,
+  },
+  {
+    path: '/collections/:collectionHandle/:tag',
+    name: 'TagInCollection',
+    component: CollectionPage,
   }
 ];
 

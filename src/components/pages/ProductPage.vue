@@ -15,7 +15,7 @@
           <div class="product-price">
             ${{ selectedVariant.price }} USD
           </div>
-          <div>
+          <div v-if="product.colors">
             <label>Select a Color:</label>
             <ProductColorSelector
               :options="product.colors"
@@ -119,22 +119,21 @@ export default Vue.extend({
     }
   },
   beforeRouteEnter(to, from, next) {
-    console.log('route enter', to.params.productHandle);
     next(vm => {
       vm.fetchProductData(to.params.productHandle);
     })
   },
   beforeRouteUpdate(to, from, next) {
-    console.log('route updating', to.params.productHandle);
     this.fetchProductData(to.params.productHandle);
     next();
   },
   methods: {
     fetchProductData(productHandle){
-      console.log('fetching product handle', productHandle);
-      this.$store.dispatch('getProductByHandle', productHandle).then(product => {
-        this.product = product;
-      })
+      this.$store
+        .dispatch('getProductByHandle', productHandle)
+        .then(product => {
+          this.product = product;
+        })
     },
     selectColor(productHandle){
       this.$router.push({

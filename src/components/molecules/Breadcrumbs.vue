@@ -1,7 +1,7 @@
 <template>
   <div class="page-breadcrumbs">
     <div class="page-breadcrumb" v-for="(breadcrumb, index) in breadcrumbs" :key="index">
-      <a v-if="breadcrumb.url" :href="breadcrumb.url">{{breadcrumb.label}}</a>
+      <router-link v-if="breadcrumb.url" :to="breadcrumb.url">{{breadcrumb.label}}</router-link>
       <span v-if="!breadcrumb.url">{{breadcrumb.label}}</span>
     </div>
   </div>
