@@ -1,7 +1,7 @@
 <template>
   <div class="product-color-selector">
-    <ProductImage v-for="option in options"
-      :key="option.value"
+    <ProductImage v-for="(option, index) in options"
+      :key="index"
       :class="{ selected: option.handle === value }"
       :src="option.image"
       :alt="option.value"
@@ -29,9 +29,6 @@ export default Vue.extend({
     return {
       selectedColor: null
     }
-  },
-  computed:{
-
   }
 });
 </script>

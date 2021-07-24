@@ -1,7 +1,7 @@
 <template>
   <div class="product-size-selector">
-    <div v-for="sizeVariant in sizeVariants"
-       :key="sizeVariant.value"
+    <div v-for="(sizeVariant, index) in sizeVariants"
+       :key="index"
        :class="{
          available: sizeVariant.available,
          selected: sizeVariant.selected
@@ -33,14 +33,17 @@ export default Vue.extend({
   },
   computed:{
     sizeVariants(){
-      return this.variants.map(variant => {
-        return {
-          label: variant.selectedOptions[0].value,
-          available: variant.available,
-          selected: variant.id === this.selectedVariantId,
-          id: variant.id
-        }
-      })
+      if(this.variants){
+        return this.variants.map(variant => {
+          return {
+            label: variant.selectedOptions[0].value,
+            available: variant.available,
+            selected: variant.id === this.selectedVariantId,
+            id: variant.id
+          }
+        })
+      }
+      return null
     }
   }
 });

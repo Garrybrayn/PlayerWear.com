@@ -1,12 +1,19 @@
 <template>
-  <div class="product-card" @click="$emit('click')">
-    <ProductImage :src="product.images[0].src" :alt="product.title" class="first" />
-    <ProductImage :src="product.images[1].src" :alt="product.title" class="second" :preload="true"/>
+  <div :class="{'product-card': true, placeholder: placeholder }" @click="$emit('click')">
+    <ProductImage :src="imageOne" :alt="title" class="first" />
+    <ProductImage :src="imageTwo" :alt="title" class="second" :preload="true"/>
     <div class="product-price">
-      ${{ product.variants[0].price.replace('.00','') }}
+      {{ price }}
+      <span v-if="placeholder" class="placeholder-content" />
     </div>
-    <div class="product-title">{{ product.title }}</div>
-    <div v-if="color" class="product-color">{{ color }}</div>
+    <div class="product-title">
+      {{ title }}
+      <span v-if="placeholder" class="placeholder-content" />
+    </div>
+    <div v-if="color || placeholder" class="product-color">
+      {{ color }}
+      <span v-if="placeholder" class="placeholder-content" />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -23,8 +30,23 @@ export default Vue.extend({
     ProductImage
   },
   computed:{
+    placeholder(){
+      return this.product ? false : true
+    },
+    title() {
+      return this.product && this.product.title ? this.product.title : null
+    },
+    imageOne() {
+      return this.product && this.product.images && this.product.images[0] ? this.product.images[0].src : null
+    },
+    imageTwo(){
+      return this.product && this.product.images && this.product.images[1] ? this.product.images[1].src : null
+    },
+    price(){
+      return this.product && this.product.variants ? `$${this.product.variants[0].price.replace('.00','')}` : null;
+    },
     color(){
-      if(this.product.metafields){
+      if(this.product && this.product.metafields){
         const colorMetafield = this.product.metafields.find(metafield => metafield.key === 'color');
         return colorMetafield ? colorMetafield.value : null
       }
@@ -53,13 +75,22 @@ export default Vue.extend({
     }
   }
   .product-title{
+    .placeholder-content{
+      width: 200px;
+    }
   }
   .product-price{
     font-weight: 700;
     float: right;
+    .placeholder-content{
+      width: 50px;
+    }
   }
   .product-color{
     font-size: 0.9em;
     color: @gray1;
+    .placeholder-content{
+      width: 50px;
+    }
   }
 </style>

@@ -10,13 +10,64 @@ const client = Client.buildClient({
 
 Vue.use(Vuex);
 
+function graphProductDetails(product){
+  product.add('title');
+  product.add('handle');
+  product.add('vendor');
+  product.add('descriptionHtml');
+  product.add('options', (opts) => {
+    opts.add('name')
+  })
+  product.add('tags');
+
+  product.addConnection('metafields', {args: {first: 5}}, (metafield) => {
+    metafield.add('key')
+    metafield.add('value')
+  });
+  product.addConnection(
+    "variants",
+    { args: { first: 99 } },
+    (variant) => {
+      variant.add("id");
+      variant.add("price");
+      variant.add("availableForSale");
+      variant.add('selectedOptions', (opts) => {
+        opts.add('name')
+        opts.add('value')
+      })
+    }
+  );
+  product.add("images", {
+    args: {
+      first: 250
+    }
+  }, function (images) {
+    images.add("pageInfo", function (pageInfo) {
+      pageInfo.add("hasNextPage");
+      pageInfo.add("hasPreviousPage");
+    });
+    images.add("edges", function (edges) {
+      edges.add("cursor");
+      edges.add("node", function (node) {
+        node.add("id");
+        node.add("src");
+        node.add("altText");
+      });
+    });
+  });
+}
+
 export default new Vuex.Store({
   state: {
     products: { },
+    colorOptions: { },
   },
   mutations: {
-    ADD_PRODUCT(state, product){
+    SET_PRODUCT(state, product){
       Vue.set(state.products, product.handle, product);
+    },
+    SET_COLOR_OPTIONS(state, product){
+      Vue.set(state.colorOptions, product.handle, product.colors);
     }
   },
   actions: {
@@ -31,61 +82,44 @@ export default new Vuex.Store({
           collection.add('title');
           collection.add('handle');
           collection.addConnection('products', {args: { first: 99}}, product => {
-            product.add('title');
-            product.add('handle');
-            product.add('vendor');
-            product.add('description');
-            product.add('options');
-            product.add('tags');
-
-            product.addConnection('metafields', {args: {first: 5}}, (metafield) => {
-              metafield.add('key')
-              metafield.add('value')
-            });
-            product.addConnection(
-              "variants",
-              { args: { first: 99 } },
-              (variant) => {
-                variant.add("id");
-                variant.add("price");
-                variant.add("availableForSale");
-              }
-            );
-            product.add("images", {
-              args: {
-                first: 250
-              }
-            }, function (images) {
-              images.add("pageInfo", function (pageInfo) {
-                pageInfo.add("hasNextPage");
-                pageInfo.add("hasPreviousPage");
-              });
-              images.add("edges", function (edges) {
-                edges.add("cursor");
-                edges.add("node", function (node) {
-                  node.add("id");
-                  node.add("src");
-                  node.add("altText");
-                });
-              });
-            });
+            graphProductDetails(product)
           });
         });
       });
       // Call the send method with the custom products query
-      client.graphQLClient.send(query).then(({model, data}) => {
+      client.graphQLClient.send(query).then(({model}) => {
         // Do something with the products
-        console.log(model, data);
         model.collections.forEach(collection => {
           collection.products.forEach(product => {
-            context.commit('ADD_PRODUCT', product)
+            context.commit('SET_PRODUCT', product)
           })
         })
       });
     },
-    getProductByHandle: (context, handle) => new Promise((resolve, reject) => {
-      if(context.state.products[handle] && 1 < 0){
-        resolve(context.state.products[handle])
+    loadProduct: (context, handle) => new Promise((resolve, reject) => {
+      if(context.state.products[handle]){
+        resolve()
+      }else{
+        const query = client.graphQLClient.query((root) => {
+          root.addConnection('products', {args:{ first: 1, query: handle }}, product => {
+            graphProductDetails(product)
+          });
+        });
+        // Call the send method with the custom products query
+        client.graphQLClient.send(query).then(({model}) => {
+          // Do something with the products
+          model.products.forEach(product => {
+            context.commit('SET_PRODUCT', product)
+          })
+          resolve();
+        }).catch(e => {
+          reject(e)
+        })
+      }
+    }),
+    loadProductColorOptions: (context, handle) => new Promise((resolve, reject) => {
+      if(context.state.colorOptions[handle]){
+        resolve()
       }else{
         client.product.fetchByHandle(handle)
           .then(product => {
@@ -101,7 +135,7 @@ export default new Vuex.Store({
                 });
                 product.add("images", {
                   args: {
-                    first: 250
+                    first: 1
                   }
                 }, function (images) {
                   images.add("pageInfo", function (pageInfo) {
@@ -134,11 +168,12 @@ export default new Vuex.Store({
                   }
                   return null;
                 });
-                product.colors = colors;
+                context.commit('SET_COLOR_OPTIONS', {
+                  handle,
+                  colors
+                })
               }
-
-              context.commit('ADD_PRODUCT', product)
-              resolve(product);
+              resolve();
             }).catch(e => {
               reject(e)
             })

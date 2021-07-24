@@ -75,6 +75,7 @@ export default Vue.extend({
   }
   .v-select{
     text-transform: capitalize;
+    margin-bottom: 1em;
   }
   @media(min-width: @thirdbreakpoint){
     label, ul, li{

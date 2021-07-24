@@ -1,6 +1,6 @@
 <template>
-  <div class="product-image">
-    <img :src="src" loading="lazy" :class="{loaded: loaded}" :alt="alt" @load="loaded = true"/>
+  <div :class="{'product-image': true, placeholder: src ? false : true}">
+    <img v-if="src" :src="src" loading="lazy" :class="{loaded: loaded}" :alt="alt" @load="loaded = true"/>
   </div>
 </template>
 <script lang="ts">
@@ -10,11 +10,11 @@ export default Vue.extend({
   props: {
     src: {
       type: String,
-      required: true
+      required: false
     },
     alt: {
       type: String,
-      required: true,
+      required: false,
       default: "Product Image"
     },
     preload: {
@@ -32,7 +32,7 @@ export default Vue.extend({
       immediate: true,
       handler(){
         this.loaded = false;
-        if(this.preload){
+        if(this.src && this.preload){
           this.preloadImage();
         }
       }
@@ -42,9 +42,6 @@ export default Vue.extend({
     preloadImage(){
       const image = new Image();
       image.src = this.src;
-      image.onLoad = function(){
-        console.log('preloaded image')
-      }
     }
   }
 });
@@ -53,6 +50,7 @@ export default Vue.extend({
   .product-image{
     position: relative;
     overflow: hidden;
+    background:#eee;
     &:after{
       display: block;
       content: "";

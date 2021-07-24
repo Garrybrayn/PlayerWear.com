@@ -29,13 +29,11 @@
         const emailInput = document.getElementById('emailInput');
         const emailValue = localStorage.getItem('email');
         const emailButton = document.getElementById('sendEmailButton');
-        console.log({emailDisplayElementCollection});
 
         if(emailInput && emailValue){
           emailButton.style.display = "block";
           emailInput.value = emailValue;
           for(let element of emailDisplayElementCollection){
-            console.log({element})
             element.innerHTML = `,<br /> ${emailValue}`;
           }
         }

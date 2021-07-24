@@ -1,20 +1,26 @@
 <template>
-  <Strip class="collection-page">
-    <TagSelector :tags="tags"/>
-    <div class="product-grid">
-      <ProductCard v-for="(product, index) in productsForGrid" :key="index" :product="product" @click="viewProduct(product)"/>
+  <Page>
+    <Breadcrumbs :breadcrumbs="breadcrumbs" />
+    <div class="collection-page">
+      <TagSelector :tags="tags"/>
+      <div class="product-grid">
+        <ProductCard v-for="(product, index) in productsForGrid" :key="index" :product="product" @click="viewProduct(product)"/>
+      </div>
     </div>
-  </Strip>
+  </Page>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import Strip from "../atoms/Strip.vue";
+import Page from "../atoms/Page.vue";
+import Utilities from "../../utilities";
+import Breadcrumbs from "../molecules/Breadcrumbs.vue";
 import TagSelector from "../molecules/TagSelector.vue";
 import ProductCard from "../molecules/ProductCard.vue";
 
 export default Vue.extend({
   components: {
-    Strip,
+    Page,
+    Breadcrumbs,
     TagSelector,
     ProductCard
   },
@@ -35,30 +41,59 @@ export default Vue.extend({
   },
   computed: {
     productsForGrid(){
-      return this.$store.getters.products.filter(product => {
-        console.log(product);
-        let include = true;
-        if(this.$route.params.collectionHandle && product.vendor.toLowerCase() !== this.$route.params.collectionHandle){
-          console.log(product.vendor.toLowerCase(),'is not', this.$route.params.collectionHandle);
-          include = false;
-        }
-        if(this.$route.params.tag && product.tags.find(tag => tag.value === this.$route.params.tag) === undefined){
-          include = false;
-        }
-        return include;
-      })
+      if(this.$store.getters.products.length > 0){
+        return this.$store.getters.products.filter(product => {
+          let include = true;
+          if(this.$route.params.collectionHandle && product.vendor.toLowerCase() !== this.$route.params.collectionHandle){
+            include = false;
+          }
+          if(this.$route.params.tag && product.tags.find(tag => tag.value === this.$route.params.tag) === undefined){
+            include = false;
+          }
+          return include;
+        })
+      }
+      return [null, null, null, null, null];
+    },
+    breadcrumbs(){
+      const breadcrumbs = [];
+      breadcrumbs.push({
+        label: "Home",
+        url: '/'
+      });
+      if(this.$route.params.collectionHandle) {
+        breadcrumbs.push({
+          label: Utilities.tagReadable(this.$route.params.collectionHandle),
+          url: {
+            name: "Collection",
+            params: {
+              collectionHandle: this.$route.params.collectionHandle
+            }
+          }
+        });
+      }
+      if(this.$route.params.tag){
+        breadcrumbs.push({
+          label: Utilities.tagReadable(this.$route.params.tag)
+        });
+      }
 
+      return breadcrumbs;
     }
   },
   methods: {
     viewProduct(product){
-      this.$router.push({
+      let route = {
         name: "ProductInCollection",
         params: {
           collection: this.$route.params.collectionHandle,
           productHandle: product.handle
         }
-      })
+      };
+      if(this.$route.params.tag){
+        route.query = { tag: this.$route.params.tag || '' }
+      }
+      this.$router.push(route)
     }
   }
 });
@@ -72,26 +107,35 @@ export default Vue.extend({
   }
 
   .product-grid{
-    display: flex;
-    flex-wrap: wrap;
     flex-grow: 1;
-    gap: 2em;
+    display: grid;
+    flex-wrap: wrap;
     grid-column-gap: 1em;
     grid-row-gap: 2em;
+    grid-template-columns: 1fr;
   }
 
   .product-card{
-    width: 330px;
+  }
+
+  @media(min-width: @secondbreakpoint){
+    .product-grid{
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   @media(min-width: @thirdbreakpoint){
     .collection-page{
       flex-direction: row;
     }
-
     .tag-selector{
       width: 220px;
       flex-shrink: 0;
+    }
+  }
+  @media(min-width: @fourthbreakpoint){
+    .product-grid{
+      grid-template-columns: 1fr 1fr 1fr;
     }
   }
 </style>

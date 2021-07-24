@@ -139,6 +139,9 @@
         </div>
 
         <main role="main">
+            <div id="vue-app"></div>
+            {{ 'app.js' | asset_url | script_tag }}
+            {{ 'chunk-vendors.js' | asset_url | script_tag }}
             {{ content_for_layout }}
 
             <div class="wrapper--bottom">
@@ -304,8 +307,6 @@
     </script>
 
     {{ 'theme.js' | asset_url | script_tag }}
-    {{ 'app.js' | asset_url | script_tag }}
-    {{ 'chunk-vendors.js' | asset_url | script_tag }}
     {% include 'mw_CS_objects' %}
 
     </body>
