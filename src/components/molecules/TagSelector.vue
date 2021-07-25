@@ -72,6 +72,9 @@ export default Vue.extend({
     font-weight: 600;
     text-transform: capitalize;
     text-decoration: none;
+    &.router-link-exact-active {
+      border-bottom: 1px solid black;
+    }
   }
   .v-select{
     text-transform: capitalize;

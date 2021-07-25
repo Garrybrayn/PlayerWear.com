@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="`contains-${imagesToShow.length}`">
     <div class="product-page-image-grid-container">
       <Carousel class="mobile" :per-page="1" pagination-position="bottom-overlay" pagination-color="rgba(128,128,128, 0.5)" pagination-active-color="rgba(128,128,128, 1)" :pagination-padding="5">
         <Slide v-for="(image, index) in imagesToShow" :key="index">
@@ -108,6 +108,18 @@ export default Vue.extend({
     }
     &.show-more-images .product-image:nth-child(n+7){
       display: block !important;
+    }
+  }
+  .contains-1 .product-image{
+    grid-column: span 12;
+  }
+  .contains-2 .product-image{
+    grid-column: span 6;
+  }
+  .contains-3 .product-image{
+    grid-column: span 6;
+    &:nth-child(3){
+      grid-column: span 12;
     }
   }
 

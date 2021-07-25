@@ -1,72 +1,82 @@
 <template>
-  <Page :class="{placeholder: showPlaceholders}">
-    <Breadcrumbs :breadcrumbs="breadcrumbs" />
-    <div class="product-page" data-v-sticky-container>
-      <ProductPageImageGrid
-        class="product-images"
-        :images="images"/>
-      <div class="product-details">
-        <div v-sticky="{topSpacing: 150, bottomSpacing:40}">
-          <div class="product-title">
-            {{ title }}
-            <span class="placeholder-content" />
+  <div>
+    <Strip :class="{placeholder: showPlaceholders}">
+      <Breadcrumbs :breadcrumbs="breadcrumbs" />
+      <div class="product-page" data-v-sticky-container>
+        <ProductPageImageGrid
+          class="product-images"
+          :images="images"/>
+        <div class="product-details">
+          <div v-sticky="{topSpacing: 150, bottomSpacing:40}">
+            <div class="product-title">
+              {{ title }}
+              <span class="placeholder-content" />
+            </div>
+            <div class="product-price">
+              <span class="placeholder-content" />
+            </div>
+            <div v-show="colors && colors.length > 0">
+              <label>Select a Color:</label>
+              <ProductColorSelector
+                :options="colors"
+                :value="product && product.handle"
+                @select="selectColor($event)"
+              />
+            </div>
+            <div v-show="showSizeSelector">
+              <label>Select a Size:</label>
+              <ProductPageSizeSelector
+                :options="options"
+                :variants="variants"
+                :selected-variant-id="selectedVariantId"
+                @select="selectedVariantId = $event"
+              />
+            </div>
+            <form class="buy-button-container">
+              <input v-show="false" type="number" :value="quantity" data-qty-input @change="quantity=$event"/>
+              <input name="id" type="hidden" :value="selectedVariantIdDecoded" :data-variant-id="selectedVariantIdDecoded" />
+              <Button v-if="selectedVariantIdDecoded" type="submit" class="buy-button full-width" @click.native="addToCart($event)" :data-original-text="buyButtonLabel">
+                <span data-button-text>{{buyButtonLabel}}</span>
+              </Button>
+              <span class="placeholder-content" />
+            </form>
+            <div v-html="description" class="description"/>
+            <span class="description placeholder-content" />
+            <span class="description placeholder-content" />
+            <span class="description placeholder-content" />
+            <span class="description placeholder-content" />
           </div>
-          <div class="product-price">
-            <span class="placeholder-content" />
-          </div>
-          <div v-show="colors">
-            <label>Select a Color:</label>
-            <ProductColorSelector
-              :options="colors"
-              :value="product && product.handle"
-              @select="selectColor($event)"
-            />
-          </div>
-          <div v-show="showSizeSelector">
-            <label>Select a Size:</label>
-            <ProductPageSizeSelector
-              :options="options"
-              :variants="variants"
-              :selected-variant-id="selectedVariantId"
-              @select="selectedVariantId = $event"
-            />
-          </div>
-          <form class="buy-button-container">
-            <input v-show="false" type="number" :value="quantity" data-qty-input @change="quantity=$event"/>
-            <input name="id" type="hidden" :value="selectedVariantIdDecoded" :data-variant-id="selectedVariantIdDecoded" />
-            <Button v-if="buyButtonLabel" type="submit" class="buy-button full-width" @click.native="addToCart($event)" :data-original-text="buyButtonLabel">
-              <span data-button-text>{{buyButtonLabel}}</span>
-            </Button>
-            <span class="placeholder-content" />
-          </form>
-          <div v-html="description" class="description"/>
-          <span class="description placeholder-content" />
-          <span class="description placeholder-content" />
-          <span class="description placeholder-content" />
-          <span class="description placeholder-content" />
         </div>
       </div>
-    </div>
-  </Page>
+    </Strip>
+
+    <Strip class="related-products full-width">
+      <h1 class="center">You might like</h1>
+      <ProductCarousel :products="relatedProducts" />
+    </Strip>
+  </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import Page from '../atoms/Page.vue';
+import Strip from '../atoms/Strip.vue';
 import Button from '../atoms/Button.vue';
 import ProductPageImageGrid from '../molecules/ProductPageImageGrid.vue';
 import Breadcrumbs from '../molecules/Breadcrumbs.vue';
 import ProductColorSelector from '../molecules/ProductColorSelector.vue';
 import ProductPageSizeSelector from '../molecules/ProductPageSizeSelector.vue';
+import ProductCarousel from '../organisms/ProductCarousel.vue';
+
 import VueStickyDirective from '@renatodeleao/vue-sticky-directive'
 import Utilities from '../../utilities';
 
 export default Vue.extend({
   components: {
-    Page,
+    Strip,
     Breadcrumbs,
     ProductPageImageGrid,
     ProductColorSelector,
     ProductPageSizeSelector,
+    ProductCarousel,
     Button
   },
   directives: {
@@ -81,6 +91,9 @@ export default Vue.extend({
   computed: {
     product(){
       return this.$store.state.products[this.$route.params.productHandle];
+    },
+    relatedProducts(){
+      return this.$store.getters.relatedProducts(this.$route.params.productHandle, 8);
     },
     selectedVariant(){
       if(this.variants){
@@ -171,22 +184,36 @@ export default Vue.extend({
     }
   },
   watch: {
-    product(){
-
+    variants:{
+      immediate: true,
+      handler(){
+        if(this.variants && this.variants[0] && !this.selectedVariantId){
+          this.selectedVariantId = this.variants[0].id
+        }
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.fetchProductColorData(to.params.productHandle);
+      window.scrollTo(0,0);
     })
   },
   beforeRouteUpdate(to, from, next) {
     this.fetchProductColorData(to.params.productHandle);
+    window.scrollTo(0,0);
     next();
   },
   methods: {
     fetchProductColorData(productHandle){
-      this.$store.dispatch('loadProduct', productHandle);
+      // Load the product details
+      this.$store.dispatch('loadProduct', productHandle).then(product => {
+
+        // Load all products by this brand
+        this.$store.dispatch('loadCollectionWithProducts', product.vendor);
+      })
+
+      // Load the color options.
       this.$store.dispatch('loadProductColorOptions', productHandle);
     },
     selectColor(productHandle){
@@ -270,6 +297,15 @@ export default Vue.extend({
   }
   .description.placeholder-content{
     width: 100%;
+  }
+  .related-products{
+    margin-top: 4rem;
+    padding: 4em 50px !important;
+    box-sizing: border-box;
+    background: #F3F3F3;
+    /deep/ .product-image img {
+      filter: brightness(90%) !important;
+    }
   }
 
   @media(min-width: @secondbreakpoint){

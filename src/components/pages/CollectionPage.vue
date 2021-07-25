@@ -4,7 +4,7 @@
     <div class="collection-page">
       <TagSelector :tags="tags"/>
       <div class="product-grid">
-        <ProductCard v-for="(product, index) in productsForGrid" :key="index" :product="product" @click="viewProduct(product)"/>
+        <ProductCard v-for="(product, index) in productsForGrid" :key="index" :product="product"/>
       </div>
     </div>
   </Page>
@@ -79,21 +79,6 @@ export default Vue.extend({
       }
 
       return breadcrumbs;
-    }
-  },
-  methods: {
-    viewProduct(product){
-      let route = {
-        name: "ProductInCollection",
-        params: {
-          collection: this.$route.params.collectionHandle,
-          productHandle: product.handle
-        }
-      };
-      if(this.$route.params.tag){
-        route.query = { tag: this.$route.params.tag || '' }
-      }
-      this.$router.push(route)
     }
   }
 });

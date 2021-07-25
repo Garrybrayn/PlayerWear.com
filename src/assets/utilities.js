@@ -33,10 +33,10 @@ jQuery(function () {
   setTimeout(function () {
 
     // Redirect to checkout when a product is added
-    // const cartItemCountElement = document.getElementById('booster__popup--holder'); // add to cart success notification container
-    // cartItemCountElement.addEventListener("DOMSubtreeModified", function (event) {
-    //     window.location.href = '/pages/pre-checkout';
-    // }, false);
+    const cartItemCountElement = document.getElementById('booster__popup--holder'); // add to cart success notification container
+    cartItemCountElement.addEventListener("DOMSubtreeModified", function (event) {
+      jQuery('#minicart__button').click()
+    }, false);
 
 
     // Load shipping details when it's been clicked

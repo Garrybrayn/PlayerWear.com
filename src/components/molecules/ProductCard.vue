@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'product-card': true, placeholder: placeholder }" @click="$emit('click')">
+  <div :class="{'product-card': true, placeholder: placeholder }" @click="viewProduct">
     <ProductImage :src="imageOne" :alt="title" class="first" />
     <ProductImage :src="imageTwo" :alt="title" class="second" :preload="true"/>
     <div class="product-price">
@@ -51,6 +51,21 @@ export default Vue.extend({
         return colorMetafield ? colorMetafield.value : null
       }
       return null;
+    }
+  },
+  methods: {
+    viewProduct(){
+      let route = {
+        name: "ProductInCollection",
+        params: {
+          collection: this.$route.params.collectionHandle,
+          productHandle: this.product.handle
+        }
+      };
+      if(this.$route.params.tag){
+        route.query = { tag: this.$route.params.tag || '' }
+      }
+      this.$router.push(route)
     }
   }
 });

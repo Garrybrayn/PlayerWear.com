@@ -59,14 +59,23 @@ function graphProductDetails(product){
 
 export default new Vuex.Store({
   state: {
+    collections: { },
     products: { },
     colorOptions: { },
   },
   mutations: {
+    SET_COLLECTION(state, collection){
+      Vue.set(state.collections, collection.handle, {
+        title: collection.title,
+        handle: collection.handle,
+        id: collection.id
+      });
+    },
     SET_PRODUCT(state, product){
       Vue.set(state.products, product.handle, product);
     },
     SET_COLOR_OPTIONS(state, product){
+      console.log('setting color options', product.handle, product.colors)
       Vue.set(state.colorOptions, product.handle, product.colors);
     }
   },
@@ -76,29 +85,36 @@ export default new Vuex.Store({
         products.forEach(product => context.commit('ADD_PRODUCT', product))
       })
     },
-    loadCollectionWithProducts(context, collectionHandle){
-      const query = client.graphQLClient.query((root) => {
-        root.addConnection('collections', {args:{ first: 1, query: `title:${collectionHandle}` }}, collection => {
-          collection.add('title');
-          collection.add('handle');
-          collection.addConnection('products', {args: { first: 99}}, product => {
-            graphProductDetails(product)
+    loadCollectionWithProducts:(context, collectionHandle) => new Promise((resolve, reject) => {
+      if(context.state.collections[collectionHandle]){
+        resolve()
+      }else{
+        const query = client.graphQLClient.query((root) => {
+          root.addConnection('collections', {args:{ first: 1, query: `title:${collectionHandle}` }}, collection => {
+            collection.add('title');
+            collection.add('handle');
+            collection.addConnection('products', {args: { first: 99}}, product => {
+              graphProductDetails(product)
+            });
           });
         });
-      });
-      // Call the send method with the custom products query
-      client.graphQLClient.send(query).then(({model}) => {
-        // Do something with the products
-        model.collections.forEach(collection => {
-          collection.products.forEach(product => {
-            context.commit('SET_PRODUCT', product)
+        // Call the send method with the custom products query
+        client.graphQLClient.send(query).then(({model}) => {
+          // Do something with the products
+          model.collections.forEach(collection => {
+            context.commit('SET_COLLECTION', collection);
+            collection.products.forEach(product => {
+              context.commit('SET_PRODUCT', product)
+            })
           })
+        }).catch(e => {
+          reject(e)
         })
-      });
-    },
+      }
+    }),
     loadProduct: (context, handle) => new Promise((resolve, reject) => {
       if(context.state.products[handle]){
-        resolve()
+        resolve(context.state.products[handle])
       }else{
         const query = client.graphQLClient.query((root) => {
           root.addConnection('products', {args:{ first: 1, query: handle }}, product => {
@@ -110,8 +126,8 @@ export default new Vuex.Store({
           // Do something with the products
           model.products.forEach(product => {
             context.commit('SET_PRODUCT', product)
+            resolve(product);
           })
-          resolve();
         }).catch(e => {
           reject(e)
         })
@@ -157,16 +173,16 @@ export default new Vuex.Store({
             client.graphQLClient.send(productsQuery).then(({model}) => {
               // Do something with the products
               if(model.products.length > 1){
-                const colors = model.products.map(product => {
+                const colors = [];
+                model.products.forEach(product => {
                   const colorField = product.metafields.find(metafield => metafield.namespace === 'extras' && metafield.key === 'color');
                   if(colorField){
-                    return {
+                    colors.push({
                       label: colorField.value,
                       handle: product.handle,
                       image: product.images[0].src
-                    }
+                    });
                   }
-                  return null;
                 });
                 context.commit('SET_COLOR_OPTIONS', {
                   handle,
@@ -188,6 +204,42 @@ export default new Vuex.Store({
   getters: {
     products: state => {
       return Object.values(state.products)
+    },
+    relatedProducts: (state, getters) => (handle, count) => {
+      let relatedProducts = [];
+
+      // This is the main product
+      const product = state.products[handle];
+
+      if(product){
+        // Find products with identically matching titles
+        relatedProducts = getters.products.filter(
+          relatedProduct => (
+            relatedProduct.handle !== product.handle &&
+            relatedProduct.title === product.title
+          )
+        );
+
+        if(relatedProducts.length < count){
+          // Add more from the same vendor
+          for(let i=0; i<getters.products.length; i++){
+            const relatedProduct = getters.products[i];
+            if(relatedProduct.handle !== product.handle && relatedProduct.vendor === product.vendor){
+              // matches the vendor
+              const alreadyFoundRelatedProduct = relatedProducts.find(
+                existingRelatedProduct => existingRelatedProduct.handle === relatedProduct.vendor
+              );
+              if(!alreadyFoundRelatedProduct){
+                relatedProducts.push(relatedProduct);
+              }
+            }
+            if(relatedProducts.length >= count){
+              break
+            }
+          }
+        }
+      }
+      return relatedProducts;
     }
-  },
+  }
 });

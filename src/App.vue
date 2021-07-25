@@ -3,7 +3,7 @@
     <router-view/>
   </div>
 </template>
-<style>
+<style lang="less">
   .placeholder-content{
     min-height: 1em;
     background: #eee;
@@ -12,5 +12,11 @@
   }
   .placeholder .placeholder-content{
     display: inline-block;
+  }
+  h1, h2{
+    text-transform: uppercase;
+    &.center{
+      text-align: center
+    }
   }
 </style>
