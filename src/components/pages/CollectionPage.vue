@@ -57,13 +57,9 @@ export default Vue.extend({
     },
     breadcrumbs(){
       const breadcrumbs = [];
-      breadcrumbs.push({
-        label: "Home",
-        url: '/'
-      });
       if(this.$route.params.collectionHandle) {
         breadcrumbs.push({
-          label: Utilities.tagReadable(this.$route.params.collectionHandle),
+          label: Utilities.tagReadable(this.$route.params.collectionHandle + ' Merch'),
           url: {
             name: "Collection",
             params: {

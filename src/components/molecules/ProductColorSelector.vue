@@ -1,12 +1,17 @@
 <template>
   <div class="product-color-selector">
-    <ProductImage v-for="(option, index) in options"
-      :key="index"
-      :class="{ selected: option.handle === value }"
-      :src="option.image"
-      :alt="option.value"
-      @click.native="$emit('select', option.handle)"
-    />
+    <label><span class="bold">COLOR:</span> {{ colorLabel }}</label>
+    <div class="product-color-list">
+      <ProductImage v-for="(option, index) in options"
+        :key="index"
+        :class="{ selected: option.handle === value }"
+        :src="option.image"
+        :alt="option.value"
+        @click.native="$emit('select', option.handle)"
+        @mouseover.native="hoveredOption = option"
+        @mouseout.native="hoveredOption = null"
+      />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -27,7 +32,15 @@ export default Vue.extend({
   },
   data(){
     return {
-      selectedColor: null
+      hoveredOption: null
+    }
+  },
+  computed: {
+    colorLabel(){
+      return this.hoveredOption ? this.hoveredOption.label : this.selectedColor ? this.selectedColor.label : null;
+    },
+    selectedColor() {
+      return this.options ? this.options.find(option => option.handle === this.value) : null;
     }
   }
 });
@@ -35,7 +48,15 @@ export default Vue.extend({
 <style scoped lang="less">
   @import '../../less/variables';
 
-  .product-color-selector{
+
+  label {
+    margin-bottom: 0.5em;
+  }
+  .bold{
+    font-weight: 800;
+  }
+  .product-color-list{
+    margin-top: 0.5em;
     display: flex;
     width: 100%;
     justify-content: flex-start;

@@ -13,33 +13,46 @@
               <span class="placeholder-content" />
             </div>
             <div class="product-price">
+              {{ priceReadable }}
               <span class="placeholder-content" />
             </div>
             <div v-show="colors && colors.length > 0">
-              <label>Select a Color:</label>
               <ProductColorSelector
                 :options="colors"
                 :value="product && product.handle"
                 @select="selectColor($event)"
               />
             </div>
-            <div v-show="showSizeSelector">
-              <label>Select a Size:</label>
-              <ProductPageSizeSelector
-                :options="options"
-                :variants="variants"
-                :selected-variant-id="selectedVariantId"
-                @select="selectedVariantId = $event"
-              />
-            </div>
+            <ProductPageSizeSelector
+              v-show="showSizeSelector"
+              :options="options"
+              :variants="variants"
+              :selected-variant-id="selectedVariantId"
+              :size-guide="sizeGuide"
+              @select="selectedVariantId = $event"
+            />
             <form class="buy-button-container">
               <input v-show="false" type="number" :value="quantity" data-qty-input @change="quantity=$event"/>
               <input name="id" type="hidden" :value="selectedVariantIdDecoded" :data-variant-id="selectedVariantIdDecoded" />
-              <Button v-if="selectedVariantIdDecoded" type="submit" class="buy-button full-width" @click.native="addToCart($event)" :data-original-text="buyButtonLabel">
+              <InputNumber :value="quantity" data-qty-input @change="quantity=$event"/>
+              <Button
+                v-if="!showPlaceholders"
+                type="submit"
+                :disabled="selectedVariantIdDecoded?false:true"
+                :class="{'buy-button': true, 'full-width': true, disabled: selectedVariantIdDecoded?false:true}"
+                @click.native="addToCart($event)"
+                :data-original-text="buyButtonLabel"
+
+              >
                 <span data-button-text>{{buyButtonLabel}}</span>
               </Button>
               <span class="placeholder-content" />
             </form>
+            <div class="note" v-show="!showPlaceholders">
+              <i class="uil uil-truck" />
+              SPECIAL Flat Rate Shipping $4.00
+            </div>
+            <b v-show="description">DESCRIPTION:</b>
             <div v-html="description" class="description"/>
             <span class="description placeholder-content" />
             <span class="description placeholder-content" />
@@ -60,6 +73,7 @@
 import Vue from 'vue';
 import Strip from '../atoms/Strip.vue';
 import Button from '../atoms/Button.vue';
+import InputNumber from '../atoms/InputNumber.vue';
 import ProductPageImageGrid from '../molecules/ProductPageImageGrid.vue';
 import Breadcrumbs from '../molecules/Breadcrumbs.vue';
 import ProductColorSelector from '../molecules/ProductColorSelector.vue';
@@ -77,6 +91,7 @@ export default Vue.extend({
     ProductColorSelector,
     ProductPageSizeSelector,
     ProductCarousel,
+    InputNumber,
     Button
   },
   directives: {
@@ -102,10 +117,13 @@ export default Vue.extend({
       return null
     },
     selectedVariantPrice(){
-      return this.selectedVariant ? this.selectedVariant.price : null
+      return this.selectedVariant ? Number(this.selectedVariant.price) : null
     },
-    selectedVariantPriceReadable(){
-      return this.selectedVariantPrice ? `$${this.selectedVariantPrice } USD` : null
+    lowestVariantPrice(){
+      return this.variants ? Math.min(...(this.variants.map(variant => Number(variant.price)))) : null
+    },
+    priceReadable(){
+      return `$${this.selectedVariantPrice || this.lowestVariantPrice} USD`
     },
     title(){
       return this.product ? this.product.title : null
@@ -134,9 +152,20 @@ export default Vue.extend({
     showSizeSelector(){
       return this.product && this.product.options && this.product.options.find(option => option.name === 'Size');
     },
+    sizeGuide(){
+      if(this.product){
+        const sizeGuide = this.product.metafields.find(metafield => metafield.key==='size_chart')
+        if(sizeGuide){
+          return sizeGuide.value;
+        }
+      }
+      return null;
+    },
     buyButtonLabel(){
       if(this.selectedVariant){
         return `Add to cart - $${ this.total }`
+      }else if(this.showSizeSelector){
+        return 'Select a Size';
       }else{
         return 'Select an Option';
       }
@@ -146,13 +175,9 @@ export default Vue.extend({
     },
     breadcrumbs(){
       const breadcrumbs = [];
-      breadcrumbs.push({
-        label: "Home",
-        url: '/'
-      });
       if(this.product){
         breadcrumbs.push({
-          label: this.product.vendor,
+          label: `${this.product.vendor} Merch`,
           url: {
             name: "Collection",
             params: {
@@ -187,7 +212,8 @@ export default Vue.extend({
     variants:{
       immediate: true,
       handler(){
-        if(this.variants && this.variants[0] && !this.selectedVariantId){
+        console.log(this.variants);
+        if(this.variants && this.variants.length === 1 && !this.selectedVariantId){
           this.selectedVariantId = this.variants[0].id
         }
       }
@@ -245,16 +271,18 @@ export default Vue.extend({
   .product-title{
     font-weight: 800;
     margin-bottom: 1em;
-    font-size: 1.2em;
+    font-size: 1.5em;
+    line-height: 1.3em;
     .placeholder-content{
       width: 100%;
       height: 1.2em;
     }
   }
   .product-price{
-    color: @gray1;
+    color: @gray2;
     font-weight: 800;
     margin-bottom: 1em;
+    font-size: 1.2em;
     .placeholder-content{
       width: 50px;
     }
@@ -263,7 +291,7 @@ export default Vue.extend({
     margin-bottom: 1em;
   }
   .product-size-selector{
-    margin-bottom: 1em;
+    margin-bottom: 2em;
   }
   label{
     display: block;
@@ -286,9 +314,24 @@ export default Vue.extend({
     padding: 0.75rem;
     background: white;
     box-shadow: 0px 0px 20px #0005;
+    display: flex;
+    align-items: stretch;
+    gap: 0.5em;
+    z-index: 1;
     .placeholder-content{
       height: 3em;
       width: 100%;
+    }
+  }
+
+  .note{
+    padding: 1em;
+    border-radius: 2px;
+    background: #eee;
+    margin-bottom: 1em;
+    i{
+      font-size: 1.25em;
+      vertical-align: middle;
     }
   }
 
@@ -324,7 +367,7 @@ export default Vue.extend({
       position: relative;
       padding: 0;
       box-shadow: none;
-      margin-bottom: 1em;
+      margin-bottom: 2em;
     }
     .product-details{
       grid-column: span 5;

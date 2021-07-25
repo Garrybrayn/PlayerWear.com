@@ -141,6 +141,10 @@ export default Vue.extend({
     }
   }
 
+  .modal{
+    background: white;
+  }
+
 
   @media(min-width: @secondbreakpoint){
     .VueCarousel.mobile{

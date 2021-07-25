@@ -1,7 +1,7 @@
 <template>
   <div :class="{'product-card': true, placeholder: placeholder }" @click="viewProduct">
     <ProductImage :src="imageOne" :alt="title" class="first" />
-    <ProductImage :src="imageTwo" :alt="title" class="second" :preload="true"/>
+    <ProductImage :src="imageTwo || imageOne" :alt="title" :class="{second: true, zoom:imageTwo?false:true}" :preload="true"/>
     <div class="product-price">
       {{ price }}
       <span v-if="placeholder" class="placeholder-content" />
@@ -88,6 +88,9 @@ export default Vue.extend({
     &.second{
       display: none;
     }
+    &.zoom /deep/ img{
+      transform: scale(1.5);
+    }
   }
   .product-title{
     .placeholder-content{
@@ -103,7 +106,7 @@ export default Vue.extend({
   }
   .product-color{
     font-size: 0.9em;
-    color: @gray1;
+    color: @gray3;
     .placeholder-content{
       width: 50px;
     }

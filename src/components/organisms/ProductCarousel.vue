@@ -45,7 +45,6 @@ export default Vue.extend({
   },
   methods: {
     onResize() {
-      console.log(this.$parent);
       this.parentWidth = this.$parent.$el.offsetWidth;
     }
   }

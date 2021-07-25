@@ -174,13 +174,13 @@ export default Vue.extend({
       }
     }
     &.disabled {
-      background: @gray3;
-      color: @gray4;
+      background: @gray2;
+      color: @gray5;
       box-shadow: none;
       cursor: not-allowed;
       &:hover, &:active{
-        background: @gray3;
-        color: @gray4;
+        background: @gray2;
+        color: @gray5;
       }
     }
     &.outline{

@@ -1,18 +1,28 @@
 <template>
   <div class="product-size-selector">
-    <div v-for="(sizeVariant, index) in sizeVariants"
-       :key="index"
-       :class="{
-         available: sizeVariant.available,
-         selected: sizeVariant.selected
-       }"
-       @click="$emit('select', sizeVariant.id)">
-      {{sizeVariant.label}}
+    <label>
+      <b>SIZE:</b>
+      <span v-if="sizeGuide" @click="showSizeGuide=true">Size Guide</span>
+    </label>
+    <div class="product-size-options">
+      <div v-for="(sizeVariant, index) in sizeVariants"
+         :key="index"
+         :class="{
+           available: sizeVariant.available,
+           selected: sizeVariant.selected
+         }"
+         @click="$emit('select', sizeVariant.id)">
+        {{sizeVariant.label}}
+      </div>
     </div>
+    <Modal v-if="showSizeGuide" @close="showSizeGuide=false">
+      <div v-html="sizeGuide" class="size-guide-container"/>
+    </Modal>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import Modal from '../molecules/Modal.vue';
 
 export default Vue.extend({
   props: {
@@ -24,11 +34,17 @@ export default Vue.extend({
     },
     selectedVariantId: {
       type: String
+    },
+    sizeGuide: {
+      type: String
     }
+  },
+  components: {
+    Modal
   },
   data(){
     return {
-      selectedSize: null
+      showSizeGuide: false
     }
   },
   computed:{
@@ -51,14 +67,22 @@ export default Vue.extend({
 <style scoped lang="less">
   @import '../../less/variables';
 
-  .product-size-selector{
-    height: 40px;
+  label span{
+    float: right;
+    font-weight: bolder;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .product-size-options{
+    margin-top: 0.5em;
     display: flex;
     width: 100%;
     align-content: stretch;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 10px;
     div{
+      min-height: 40px;
       border:1px solid black;
       border-radius: 2px;
       flex-grow: 1;
@@ -67,16 +91,41 @@ export default Vue.extend({
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      white-space: nowrap;
+      padding: 0 0.75em;
       &.selected{
         color: #fff;
         background: #000;
       }
     }
   }
+  /deep/ .size-guide-container{
+    background: white;
+    padding: 2em 1em !important;
+    p {
+      font-size: 2em;
+      text-align: center;
+    }
+  }
+  .modal /deep/ .table-responsive{
+    table{
+      tbody td{
+        padding: 0.5em 0.75em;
+      }
+      tbody tr:nth-child(odd){
+        background-color: #eee;
+      }
+    }
+  }
 
+  @media(min-width: @thirdbreakpoint){
+    .size-guide-container{
+      padding: 40px 2em 50px 2em;
+    }
+  }
   @media(min-width: @fourthbreakpoint){
-    .product-size-selector{
-      height: 50px;
+    .product-size-options div{
+      min-height: 50px;
     }
   }
 </style>

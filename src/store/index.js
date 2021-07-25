@@ -19,11 +19,6 @@ function graphProductDetails(product){
     opts.add('name')
   })
   product.add('tags');
-
-  product.addConnection('metafields', {args: {first: 5}}, (metafield) => {
-    metafield.add('key')
-    metafield.add('value')
-  });
   product.addConnection(
     "variants",
     { args: { first: 99 } },
@@ -55,6 +50,12 @@ function graphProductDetails(product){
       });
     });
   });
+
+  product.addConnection('metafields', {args: {first: 10}}, (metafield) => {
+    metafield.add('namespace')
+    metafield.add('key')
+    metafield.add('value')
+  });
 }
 
 export default new Vuex.Store({
@@ -75,7 +76,6 @@ export default new Vuex.Store({
       Vue.set(state.products, product.handle, product);
     },
     SET_COLOR_OPTIONS(state, product){
-      console.log('setting color options', product.handle, product.colors)
       Vue.set(state.colorOptions, product.handle, product.colors);
     }
   },
@@ -103,6 +103,7 @@ export default new Vuex.Store({
           // Do something with the products
           model.collections.forEach(collection => {
             context.commit('SET_COLLECTION', collection);
+            console.log(collection);
             collection.products.forEach(product => {
               context.commit('SET_PRODUCT', product)
             })
@@ -144,7 +145,7 @@ export default new Vuex.Store({
               root.addConnection('products', {args: {first: 10, query: `title:${product.title}`}}, (product) => {
                 product.add('title');
                 product.add('handle');
-                product.addConnection('metafields', {args: {first: 1}}, (metafield) => {
+                product.addConnection('metafields', {args: {first: 10}}, (metafield) => {
                   metafield.add('namespace')
                   metafield.add('key')
                   metafield.add('value')
@@ -227,7 +228,7 @@ export default new Vuex.Store({
             if(relatedProduct.handle !== product.handle && relatedProduct.vendor === product.vendor){
               // matches the vendor
               const alreadyFoundRelatedProduct = relatedProducts.find(
-                existingRelatedProduct => existingRelatedProduct.handle === relatedProduct.vendor
+                existingRelatedProduct => existingRelatedProduct.handle === relatedProduct.handle
               );
               if(!alreadyFoundRelatedProduct){
                 relatedProducts.push(relatedProduct);

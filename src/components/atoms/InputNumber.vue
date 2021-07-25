@@ -1,7 +1,7 @@
 <template>
   <div class="input-number">
     <span @click="$emit('change', Math.max(value - 1, min))">-</span>
-    <input type="number" :value="value" @change="$emit('change', $event.value)" :min="min" :max="max"/>
+    <input type="text" :value="value" @change="$emit('change', $event.value)" :min="min" :max="max"/>
     <span @click="$emit('change', Math.min(value + 1, max))">+</span>
   </div>
 </template>
@@ -28,7 +28,6 @@ export default Vue.extend({
   .input-number{
     display: flex;
     border:1px solid black;
-    height: 40px;
     border-radius: 2px;
     span{
       text-align: center;
@@ -36,7 +35,8 @@ export default Vue.extend({
       align-items: center;
       justify-content: center;
       flex-grow: 0;
-      width: 40px;
+      width: 25px;
+      cursor: pointer;
     }
     input{
       flex-grow: 2;
@@ -45,6 +45,8 @@ export default Vue.extend({
       border-right: 1px solid black;
       border-left: 1px solid black;
       text-align: center;
+      width: 40px;
+      border-radius: 0;
     }
   }
 </style>

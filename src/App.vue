@@ -4,6 +4,10 @@
   </div>
 </template>
 <style lang="less">
+#vue-app{
+  font-family: 'Open Sans';
+  line-height: 1.5em;
+}
   .placeholder-content{
     min-height: 1em;
     background: #eee;
