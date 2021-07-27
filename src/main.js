@@ -5,7 +5,7 @@ import store from './store';
 
 Vue.config.productionTip = false;
 
-new Vue({
+window.playerwear = new Vue({
   router,
   store,
   render: (h) => h(App),

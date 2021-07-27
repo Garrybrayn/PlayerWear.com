@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 import HomePage from '../components/pages/HomePage.vue';
 import ProductPage from '../components/pages/ProductPage.vue';
 import CollectionPage from '../components/pages/CollectionPage.vue';
+import ShopifyPage from '../components/pages/ShopifyPage.vue';
 import BlankPage from '../components/pages/BlankPage.vue';
 
 Vue.use(VueRouter);
@@ -14,30 +15,35 @@ const routes = [
     name: 'Home',
     component: HomePage,
   },
+  // {
+  //   path: '/pages/:collectionHandle',
+  //   name: 'BrandHome',
+  //   component: HomePage,
+  // },
   {
-    path: '/pages/:collectionHandle',
+    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)`,
     name: 'BrandHome',
     component: HomePage,
   },
   {
-    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)`,
-    name: 'BrandHome',
-    component: HomePage,
-  },
-  {
-    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)/products`,
+    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/products`,
     name: 'Collection',
     component: CollectionPage,
   },
   {
-    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)/:tag`,
+    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/:tag`,
     name: 'TagInCollection',
     component: CollectionPage,
   },
   {
-    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)/products/:productHandle`,
+    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/products/:productHandle`,
     name: 'ProductInCollection',
     component: ProductPage,
+  },
+  {
+    path: `/pages/:pageHandle`,
+    name: 'ShopifyPage',
+    component: ShopifyPage,
   },
   {
     path: '*',

@@ -127,6 +127,12 @@ export default Vue.extend({
     bottom: 10px;
   }
 
+  /deep/ .VueCarousel-dot[aria-selected=true]{
+    transform: scale(1.25);
+  }
+  /deep/ .VueCarousel-dot[aria-selected=false]{
+    transform: scale(.7);
+  }
   .button-show-more{
     position: absolute;
     bottom: 40px;

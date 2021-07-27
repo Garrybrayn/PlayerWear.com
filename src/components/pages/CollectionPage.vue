@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page :bottom-spacing="true">
     <Breadcrumbs :breadcrumbs="breadcrumbs" />
     <div class="collection-page">
       <TagSelector :tags="tags"/>

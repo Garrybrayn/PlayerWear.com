@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <Page :bottom-spacing="true" :top-spacing="false" class="full-width">
     <Strip :class="{placeholder: showPlaceholders}">
       <Breadcrumbs :breadcrumbs="breadcrumbs" />
       <div class="product-page" data-v-sticky-container>
@@ -67,10 +67,11 @@
       <h1 class="center">You might like</h1>
       <ProductCarousel :products="relatedProducts" />
     </Strip>
-  </div>
+  </Page>
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import Page from '../atoms/Page.vue';
 import Strip from '../atoms/Strip.vue';
 import Button from '../atoms/Button.vue';
 import InputNumber from '../atoms/InputNumber.vue';
@@ -85,6 +86,7 @@ import Utilities from '../../utilities';
 
 export default Vue.extend({
   components: {
+    Page,
     Strip,
     Breadcrumbs,
     ProductPageImageGrid,
@@ -105,7 +107,7 @@ export default Vue.extend({
   },
   computed: {
     product(){
-      return this.$store.state.products[this.$route.params.productHandle];
+      return this.$store.state.products.products[this.$route.params.productHandle];
     },
     relatedProducts(){
       return this.$store.getters.relatedProducts(this.$route.params.productHandle, 8);
@@ -129,7 +131,7 @@ export default Vue.extend({
       return this.product ? this.product.title : null
     },
     colors(){
-      return this.$store.state.colorOptions[this.$route.params.productHandle]
+      return this.$store.state.products.colorOptions[this.$route.params.productHandle]
     },
     options(){
       return this.product && this.product.options ? this.product.options : null

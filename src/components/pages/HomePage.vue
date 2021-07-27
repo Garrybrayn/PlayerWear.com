@@ -101,7 +101,8 @@ export default Vue.extend({
       return Utilities.arrayShuffle(
         this.$store.getters.productsByTagAndVendor(
           'featured',
-          this.$route.params.collectionHandle
+          this.$route.params.collectionHandle,
+          10
         )
       )
     },
@@ -109,7 +110,8 @@ export default Vue.extend({
       return Utilities.arrayShuffle(
         this.$store.getters.productsByTagAndVendor(
           'featured-t-shirt',
-          this.$route.params.collectionHandle
+          this.$route.params.collectionHandle,
+          10
         )
       )
     }

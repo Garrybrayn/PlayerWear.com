@@ -3,7 +3,7 @@
       :per-page="slidesPerPage"
       :pagination-enabled="true"
       :navigation-enabled="navigationEnabled"
-      :pagination-padding="5"
+      :pagination-padding="8"
       pagination-position="bottom-overlay"
       pagination-color="rgba(128,128,128, 0.5)"
       pagination-active-color="rgba(128,128,128, 1)"
@@ -70,5 +70,11 @@ export default Vue.extend({
   }
   /deep/ .VueCarousel-navigation--disabled{
     opacity: 0;
+  }
+  /deep/ .VueCarousel-dot[aria-selected=true]{
+    transform: scale(1.25);
+  }
+  /deep/ .VueCarousel-dot[aria-selected=false]{
+    transform: scale(.7);
   }
 </style>
