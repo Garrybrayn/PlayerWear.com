@@ -85,6 +85,29 @@ export default new Vuex.Store({
         products.forEach(product => context.commit('SET_PRODUCT', product))
       })
     },
+    loadProductsByQuery: (context, query) => new Promise((resolve, reject) => {
+      const productsQuery = client.graphQLClient.query(root => {
+        root.addConnection('products', {args: query}, (product) => {
+          graphProductDetails(product)
+        })
+      })
+      client.graphQLClient.send(productsQuery).then(({ model }) => {
+        model.products.forEach(product => {
+          context.commit('SET_PRODUCT', product)
+          resolve(product);
+        })
+        resolve();
+      }).catch(e => {
+        reject(e);
+      });
+    }),
+    loadProductsByTagAndVendor: (context, config) => {
+      let query = `tag:${config.tag}`;
+      if(config.vendor){
+        query += ` AND vendor:${config.vendor}`
+      }
+      return context.dispatch('loadProductsByQuery', { first: config.first || 10, query })
+    },
     loadCollectionWithProducts:(context, collectionHandle) => new Promise((resolve, reject) => {
       if(collectionHandle === 'all'){
         return context.dispatch('loadAllProducts')
@@ -111,6 +134,7 @@ export default new Vuex.Store({
               context.commit('SET_PRODUCT', product)
             })
           })
+          resolve();
         }).catch(e => {
           reject(e)
         })
@@ -244,6 +268,20 @@ export default new Vuex.Store({
         }
       }
       return relatedProducts;
+    },
+    productsByTagAndVendor: (state, getters) => (tag, vendor) => {
+      console.log({
+        tag, vendor
+      })
+      return getters.products.filter(product => {
+        const foundTag = product.tags.find(productTag => productTag.value.toLowerCase() === tag.toLowerCase());
+        const foundVendor = vendor ? product.vendor.toLowerCase() === vendor.toLowerCase() : true;
+        console.log({
+          foundTag,
+          foundVendor
+        })
+        return foundTag && foundVendor;
+      })
     }
   }
 });

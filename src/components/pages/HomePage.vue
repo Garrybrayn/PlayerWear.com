@@ -12,7 +12,7 @@
         :tag="tag.tag"
       />
     </Strip>
-    <Strip class="featured-products full-width">
+    <Strip v-if="featuredProducts" class="featured-products full-width">
       <ProductCarousel :products="featuredProducts" :slide-width="400"/>
     </Strip>
     <Strip class="tag-cards-large">
@@ -44,8 +44,8 @@
         </router-link>
       </div>
     </Strip>
-    <Strip class="featured-products full-width">
-      <ProductCarousel :products="featuredProducts" :slide-width="400"/>
+    <Strip v-if="featuredTShirts" class="featured-products full-width">
+      <ProductCarousel :products="featuredTShirts" :slide-width="400"/>
     </Strip>
   </div>
 </template>
@@ -98,11 +98,34 @@ export default Vue.extend({
   },
   computed:{
     featuredProducts(){
-      return this.$store.getters['products'].slice(0, Math.min(this.$store.getters['products'].length, 10));
+      return this.$store.getters.productsByTagAndVendor(
+        'featured',
+        this.$route.params.collectionHandle
+      )
+    },
+    featuredTShirts(){
+      return this.$store.getters.productsByTagAndVendor(
+        'featured-t-shirt',
+        this.$route.params.collectionHandle
+      )
     }
   },
   beforeMount(){
-    this.$store.dispatch('loadAllProducts');
+
+    // Load featured products
+    this.$store.dispatch('loadProductsByTagAndVendor', {
+      first: 10,
+      tag: 'featured',
+      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : null
+    });
+
+    // Load featured t-shirts
+    this.$store.dispatch('loadProductsByTagAndVendor', {
+      first: 10,
+      tag: 'featured-t-shirt',
+      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : null
+    });
+
   },
   methods:{
     assetUrl: filename => assetUrl + filename,
