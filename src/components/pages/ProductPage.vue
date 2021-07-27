@@ -153,7 +153,7 @@ export default Vue.extend({
       return this.product && this.product.options && this.product.options.find(option => option.name === 'Size');
     },
     sizeGuide(){
-      if(this.product){
+      if(this.product && this.product.metafields){
         const sizeGuide = this.product.metafields.find(metafield => metafield.key==='size_chart')
         if(sizeGuide){
           return sizeGuide.value;
@@ -222,12 +222,10 @@ export default Vue.extend({
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.fetchProductColorData(to.params.productHandle);
-      window.scrollTo(0,0);
     })
   },
   beforeRouteUpdate(to, from, next) {
     this.fetchProductColorData(to.params.productHandle);
-    window.scrollTo(0,0);
     next();
   },
   methods: {
@@ -267,6 +265,10 @@ export default Vue.extend({
   }
   .product-images{
     margin-bottom: 1em;
+  }
+  .VueCarousel{
+    margin-right: -0.5em;
+    margin-left: -0.5em;
   }
   .product-title{
     font-weight: 800;

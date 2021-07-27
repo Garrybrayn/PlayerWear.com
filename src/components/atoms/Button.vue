@@ -103,7 +103,6 @@ export default Vue.extend({
     margin-bottom: 1em;
     position: relative;
     border: 0;
-    box-shadow: 0px 3px 5px rgba(0,0,0,0.1);
     color: #fff;
     white-space: nowrap;
       box-sizing: border-box;
@@ -113,7 +112,6 @@ export default Vue.extend({
     &.link{
       color: @gray1;
       background: transparent;
-      box-shadow: none;
       padding: .4rem 0.75rem;
       &:hover, &:active {
         color: @black;
@@ -145,7 +143,6 @@ export default Vue.extend({
     &.secondary {
       background: @black;
       color: @gray3;
-      box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
       &:hover, &:active {
         opacity: 0.8;
       }
@@ -158,10 +155,8 @@ export default Vue.extend({
     &.white {
       background: @white;
       color: @black;
-      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-      transition: box-shadow 100ms;
+      box-shadow: 0px 0px 1em #0001;
       &:hover{
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
         background: @white;
         color: @black;
       }
@@ -176,7 +171,6 @@ export default Vue.extend({
     &.disabled {
       background: @gray2;
       color: @gray5;
-      box-shadow: none;
       cursor: not-allowed;
       &:hover, &:active{
         background: @gray2;

@@ -1,5 +1,13 @@
 <template>
-  <Carousel class="product-carousel" :per-page="slidesPerPage" :pagination-enabled="false" :navigation-enabled="true" :pagination-padding="5" :scrollPerPage="false">
+  <Carousel class="product-carousel"
+      :per-page="slidesPerPage"
+      :pagination-enabled="true"
+      :navigation-enabled="navigationEnabled"
+      :pagination-padding="5"
+      pagination-position="bottom-overlay"
+      pagination-color="rgba(128,128,128, 0.5)"
+      pagination-active-color="rgba(128,128,128, 1)"
+      :scrollPerPage="false">
     <Slide v-for="(product, index) in products" :key="index">
       <ProductCard :product="product" />
     </Slide>
@@ -31,7 +39,13 @@ export default Vue.extend({
   },
   computed:{
     slidesPerPage(){
-      return Math.floor(this.parentWidth / this.slideWidth);
+      return Math.max(
+          Math.floor(this.parentWidth / this.slideWidth),
+          1
+      );
+    },
+    navigationEnabled(){
+      return this.parentWidth >= 800;
     }
   },
   mounted() {
@@ -51,12 +65,7 @@ export default Vue.extend({
 });
 </script>
 <style scoped lang="less">
-  .VueCarousel{
-    margin-right: -0.5em;
-    margin-left: -0.5em;
-  }
   .VueCarousel-slide{
-    padding: 0.5em;
     box-sizing: border-box;
   }
   /deep/ .VueCarousel-navigation--disabled{

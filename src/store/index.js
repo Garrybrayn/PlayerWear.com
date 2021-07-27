@@ -81,11 +81,14 @@ export default new Vuex.Store({
   },
   actions: {
     loadAllProducts: context => {
-      return client.product.fetchAll().then(products => {
-        products.forEach(product => context.commit('ADD_PRODUCT', product))
+      return client.product.fetchAll(100).then(products => {
+        products.forEach(product => context.commit('SET_PRODUCT', product))
       })
     },
     loadCollectionWithProducts:(context, collectionHandle) => new Promise((resolve, reject) => {
+      if(collectionHandle === 'all'){
+        return context.dispatch('loadAllProducts')
+      }
       if(context.state.collections[collectionHandle]){
         resolve()
       }else{

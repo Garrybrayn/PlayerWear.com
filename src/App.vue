@@ -5,7 +5,7 @@
 </template>
 <style lang="less">
 #vue-app{
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', inherit, sans-serif;
   line-height: 1.5em;
 }
   .placeholder-content{

@@ -44,7 +44,7 @@ export default Vue.extend({
       if(this.$store.getters.products.length > 0){
         return this.$store.getters.products.filter(product => {
           let include = true;
-          if(this.$route.params.collectionHandle && product.vendor.toLowerCase() !== this.$route.params.collectionHandle){
+          if(this.$route.params.collectionHandle && this.$route.params.collectionHandle !== 'all' && product.vendor.toLowerCase() !== this.$route.params.collectionHandle){
             include = false;
           }
           if(this.$route.params.tag && product.tags.find(tag => tag.value === this.$route.params.tag) === undefined){
@@ -93,16 +93,7 @@ export default Vue.extend({
     flex-wrap: wrap;
     grid-column-gap: 1em;
     grid-row-gap: 2em;
-    grid-template-columns: 1fr;
-  }
-
-  .product-card{
-  }
-
-  @media(min-width: @secondbreakpoint){
-    .product-grid{
-      grid-template-columns: 1fr 1fr;
-    }
+    grid-template-columns: 1fr 1fr;
   }
 
   @media(min-width: @thirdbreakpoint){

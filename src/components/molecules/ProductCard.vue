@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'product-card': true, placeholder: placeholder }" @click="viewProduct">
+  <router-link :class="{'product-card': true, placeholder }" :to="route" :disabled="product?false:true">
     <ProductImage :src="imageOne" :alt="title" class="first" />
     <ProductImage :src="imageTwo || imageOne" :alt="title" :class="{second: true, zoom:imageTwo?false:true}" :preload="true"/>
     <div class="product-price">
@@ -14,7 +14,7 @@
       {{ color }}
       <span v-if="placeholder" class="placeholder-content" />
     </div>
-  </div>
+  </router-link>
 </template>
 <script lang="ts">
 import Vue from 'vue';
@@ -51,21 +51,32 @@ export default Vue.extend({
         return colorMetafield ? colorMetafield.value : null
       }
       return null;
-    }
-  },
-  methods: {
-    viewProduct(){
-      let route = {
-        name: "ProductInCollection",
-        params: {
-          collection: this.$route.params.collectionHandle,
-          productHandle: this.product.handle
+    },
+    route(){
+      let route = {};
+      if(this.product){
+        if(this.$route.params.collectionHandle){
+          route = {
+            name: "ProductInCollection",
+            params: {
+              collection: this.$route.params.collectionHandle,
+              productHandle: this.product.handle
+            }
+          };
+        }else{
+          route = {
+            name: "Product",
+            params: {
+              productHandle: this.product.handle
+            }
+          };
         }
-      };
-      if(this.$route.params.tag){
-        route.query = { tag: this.$route.params.tag || '' }
+
+        if(this.$route.params.tag){
+          route.query = { tag: this.$route.params.tag || '' }
+        }
       }
-      this.$router.push(route)
+      return route;
     }
   }
 });
@@ -73,6 +84,7 @@ export default Vue.extend({
 <style scoped lang="less">
   @import '../../less/variables';
   .product-card{
+    display: block;
     cursor: pointer;
     &:hover{
       .first{
@@ -82,6 +94,8 @@ export default Vue.extend({
         display: block;
       }
     }
+    color: @black;
+    text-decoration: none;
   }
   .product-image {
     margin-bottom: 0.75em;
