@@ -1,4 +1,18 @@
 export default {
+  brands: [
+    'korg','vox','blackstar','tascam','amplified-merch'
+  ],
+  brandFamilies: [
+
+  ],
+  arrayShuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  },
+  tagify: content => content.toLowerCase().replace(' ','-'),
   tagReadable: tag => tag
     .toLowerCase()
     .replace('design','')

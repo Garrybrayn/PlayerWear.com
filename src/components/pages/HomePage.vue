@@ -98,15 +98,19 @@ export default Vue.extend({
   },
   computed:{
     featuredProducts(){
-      return this.$store.getters.productsByTagAndVendor(
-        'featured',
-        this.$route.params.collectionHandle
+      return Utilities.arrayShuffle(
+        this.$store.getters.productsByTagAndVendor(
+          'featured',
+          this.$route.params.collectionHandle
+        )
       )
     },
     featuredTShirts(){
-      return this.$store.getters.productsByTagAndVendor(
-        'featured-t-shirt',
-        this.$route.params.collectionHandle
+      return Utilities.arrayShuffle(
+        this.$store.getters.productsByTagAndVendor(
+          'featured-t-shirt',
+          this.$route.params.collectionHandle
+        )
       )
     }
   },

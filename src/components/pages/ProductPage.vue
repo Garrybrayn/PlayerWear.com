@@ -212,7 +212,6 @@ export default Vue.extend({
     variants:{
       immediate: true,
       handler(){
-        console.log(this.variants);
         if(this.variants && this.variants.length === 1 && !this.selectedVariantId){
           this.selectedVariantId = this.variants[0].id
         }

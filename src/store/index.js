@@ -129,7 +129,6 @@ export default new Vuex.Store({
           // Do something with the products
           model.collections.forEach(collection => {
             context.commit('SET_COLLECTION', collection);
-            console.log(collection);
             collection.products.forEach(product => {
               context.commit('SET_PRODUCT', product)
             })
@@ -270,16 +269,9 @@ export default new Vuex.Store({
       return relatedProducts;
     },
     productsByTagAndVendor: (state, getters) => (tag, vendor) => {
-      console.log({
-        tag, vendor
-      })
       return getters.products.filter(product => {
         const foundTag = product.tags.find(productTag => productTag.value.toLowerCase() === tag.toLowerCase());
         const foundVendor = vendor ? product.vendor.toLowerCase() === vendor.toLowerCase() : true;
-        console.log({
-          foundTag,
-          foundVendor
-        })
         return foundTag && foundVendor;
       })
     }

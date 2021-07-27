@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Utilities from '../utilities';
 import VueRouter from 'vue-router';
 import HomePage from '../components/pages/HomePage.vue';
 import ProductPage from '../components/pages/ProductPage.vue';
@@ -19,24 +20,24 @@ const routes = [
     component: HomePage,
   },
   {
-    path: '/products/:productHandle',
-    name: 'Product',
-    component: ProductPage,
+    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)`,
+    name: 'BrandHome',
+    component: HomePage,
   },
   {
-    path: '/collections/:collectionHandle/products/:productHandle',
-    name: 'ProductInCollection',
-    component: ProductPage,
-  },
-  {
-    path: '/collections/:collectionHandle',
+    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)/products`,
     name: 'Collection',
     component: CollectionPage,
   },
   {
-    path: '/collections/:collectionHandle/:tag',
+    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)/:tag`,
     name: 'TagInCollection',
     component: CollectionPage,
+  },
+  {
+    path: `/:collectionHandle(${Utilities.brands.join('|')}|all)/products/:productHandle`,
+    name: 'ProductInCollection',
+    component: ProductPage,
   },
   {
     path: '*',

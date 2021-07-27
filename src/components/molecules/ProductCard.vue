@@ -18,6 +18,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import Utilities from '../../utilities';
 import ProductImage from "../atoms/ProductImage.vue";
 
 export default Vue.extend({
@@ -55,22 +56,13 @@ export default Vue.extend({
     route(){
       let route = {};
       if(this.product){
-        if(this.$route.params.collectionHandle){
-          route = {
-            name: "ProductInCollection",
-            params: {
-              collection: this.$route.params.collectionHandle,
-              productHandle: this.product.handle
-            }
-          };
-        }else{
-          route = {
-            name: "Product",
-            params: {
-              productHandle: this.product.handle
-            }
-          };
-        }
+        route = {
+          name: "ProductInCollection",
+          params: {
+            collectionHandle: Utilities.tagify(this.product.vendor),
+            productHandle: this.product.handle
+          }
+        };
 
         if(this.$route.params.tag){
           route.query = { tag: this.$route.params.tag || '' }
