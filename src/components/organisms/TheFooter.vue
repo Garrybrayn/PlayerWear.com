@@ -20,8 +20,8 @@
     </nav>
     <nav v-if="relatedBrands">
       <span class="title">Other Merch Options</span>
-      <router-link v-for="(brand, index) in relatedBrands" :key="index" :to="{name: 'Brand', collectionHandle: brand}">
-        {{ tagReadable(brand) }} Merch
+      <router-link v-for="(relatedBrand, index) in relatedBrands" :key="index" :to="{name: 'BrandHome', collectionHandle: relatedBrand}">
+        {{ tagReadable(relatedBrand) }} Merch
       </router-link>
     </nav>
     <nav>
@@ -33,6 +33,9 @@
   </Strip>
   <Strip>
     <div class="legal-links">
+      <div>
+        © Copyright Amplified Merch 2021 All Rights Reserved.
+      </div>
       <router-link v-for="(menuItem, index) in legalLinks" :key="index" :to="menuItem.route" :class="menuItem.class">
         {{menuItem.title}}
       </router-link>

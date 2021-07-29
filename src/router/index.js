@@ -21,9 +21,9 @@ const routes = [
   //   component: HomePage,
   // },
   {
-    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)`,
+    path: `/:collectionHandle(${Utilities.allBrands.join('|')})`,
     name: 'BrandHome',
-    component: HomePage,
+    component: CollectionPage,
   },
   {
     path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/products`,
@@ -36,7 +36,13 @@ const routes = [
     component: CollectionPage,
   },
   {
+    path: `/products/:productHandle`,
+    name: 'Product',
+    component: ProductPage,
+  },
+  {
     path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/products/:productHandle`,
+    alias: `/products/:productHandle`,
     name: 'ProductInCollection',
     component: ProductPage,
   },

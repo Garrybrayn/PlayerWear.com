@@ -22,7 +22,7 @@
         </router-link>
       </div>
       <aside class="right">
-        {{ $store.getters['cart/itemCount'] }}
+
       </aside>
     </header>
 
@@ -82,12 +82,6 @@ export default Vue.extend({
         {
           title: 'Women',
           class: 'bold chevron',
-          route: {
-            name: 'Home'
-          }
-        },
-        {
-          title: 'Pasta',
           route: {
             name: 'Home'
           }

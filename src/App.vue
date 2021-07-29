@@ -1,6 +1,7 @@
 <template>
   <div id="vue-app" :class="classes">
     <TheHeader :brand="brand" :isThirdPartyBrand="isThirdPartyBrand"/>
+    <div ref="contentForLayout" />
     <router-view class="page-content" :brand="brand"/>
     <TheFooter :brand="brand" :isThirdPartyBrand="isThirdPartyBrand"/>
   </div>
@@ -16,8 +17,20 @@ export default Vue.extend({
     TheHeader,
     TheFooter
   },
+  data(){
+    return {
+      contentForLayout: null
+    }
+  },
   mounted(){
     // this.$store.dispatch('cart/initialize');
+    const contentElement = document.getElementById('content_for_layout');
+    if(contentElement.innerHTML.length > 0){
+      console.log('inserting before');
+      this.$refs.contentForLayout.parentNode.insertBefore(contentElement, this.$refs.contentForLayout);
+      contentElement.style.display ='revert';
+      this.contentForLayout = contentElement
+    }
   },
   computed: {
     brand(){
@@ -43,15 +56,22 @@ export default Vue.extend({
       }
       return classes;
     }
+  },
+  watch: {
+    $route(){
+      console.log('leaving route');
+      if(this.contentForLayout){
+        this.contentForLayout.remove();
+      }
+    }
   }
 });
 </script>
 <style lang="less">
   @import './less/variables';
-
   #vue-app{
     line-height: 1.5em;
-    padding-top: @headerHeightMobile;
+    padding-top: 60px;
   }
   .placeholder-content{
     min-height: 1em;
@@ -68,10 +88,9 @@ export default Vue.extend({
       text-align: center
     }
   }
-
   @media(min-width: @thirdbreakpoint){
     #vue-app{
-      padding-top: @headerHeightDesktop;
+      padding-top: 100px;
     }
   }
 </style>
