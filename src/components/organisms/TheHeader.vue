@@ -68,7 +68,7 @@ export default Vue.extend({
       return `${assetUrl}collection_logo_${this.brand}.png`;
     },
     houseBrandLogoUrl(){
-      return `${assetUrl}collection_logo_player-wear.png`;
+      return this.isThirdPartyBrand ? `${assetUrl}collection_logo_player-wear-simplified.png` : `${assetUrl}collection_logo_player-wear.png`;
     },
     menuItems(){
       return [
@@ -194,9 +194,11 @@ export default Vue.extend({
     flex-direction: column;
     flex-grow: 0;
     img{
-      max-width: 190px;
-      max-height: 40px;
+      max-width: 150px;
+      max-height: 45px;
       object-fit: contain;
+      display: block;
+      margin:0 auto;
     }
   }
 
@@ -219,16 +221,14 @@ export default Vue.extend({
       display: none;
     }
     .logo-container img{
-      max-width: 200px;
-      max-height: 50px;
+      max-width: 260px;
+      max-height: 60px;
       object-fit: contain;
-    }
-    .third-party-brand-link{
-      padding-top: 1em;
     }
     .third-party-brand .house-brand-link{
       display: block;
       img{
+        margin-top: 5px;
         max-width: 100px;
       }
     }

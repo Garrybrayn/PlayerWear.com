@@ -188,6 +188,7 @@ border:{{ settings.inputBorderWidth }}px solid darken({{ settings.inputBorderCol
 }
 [class^="col"] p{
 width:100%}
+
 .container-fluid,.container{
 margin-right:auto;margin-left:auto
 }
@@ -1730,6 +1731,7 @@ max-width:100%;max-height:100%;overflow:auto;width:100%;padding:0px;left:0;posit
 }
 .minicart__entries{
 max-height:100%;height:100%}}
+
 .button,.shopify-payment-button__button.shopify-payment-button__button--unbranded,.shopify-challenge__button{
 text-align:center;text-decoration:none;font-size:{{ settings[settings.buttonFontSize] }}px;border-width:{{ settings.baseBorderWidth }}px;border-style:solid;border-color:transparent;border-radius:var(--borderRadiusSmall);display:inline-block;padding:{{ settings.buttonPaddingVertical }}px {{ settings.buttonPaddingHorizontal }}px;max-width:100%;background-color:transparent;transition:all 0.15s;animation-duration:1s
 }

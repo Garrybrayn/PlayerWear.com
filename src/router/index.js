@@ -10,23 +10,36 @@ import BlankPage from '../components/pages/BlankPage.vue';
 Vue.use(VueRouter);
 
 const routes = [
+
+  // ===============
+  // House Homepage
+  // ===============
   {
     path: '/',
     name: 'Home',
     component: HomePage,
   },
-  // {
-  //   path: '/pages/:collectionHandle',
-  //   name: 'BrandHome',
-  //   component: HomePage,
-  // },
+
+  // =============================================
+  // Brand Homepages
+  // =============================================
   {
     path: `/:collectionHandle(${Utilities.allBrands.join('|')})`,
-    name: 'BrandHome',
-    component: CollectionPage,
+    redirect: {
+      name: 'BrandHome'
+    }
   },
   {
-    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/products`,
+    path: `/pages/:collectionHandle(${Utilities.allBrands.join('|')})`,
+    name: 'BrandHome',
+    component: HomePage,
+  },
+
+  // =============================================
+  // Collection Pages
+  // =============================================
+  {
+    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)`,
     name: 'Collection',
     component: CollectionPage,
   },
@@ -35,6 +48,10 @@ const routes = [
     name: 'TagInCollection',
     component: CollectionPage,
   },
+
+  // =============================================
+  // Product Pages
+  // =============================================
   {
     path: `/products/:productHandle`,
     name: 'Product',
@@ -46,11 +63,19 @@ const routes = [
     name: 'ProductInCollection',
     component: ProductPage,
   },
+
+  // =============================================
+  // Shopify Pages
+  // =============================================
   {
     path: `/pages/:pageHandle`,
     name: 'ShopifyPage',
     component: ShopifyPage,
   },
+
+  // =============================================
+  // Catchall
+  // =============================================
   {
     path: '*',
     name: 'Blank',
