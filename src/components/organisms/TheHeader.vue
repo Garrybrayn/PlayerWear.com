@@ -34,10 +34,10 @@
       </aside>
       <div class="logo-container">
         <router-link v-if="$store.getters['brands/isCurrentBrandThirdParty']" class="third-party-brand-link" :to="{name: 'BrandHome', collectionHandle: $store.getters['brands/currentBrandHandle']}">
-          <img :src="thirdPartyBrandLogoUrl"/>
+          <img :src="thirdPartyBrandLogoUrl" :alt="title" :title="title"/>
         </router-link>
         <router-link v-else :to="{name: 'Home'}" class="house-brand-link">
-          <img :src="houseBrandLogoUrl"/>
+          <img :src="houseBrandLogoUrl" :alt="title" :title="title"/>
         </router-link>
       </div>
       <aside class="right">
@@ -211,6 +211,9 @@ export default Vue.extend({
     }
   },
   computed :{
+    title(){
+      return 'sup';
+    },
     thirdPartyBrandLogoUrl(){
       return `${assetUrl}${this.$store.getters['brands/currentBrandHandle']}-logo.svg`;
     },

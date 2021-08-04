@@ -20,6 +20,9 @@ export default Vue.extend({
       }
       title += 'Player Wear - Shop merch for musicians and music lovers';
       return title
+    },
+    htmlAttrs: {
+      lang: 'en'
     }
   },
   components: {

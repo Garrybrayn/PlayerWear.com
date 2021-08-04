@@ -1,10 +1,11 @@
 <template>
-  <div class="page-breadcrumbs">
-    <h1 class="page-breadcrumb" v-for="(breadcrumb, index) in breadcrumbs" :key="index">
-      <router-link v-if="breadcrumb.url" :to="breadcrumb.url">{{breadcrumb.label}}</router-link>
-      <span v-if="!breadcrumb.url">{{breadcrumb.label}}</span>
-    </h1>
-  </div>
+  <h1 class="page-breadcrumbs">
+    <span class="page-breadcrumb" v-for="(breadcrumb, index) in breadcrumbs" :key="index">
+      <component :is="breadcrumb.url ? 'router-link' : 'span'" :to="breadcrumb.url">
+        {{breadcrumb.label}}
+      </component>
+    </span>
+  </h1>
 </template>
 <script lang="ts">
 import Vue from 'vue';
@@ -21,7 +22,9 @@ export default Vue.extend({
 <style scoped lang="less">
   .page-breadcrumbs{
     font-weight: 600;
-    padding: 1.25em 0;
+    line-height: 1rem;
+    margin: 0;
+    padding: 1.25rem 0 !important;
   }
   a, span{
     color: black;

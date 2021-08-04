@@ -5,7 +5,9 @@
       <div class="product-page" data-v-sticky-container>
         <ProductPageImageGrid
           class="product-images"
-          :images="images"/>
+          :images="images"
+          :alt="title"
+        />
         <div class="product-details">
           <div v-sticky="{topSpacing: 150, bottomSpacing:40}">
             <div class="product-title">
@@ -20,6 +22,7 @@
               <ProductColorSelector
                 :options="colors"
                 :value="product && product.handle"
+                :alt="title"
                 @select="selectColor($event)"
               />
             </div>
@@ -125,17 +128,23 @@ export default Vue.extend({
       return `$${price} USD`;
     },
     title(){
-      return this.product ? this.product.title : null
+      return this.product ? `${this.product.title}${this.selectedColor? ` - ${this.selectedColor.label}`: ''}` : ''
     },
     colors(){
       return this.$store.state.products.colorOptions[this.$route.params.productHandle]
+    },
+    selectedColor(){
+      if(this.colors){
+        return this.colors.find(color => color.handle === this.$route.params.productHandle)
+      }
+      return '';
     },
     options(){
       return this.product && this.product.options ? this.product.options : null
     },
     images(){
       if(this.product && this.product.images){
-        return this.product.images;
+        return this.product.images
       }
       return null
     },
@@ -176,7 +185,7 @@ export default Vue.extend({
       const breadcrumbs = [];
       if(this.product){
         breadcrumbs.push({
-          label: this.$store.getters['brands/currentBrandTitle'] + ' Merch',
+          label: this.$store.getters['brands/currentBrandTitle'],
           url: {
             name: "Collection",
             params: {

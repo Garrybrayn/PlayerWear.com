@@ -7,6 +7,7 @@
         <br />
         <TagSelector
           v-if="$store.getters['brands/isCurrentBrandHouseBrand']"
+          title="Brands"
           :options="vendorOptions"
           :value="$route.params.collectionHandle"
         />
@@ -71,7 +72,7 @@ export default Vue.extend({
           link: {
             name: 'TagInCollection',
             params: {
-              collectionHandle: this.$route.params.collection ? this.$route.params.collection : 'all',
+              collectionHandle: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all',
               tag
             }
           },
@@ -114,7 +115,7 @@ export default Vue.extend({
       const breadcrumbs = [];
       if(this.$route.params.collectionHandle) {
         breadcrumbs.push({
-          label: this.$store.getters['brands/currentBrandTitle'] + ' Merch',
+          label: this.$store.getters['brands/currentBrandTitle'],
           url: {
             name: "Collection",
             params: {

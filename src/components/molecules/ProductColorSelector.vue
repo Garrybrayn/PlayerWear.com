@@ -6,7 +6,7 @@
         :key="index"
         :class="{ selected: option.handle === value }"
         :src="option.image"
-        :alt="option.value"
+        :alt="`${alt} - ${option.label}`"
         @click.native="$emit('select', option.handle)"
         @mouseover.native="hoveredOption = option"
         @mouseout.native="hoveredOption = null"
@@ -24,6 +24,9 @@ export default Vue.extend({
       type: Array
     },
     value: {
+      type: String
+    },
+    alt: {
       type: String
     }
   },

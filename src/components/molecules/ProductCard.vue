@@ -1,7 +1,7 @@
 <template>
   <component :is="componentType" :class="{'product-card': true, placeholder }" :to="route" :disabled="product?false:true">
-    <ProductImage :src="imageOne" :alt="title" class="first" />
-    <ProductImage :src="imageTwo || imageOne" :alt="title" :class="{second: true, zoom:imageTwo?false:true}" :preload="true"/>
+    <ProductImage :src="imageOne" :alt="altText" class="first" />
+    <ProductImage :src="imageTwo || imageOne" :alt="altText" :class="{second: true, zoom:imageTwo?false:true}" :preload="true"/>
     <div v-if="showProductIcon" class="product-icon" :style="{color: $store.getters['brands/currentBrandColor']}" >
       <i :class="`uil uil-${showProductIcon}`"></i>
     </div>
@@ -75,16 +75,19 @@ export default Vue.extend({
       return this.product ? false : true
     },
     title() {
-      return this.product && this.product.title ? this.product.title : null
+      return this.product && this.product.title ? this.product.title : ''
+    },
+    altText() {
+      return this.color ? `${this.title}  - ${this.color}` : this.title
     },
     imageOne() {
-      return this.product && this.product.images && this.product.images[0] ? this.product.images[0].src : null
+      return this.product && this.product.images && this.product.images[0] ? this.product.images[0].src : ''
     },
     imageTwo(){
-      return this.product && this.product.images && this.product.images[1] ? this.product.images[1].src : null
+      return this.product && this.product.images && this.product.images[1] ? this.product.images[1].src : ''
     },
     price(){
-      return this.product && this.product.variants ? `$${this.product.variants[0].price.replace('.00','')}` : null;
+      return this.product && this.product.variants ? `$${this.product.variants[0].price.replace('.00','')}` : '';
     },
     color(){
       if(this.product && this.product.metafields){

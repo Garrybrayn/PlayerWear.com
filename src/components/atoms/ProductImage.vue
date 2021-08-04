@@ -1,6 +1,6 @@
 <template>
   <div :class="{'product-image': true, placeholder: src ? false : true}">
-    <img v-if="src" :src="src" loading="lazy" :class="{loaded: loaded}" :alt="alt" @load="loaded = true"/>
+    <img v-if="src" :src="src" loading="lazy" :class="{loaded: loaded}" :alt="alt" :title="alt" @load="loaded = true"/>
   </div>
 </template>
 <script lang="ts">
@@ -14,7 +14,7 @@ export default Vue.extend({
     },
     alt: {
       type: String,
-      required: false,
+      required: true,
       default: "Product Image"
     },
     preload: {

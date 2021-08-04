@@ -1,6 +1,6 @@
 <template>
   <router-link class="tag-card" :to="route">
-    <ProductImage :src="src" />
+    <ProductImage :src="src" :alt="alt"/>
     <Button class="white" v-if="buttonLabelReadable">
       {{ buttonLabelReadable }}
     </Button>
@@ -19,6 +19,10 @@ export default Vue.extend({
       required: true
     },
     src: {
+      type: String,
+      required: true
+    },
+    alt: {
       type: String,
       required: true
     },

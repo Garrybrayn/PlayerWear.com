@@ -1,12 +1,13 @@
 <template>
   <div>
     <Strip class="full-width header-image">
-      <img :src="assetUrl(`${brand}-home-header.jpg`)" class="header-image"/>
+      <img :src="assetUrl(`${brand}-home-header.jpg`)" class="header-image" :alt="pageTitle" :title="pageTitle"/>
     </Strip>
     <Strip class="tag-cards narrow">
       <TagCard
         v-for="(tag, index) in topSixCategories"
         :src="assetUrl(`${brand}-${tag.tag}.jpg`)"
+        :alt="tagReadable(`${brand} ${tag.tag}`)"
         :key="index"
         :buttonLabel="tag.label"
         :tag="tag.tag"
@@ -19,6 +20,7 @@
       <TagCard
         v-for="(tag, index) in extraCategories"
         :src="assetUrl(`${brand}-${tag.tag}.jpg`)"
+        :alt="tagReadable(`${brand} ${tag.tag}`)"
         :key="index"
         :buttonLabel="tag.label"
         :tag="tag.tag"
@@ -26,7 +28,7 @@
     </Strip>
     <Strip class="full-width header-image">
       <router-link :to="$store.getters['brands/currentBrandPath']('sections.home.midHero.link') || '/'">
-        <img :src="assetUrl(`${brand}-mid-hero.jpg`)" class="header-image" loading="lazy"/>
+        <img :src="assetUrl(`${brand}-mid-hero.jpg`)" class="header-image" loading="lazy" :alt="pageTitle" :title="pageTitle"/>
       </router-link>
     </Strip>
     <h1 class="center">DESIGNS</h1>
@@ -39,7 +41,7 @@
             tag: `${design}-design`
           }
         }">
-          <img :src="assetUrl(`${design}-design.jpg`)" loading="lazy"/>
+          <img :src="assetUrl(`${design}-design.jpg`)" loading="lazy" :alt="`${tagReadable(design)} T-Shirts, Hoodies, Hats, Bags & More`" :title="`${tagReadable(design)} T-Shirts, Hoodies, Hats, Bags & More`"/>
         </router-link>
       </div>
     </Strip>
@@ -58,7 +60,7 @@ import Utilities from '../../utilities';
 export default Vue.extend({
   metaInfo(){
     return {
-      title: `${this.$store.getters['brands/currentBrandName']} T-Shirts, Hoodies, Hats, Bags & More`
+      title: this.pageTitle
     }
   },
   components: {
@@ -67,6 +69,9 @@ export default Vue.extend({
     TagCard
   },
   computed:{
+    pageTitle(){
+      return `${this.$store.getters['brands/currentBrandName']} T-Shirts, Hoodies, Hats, Bags & More`;
+    },
     brand(){
       return this.$store.getters['brands/currentBrandHandle']
     },
