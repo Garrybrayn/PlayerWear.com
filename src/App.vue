@@ -1,18 +1,27 @@
 <template>
   <div id="vue-app" :class="classes">
-    <TheHeader :brand="brand" :isThirdPartyBrand="isThirdPartyBrand"/>
+    <TheHeader />
     <div ref="contentForLayout" />
-    <router-view class="page-content" :brand="brand"/>
-    <TheFooter :brand="brand" :isThirdPartyBrand="isThirdPartyBrand"/>
+    <router-view class="page-content" />
+    <TheFooter />
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
 import TheHeader from './components/organisms/TheHeader.vue';
 import TheFooter from './components/organisms/TheFooter.vue';
-import Utilities from './utilities';
 
 export default Vue.extend({
+  metaInfo: {
+    titleTemplate(titleChunk){
+      let title;
+      if(titleChunk){
+        title = `${titleChunk} | `;
+      }
+      title += 'Player Wear - Shop merch for musicians and music lovers';
+      return title
+    }
+  },
   components: {
     TheHeader,
     TheFooter
@@ -23,45 +32,45 @@ export default Vue.extend({
     }
   },
   mounted(){
-    // this.$store.dispatch('cart/initialize');
-    const contentElement = document.getElementById('content_for_layout');
-    if(contentElement.innerHTML.length > 0){
-      console.log('inserting before');
-      this.$refs.contentForLayout.parentNode.insertBefore(contentElement, this.$refs.contentForLayout);
-      contentElement.style.display ='revert';
-      this.contentForLayout = contentElement
+    if(['BlankPage','ShopifyPage'].includes(this.$route.name)){
+      const contentElement = document.getElementById('content_for_layout');
+      if(contentElement.innerHTML.length > 0){
+        console.log('inserting before');
+        this.$refs.contentForLayout.parentNode.insertBefore(contentElement, this.$refs.contentForLayout);
+        contentElement.style.display ='revert';
+        this.contentForLayout = contentElement
+      }
     }
   },
   computed: {
     brand(){
-      if(this.$route.params.collectionHandle){
-        return Utilities.getBrandFromCollectionHandle(this.$route.params.collectionHandle);
+      if(this.$store.getters['brands/isBrand'](this.$route.params.collectionHandle)){
+        return this.$route.params.collectionHandle
       }else{
-        return Utilities.houseBrand;
+        return this.$store.state.brands.houseBrandHandle
       }
-    },
-    isHouseBrand(){
-      return this.brand === Utilities.houseBrand
-    },
-    isThirdPartyBrand(){
-      return !this.isHouseBrand
     },
     classes(){
       const classes = {
-        'house-brand': this.isHouseBrand,
-        'third-party-brand': this.isThirdPartyBrand
+        'house-brand': this.$store.getters['brands/isCurrentBrandHouseBrand'],
+        'third-party-brand': this.$store.getters['brands/isCurrentBrandThirdParty']
       }
-      if(this.isThirdPartyBrand){
+      if(this.$store.getters['brands/isThirdPartyBrand']){
         classes[this.brand] = true;
       }
       return classes;
     }
   },
   watch: {
-    $route(){
-      console.log('leaving route');
-      if(this.contentForLayout){
-        this.contentForLayout.remove();
+    $route: {
+      immediate: true,
+      handler(to, from){
+        if(this.contentForLayout && to && from){
+          this.contentForLayout.remove();
+        }
+        if(to){
+          this.$store.commit('brands/SET_ROUTE', to);
+        }
       }
     }
   }
@@ -70,7 +79,7 @@ export default Vue.extend({
 <style lang="less">
   @import './less/variables';
   #vue-app{
-    line-height: 1.5em;
+    line-height: 1.5;
     padding-top: 60px;
   }
   .placeholder-content{
@@ -83,7 +92,6 @@ export default Vue.extend({
     display: inline-block;
   }
   h1, h2{
-    text-transform: uppercase;
     &.center{
       text-align: center
     }

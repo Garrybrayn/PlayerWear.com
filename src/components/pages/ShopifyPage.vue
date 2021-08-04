@@ -4,10 +4,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import Page from '../atoms/Page';
+import Utilities from '../../utilities';
 
 export default Vue.extend({
   components: {
     Page
+  },
+  metaInfo(){
+    return {
+      title: Utilities.tagReadable(this.$route.params.pageHandle)
+    }
   },
   computed: {
     htmlContents(){

@@ -1,8 +1,8 @@
 {% capture layoutConfig %}{% render 'common-layout' with section as section %}{% endcapture %}
 
-<nav 
-class="inherit layout__{{-layoutConfig}} row middle header header--default header--{{section.settings.type}} 
-{% if section.settings.transparent %}header--transparent{% endif %} 
+<nav
+class="inherit layout__{{-layoutConfig}} row middle header header--default header--{{section.settings.type}}
+{% if section.settings.transparent %}header--transparent{% endif %}
 font__size--{{-section.settings.fontSize}} logo--{{section.settings.logoPosition}}">
     <div class="layout__content row middle">
         <input type="checkbox" id="menuToggle" class="hide">
@@ -16,7 +16,7 @@ font__size--{{-section.settings.fontSize}} logo--{{section.settings.logoPosition
             <div data-search-container class="search__container search__container--inline col-min col-md-9 start-md hide-mobile">
                 <div class="search__container--sub">
                 <span onclick="openSearch(this)" class="search__icon hide-mobile">{% render 'get-icon', icon: 'search' %}</span>
-                <form method="get" action="/search">
+                <form method="get" action="/search" onsubmit="event.preventDefault(); openSearch(this);">
                     <span onclick="submitSearch(this)" class="search__icon--submit">{% render 'get-icon', icon: 'search' %}</span>
                     <input autocomplete="off" name="q" onfocus="openSearch(this)" type="search" data-search>
                 </form>
@@ -117,5 +117,5 @@ font__size--{{-section.settings.fontSize}} logo--{{section.settings.logoPosition
             }
         }, {passive: true});
         </script>
-    {%endif%}    
+    {%endif%}
 {% endif %}

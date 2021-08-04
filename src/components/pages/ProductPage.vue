@@ -31,26 +31,18 @@
               :size-guide="sizeGuide"
               @select="selectedVariantId = $event"
             />
-            <form class="buy-button-container">
-              <input v-show="false" type="number" :value="quantity" data-qty-input @change="quantity=$event"/>
-              <input name="id" type="hidden" :value="selectedVariantIdDecoded" :data-variant-id="selectedVariantIdDecoded" />
-              <InputNumber :value="quantity" data-qty-input @change="quantity=$event"/>
-              <Button
-                v-if="!showPlaceholders"
-                type="submit"
-                :disabled="selectedVariantIdDecoded?false:true"
-                :class="{'buy-button': true, 'full-width': true, disabled: selectedVariantIdDecoded?false:true}"
-                @click.native="addToCart($event)"
-                :data-original-text="buyButtonLabel"
-
-              >
-                <span data-button-text>{{buyButtonLabel}}</span>
-              </Button>
-              <span class="placeholder-content" />
-            </form>
+            <FormAddToCart
+              :selectedVariantIdDecoded="selectedVariantIdDecoded"
+              :quantity="quantity"
+              :buyButtonLabel="buyButtonLabel"
+              :showPlaceholders="showPlaceholders"
+              @changeQuantity="quantity=$event"
+            />
             <div class="note" v-show="!showPlaceholders">
               <i class="uil uil-truck" />
               SPECIAL Flat Rate Shipping $4.00
+              <p v-if="false">We ship to the United States and 12 US territories.</p>
+              <p class="warning" v-if="false">We do NOT ship anywhere outside the 50 United States and 12 US territories.</p>
             </div>
             <b v-show="description">DESCRIPTION:</b>
             <div v-html="description" class="description"/>
@@ -65,7 +57,7 @@
 
     <Strip class="related-products full-width">
       <h1 class="center">You might like</h1>
-      <ProductCarousel :products="relatedProducts" />
+      <ProductCarousel :products="relatedProducts" :slide-width="400"/>
     </Strip>
   </Page>
 </template>
@@ -73,8 +65,7 @@
 import Vue from 'vue';
 import Page from '../atoms/Page.vue';
 import Strip from '../atoms/Strip.vue';
-import Button from '../atoms/Button.vue';
-import InputNumber from '../atoms/InputNumber.vue';
+import FormAddToCart from '../molecules/FormAddToCart.vue';
 import ProductPageImageGrid from '../molecules/ProductPageImageGrid.vue';
 import Breadcrumbs from '../molecules/Breadcrumbs.vue';
 import ProductColorSelector from '../molecules/ProductColorSelector.vue';
@@ -85,6 +76,11 @@ import VueStickyDirective from '@renatodeleao/vue-sticky-directive'
 import Utilities from '../../utilities';
 
 export default Vue.extend({
+  metaInfo(){
+    return {
+      title: `${this.title}`
+    }
+  },
   components: {
     Page,
     Strip,
@@ -93,8 +89,7 @@ export default Vue.extend({
     ProductColorSelector,
     ProductPageSizeSelector,
     ProductCarousel,
-    InputNumber,
-    Button
+    FormAddToCart
   },
   directives: {
     sticky: VueStickyDirective
@@ -125,7 +120,9 @@ export default Vue.extend({
       return this.variants ? Math.min(...(this.variants.map(variant => Number(variant.price)))) : null
     },
     priceReadable(){
-      return `$${this.selectedVariantPrice || this.lowestVariantPrice} USD`
+      let price = this.selectedVariantPrice || this.lowestVariantPrice;
+      price = Number.isInteger(price) ? price : Number(price).toFixed(2);
+      return `$${price} USD`;
     },
     title(){
       return this.product ? this.product.title : null
@@ -179,11 +176,11 @@ export default Vue.extend({
       const breadcrumbs = [];
       if(this.product){
         breadcrumbs.push({
-          label: `${this.product.vendor} Merch`,
+          label: this.$store.getters['brands/currentBrandTitle'] + ' Merch',
           url: {
             name: "Collection",
             params: {
-              collectionHandle: this.product.vendor.toLowerCase()
+              collectionHandle: this.$store.getters['brands/currentBrandHandle']
             }
           }
         });
@@ -194,7 +191,7 @@ export default Vue.extend({
               name: "TagInCollection",
               params: {
                 tag: this.$route.query.tag,
-                collectionHandle: this.product.vendor.toLowerCase()
+                collectionHandle: this.$store.getters['brands/currentBrandHandle']
               }
             }
           });
@@ -249,12 +246,6 @@ export default Vue.extend({
           productHandle: productHandle
         }
       })
-    },
-    addToCart(event){
-      event.preventDefault();
-      if(this.selectedVariant){
-        boosterCart.addToCart(event.currentTarget, event)
-      }
     }
   }
 });
@@ -304,12 +295,12 @@ export default Vue.extend({
     margin-bottom: 0.5em;
   }
 
-  .buy-button{
+  /deep/ .buy-button{
     font-weight: 800;
     text-transform: uppercase;
     margin: 0;
   }
-  .buy-button-container{
+  /deep/ .buy-button-container{
     position: fixed;
     right: 0;
     bottom: 0;
@@ -352,6 +343,11 @@ export default Vue.extend({
     /deep/ .product-image img {
       filter: brightness(90%) !important;
     }
+  }
+
+  .warning{
+    color: #ad0d0d;
+    font-weight: bolder;
   }
 
   @media(min-width: @secondbreakpoint){

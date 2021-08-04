@@ -3,7 +3,7 @@
         <div class="minicart__entries fancy-scroll">
             <h3 class="minicart__title">
                 Subtotal: <b>{{ cart.total_price | money | strip_html }}</b>
-                {% if cart.items.size > 0 %}
+                {% if cart.items.size > 0 and false %}
                     <a href="{{ routes.cart_url }}">{{ 'general.buttons.view_cart' | t }}</a>
                 {% endif %}
             </h3>
@@ -68,9 +68,10 @@
                    href="/pages/pre-checkout">{{ 'general.buttons.checkout' | t }}</a>
                 {% else %}
                     {% form 'create_customer' %}
-                        <input type="email" style="display:block; padding: 0.5em; width: 100%; margin-bottom: 0.5em" name="customer[email]" onchange="localStorage.setItem('email', this.value);" placeholder="Enter your email"/>
+                        <input type="email" style="display:block; padding: 0.5em; width: 100%; margin-bottom: 0.5em" name="customer[email]" id="customerEmailInput" onchange="localStorage.setItem('email', this.value);" placeholder="Enter your email" autofocus />
                         <div class="errors"></div>
                         {% render 'submit-button', text: regt, type: 'primary', class: 'button--submit button--full-width', text: "Checkout" %}
+                        <img src="{{ "1x1.png" | asset_url }}" onload="console.log(document.getElementById('customerEmailInput')); document.getElementById('customerEmailInput').value = localStorage.getItem('email');" style="position: absolute"/>
                     {% endform %}
                 {% endif %}
             </div>

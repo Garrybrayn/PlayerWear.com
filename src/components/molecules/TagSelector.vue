@@ -1,12 +1,12 @@
 <template>
   <div class="tag-selector">
-    <label>{{ title }}</label>
+    <label v-if="title">{{ title }}</label>
     <ul>
       <li v-for="(tag, index) in options" :key="index">
         <router-link :to="tag.link">{{ tag.label }}</router-link>
       </li>
     </ul>
-    <v-select :value="currentTag" :options="options" @input="$router.push($event.link)"/>
+    <v-select :value="value" :options="options" @input="$router.push($event.link)"/>
   </div>
 </template>
 <script lang="ts">
@@ -18,35 +18,13 @@ Vue.component('v-select', vSelect)
 export default Vue.extend({
   props: {
     title: {
-      type: String,
-      default: "Merch Type"
+      type: String
     },
-    tags: {
+    options: {
       type: Array
-    }
-  },
-  computed:{
-    options(){
-      return this.tags.map(tag => this.getTagDetails(tag))
     },
-    currentTag(){
-      return this.getTagDetails(this.$route.params.tag || "")
-    }
-  },
-  methods: {
-    getTagDetails(tag){
-      return {
-        value: tag,
-        label: tag.replace(/-/ig,' ').replace(' and ', ' & '),
-        link: {
-          name: 'TagInCollection',
-          params: {
-            collection: this.$route.params.collection ? this.$route.params.collection : null,
-            tag
-          }
-        },
-        selected: this.$route.params.tag === tag
-      }
+    value: {
+      type: String,
     }
   }
 });

@@ -47,6 +47,7 @@ export default Vue.extend({
       text-align: center;
       width: 40px;
       border-radius: 0;
+      margin-bottom: 0 !important;
     }
   }
 </style>

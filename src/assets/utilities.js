@@ -32,13 +32,6 @@ jQuery(function () {
   // MINICART STUFF
   setTimeout(function () {
 
-    // Redirect to checkout when a product is added
-    const cartItemCountElement = document.getElementById('booster__popup--holder'); // add to cart success notification container
-    cartItemCountElement.addEventListener("DOMSubtreeModified", function (event) {
-      jQuery('#minicart__button').click()
-    }, false);
-
-
     // Load shipping details when it's been clicked
     document.querySelector('.minicart__button.minicart__button--shopping-cart')
       .addEventListener('click',

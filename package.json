@@ -21,6 +21,7 @@
     "shopify-buy-with-tags": "^2.12.0",
     "vue": "^2.6.11",
     "vue-carousel": "^0.18.0",
+    "vue-meta": "^2.4.0",
     "vue-router": "^3.2.0",
     "vue-select": "^3.12.1",
     "vuex": "^3.4.0"

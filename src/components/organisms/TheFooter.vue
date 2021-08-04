@@ -5,14 +5,16 @@
 <footer>
   <Strip>
     <div>
-      <img src="//cdn.shopify.com/s/files/1/0568/7957/9295/t/4/assets/amplified-merch-logo.png?v=14148700648949002472" width="200">
+      <router-link :to="{name: 'Home'}">
+        <img :src="assetUrl('collection_logo_player-wear.png')" width="200">
+      </router-link>
       <p>
         Great merch for musicians<br>
         and music lovers.
       </p>
       <router-link to="/collections/all">Shop All Brands</router-link>
     </div>
-    <nav v-if="isThirdPartyBrand">
+    <nav v-if="$store.getters['brands/isCurrentBrandThirdParty']">
       <span class="title">{{ thirdPartyBrandName }} Merch</span>
       <router-link v-for="(menuItem, index) in thirdPartyBrandLinks" :key="index" :to="menuItem.route" :class="menuItem.class">
         {{menuItem.title}}
@@ -25,7 +27,7 @@
       </router-link>
     </nav>
     <nav>
-      <span class="title">Amplified Merch</span>
+      <span class="title">Player Wear</span>
       <router-link v-for="(menuItem, index) in houseMenu" :key="index" :to="menuItem.route" :class="menuItem.class">
         {{menuItem.title}}
       </router-link>
@@ -33,12 +35,20 @@
   </Strip>
   <Strip>
     <div class="legal-links">
-      <div>
-        © Copyright Amplified Merch 2021 All Rights Reserved.
-      </div>
+      <p>
+        © Copyright Player Wear 2021 All Rights Reserved.
+      </p>
       <router-link v-for="(menuItem, index) in legalLinks" :key="index" :to="menuItem.route" :class="menuItem.class">
         {{menuItem.title}}
       </router-link>
+      <a href="https://amplify11.com/marketing-to-musicians/" target="_blank">
+        Website and Marketing By
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="138" height="21" viewBox="0 0 138 21">
+          <title>Amplify 11 - Connecting Brands to Musicians</title>
+          <desc id="desc">Helping Brands Reach, Influence, and Win with Musicians.</desc>
+          <image id="Vector_Smart_Object" data-name="Vector Smart Object" width="138" height="21" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIoAAAAVCAMAAACuaYbAAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB6VBMVEUAAAD////////////////////////////////////////////////////////////////////D/DTD/DT////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////D/DTD/DT////////////////////////////////////////D/DTD/DT////////////////////////////////////////////////D/DTD/DT////////////D/DT////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////D/DQAAABbQf7oAAAAoHRSTlMAAwsCCIcJjzgMoRDrs1QBIMDQwEDgvvoidGhstveQGGGs8nn8sPt2MNi7EiqqE/DQN4zWKIHMmOIGuRb4wos5kT4d6EWvWw3lxSWo3AT+hjvzNO246DpwYlit9hfGH3tSyRvdQn8eD1CI71MZvByeB/RW50mAz0N1tGP5vw5IVVoteMhdrsG6lgrsSo5gLOObgi9cJNPUBX4xEbHbir0HHS82IAAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAHdElNRQfjBhkUNyquxkx3AAAC2ElEQVRIx8WW+VcTMRDHp1KwWGWpFoogiAi1WmyriFIFVBA8OLzQiuKJymFRseKNirco3oriNfynZpLdbLqtXXzyXueXfOfI5NPdJF2ArJpjgaFynGY0N0/KhS7rlPxFbnCjYYuXFGgsWEjaI2uWzs7OLgPwomlFUEyDr4QXLOexUjmhsGxFeQVXKytXVa2W8ZJqs6bGv0ZLIgmsRRWF2brg3FBq/TSup3woTDLiENUbNtaRy1A21W8mZaJswYaoREHcuk0hKWtEKwo2aXNCgWYutrP8Dq526tUeUcFQKoSSKC0+xEoFBVt3GV6wjSqtKNg+N5Tde0js1WCfj0QH2KKQ39mloGD3fuEeaEAF5WAgcKjsMKmeNChHjuoonTFux1i4l08vgOM0nGgxUXwSxaei9JWT16uiIJ48xTb26WpUUcKUP0OqNRXl7DnQUcwoiJ3bf553uSCjFwcGdZS+UEBFGeKFdTlJKDh8KT5iPGsV5TIpfwrKlavxoTQoYueO8heWp8QNFHYqFJTgqFhvMBkFsQrToVwjlbCiXAdXwqOjFI2ReUWiWTYpAFuUMb30hmZBQSvKqNd789YwqdtWFLhzFz1J23ZMxMXOZXYPbFHGw8bk++lQutOeoAdWlFzhpaLAQ+FWT9ijPJKTH5soT56KUKL9WTqU5yn3SuSvKBrvgC/AFuXlJMl6fqS8EsULr/rZL3k9Lq4AC8rIAGRCmfSQTRmpN/zdBu1RYqTeRt/JzjoKON8XfwBIRfE3faSzlgGlJnlV4FsZbFGiCVIx+MRvEJeCopuK8tnNTP+Dmn+UUv5E8wE6SPRkRokovTjKl0Fh0/OA0sUv9q8sMsGf/rd/QzEP+/+jTPEtNUOh7yTbsoai/aDxJ0+6SHbXZgullobGuMj+IqcjWyg5TmbGR5ODnN8wE2cmP6QgRC47vWolmeZUjJ1EkeYNpy3Lir6WGLUdJzVNKv8P3qzr4JLyjwEAAAAASUVORK5CYII="></image>
+        </svg>
+      </a>
     </div>
   </Strip>
 </footer>
@@ -53,16 +63,6 @@ import Strip from "../atoms/Strip.vue";
 import Utilities from '../../utilities'
 
 export default Vue.extend({
-  props: {
-    brand: {
-      type: String,
-      required: true
-    },
-    isThirdPartyBrand: {
-      type: Boolean,
-      required: true
-    }
-  },
   components: {
     Strip
   },
@@ -126,12 +126,14 @@ export default Vue.extend({
     }
   },
   computed :{
+    brand(){
+      return this.$store.getters['brands/currentBrandHandle']
+    },
     thirdPartyBrandName(){
       return Utilities.tagReadable(this.brand);
     },
     relatedBrands(){
-      const family = Utilities.getBrandFamily(this.brand);
-      return family? family.filter(brand => brand != this.brand) : null;
+      return this.$store.getters['brands/currentBrandRelatedBrands']
     },
     thirdPartyBrandLinks(){
       return [
@@ -189,7 +191,8 @@ export default Vue.extend({
     }
   },
   methods: {
-    tagReadable: Utilities.tagReadable
+    tagReadable: Utilities.tagReadable,
+    assetUrl: url => `${window.assetUrl}${url}`
   }
 });
 </script>
@@ -203,11 +206,21 @@ export default Vue.extend({
   }
 
   a{
-    color: @gray2;
+    color: @gray4;
     text-decoration: none;
     font-size: 0.9em;
     &:hover{
-      color: @gray4;
+      color: @gray5;
+      svg{
+        opacity: 1;
+      }
+    }
+    svg{
+      width: 72px;
+      line-height: 1em;
+      vertical-align: middle;
+      opacity: 0.6;
+      margin-top: -2px;
     }
   }
   section {

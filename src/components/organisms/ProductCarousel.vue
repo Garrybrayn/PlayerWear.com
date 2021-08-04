@@ -1,7 +1,7 @@
 <template>
   <Carousel class="product-carousel"
       :per-page="slidesPerPage"
-      :pagination-enabled="true"
+      :pagination-enabled="paginationEnabled"
       :navigation-enabled="navigationEnabled"
       :pagination-padding="8"
       pagination-position="bottom-overlay"
@@ -9,7 +9,14 @@
       pagination-active-color="rgba(128,128,128, 1)"
       :scrollPerPage="false">
     <Slide v-for="(product, index) in products" :key="index">
-      <ProductCard :product="product" />
+      <ProductCard
+        :product="product"
+        :show-product-title="showProductTitle"
+        :show-product-price="showProductPrice"
+        :show-product-color="showProductColor"
+        :show-product-icon="showProductIcon"
+        :show-buy-button="showBuyButton"
+      />
     </Slide>
   </Carousel>
 </template>
@@ -25,6 +32,30 @@ export default Vue.extend({
     slideWidth: {
       type: Number,
       default: 300
+    },
+    showProductTitle: {
+      type: Boolean,
+      default: true
+    },
+    showBuyButton: {
+      type: Boolean,
+      default: false
+    },
+    showProductPrice: {
+      type: Boolean,
+      default: true
+    },
+    showProductColor: {
+      type: Boolean,
+      default: true
+    },
+    showProductIcon: {
+      type: String,
+      default: null
+    },
+    paginationEnabled: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
@@ -65,8 +96,10 @@ export default Vue.extend({
 });
 </script>
 <style scoped lang="less">
+  @import '../../less/variables';
   .VueCarousel-slide{
     box-sizing: border-box;
+    padding: @pagePadding;
   }
   /deep/ .VueCarousel-navigation--disabled{
     opacity: 0;

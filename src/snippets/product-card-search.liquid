@@ -38,13 +38,13 @@
 {% endif %}
 <span class="card__price {% if sale == true %}card__price--sale{% endif %}">
 {% if product.price_varies %}
-from <span class="jsPrice">{{ product.price_min | money | strip_html }}</span>
+from <span class="jsPrice">${{ product.price_min | money | strip_html }}</span>
 {% else %}
-<span class="jsPrice">{{ product.price | money | strip_html }}</span>
+<span class="jsPrice">${{ product.price | money | strip_html }}</span>
 {% endif %}
 {% if sale == true %}
 <span class="card__price--old jsPrice">
-{{product.compare_at_price | money | strip_html}}
+${{product.compare_at_price | money | strip_html}}
 </span>
 {% endif %}
 </span>

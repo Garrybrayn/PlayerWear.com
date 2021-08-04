@@ -2,7 +2,15 @@
   <Page :bottom-spacing="true">
     <Breadcrumbs :breadcrumbs="breadcrumbs" />
     <div class="collection-page">
-      <TagSelector :tags="tags"/>
+      <div>
+        <TagSelector :options="tagOptions" :value="$route.params.tag"/>
+        <br />
+        <TagSelector
+          v-if="$store.getters['brands/isCurrentBrandHouseBrand']"
+          :options="vendorOptions"
+          :value="$route.params.collectionHandle"
+        />
+      </div>
       <div class="product-grid">
         <ProductCard v-for="(product, index) in productsForGrid" :key="index" :product="product"/>
       </div>
@@ -18,6 +26,21 @@ import TagSelector from "../molecules/TagSelector.vue";
 import ProductCard from "../molecules/ProductCard.vue";
 
 export default Vue.extend({
+  metaInfo(){
+    let title = '';
+    if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+      title = this.$store.getters['brands/currentBrandName'];
+    }
+    const tag = String(Utilities.tagReadable(this.$route.params.tag)).replace(
+      this.$store.getters['brands/currentBrandName'],''
+    );
+    if(tag){
+      title += ` ${tag}`;
+    }else{
+      title += ` T-Shirts, Hoodies, Bags, Hats & More`;
+    }
+    return { title }
+  },
   components: {
     Page,
     Breadcrumbs,
@@ -28,7 +51,7 @@ export default Vue.extend({
     return {
       tags: [
         'shirts',
-        'hats',
+        'womens-tops',
         'hoodies-and-jackets',
         'backpacks-and-bags',
         'shop-women',
@@ -40,6 +63,38 @@ export default Vue.extend({
     this.$store.dispatch('loadCollectionWithProducts', this.$route.params.collectionHandle);
   },
   computed: {
+    tagOptions(){
+      return this.tags.map(tag => {
+        return {
+          value: tag,
+          label: tag.replace(/-/ig,' ').replace(' and ', ' & '),
+          link: {
+            name: 'TagInCollection',
+            params: {
+              collectionHandle: this.$route.params.collection ? this.$route.params.collection : 'all',
+              tag
+            }
+          },
+          selected: this.$route.params.tag === tag
+        }
+      })
+    },
+    vendorOptions(){
+      return this.$store.getters['brands/all'].map(vendor => {
+        return {
+          value: vendor.handle,
+          label: vendor.title,
+          link: {
+            name: this.$route.params.tag ? 'TagInCollection' : 'Collection',
+            params: {
+              collectionHandle: vendor.handle,
+              tag: this.$route.params.tag
+            }
+          },
+          selected: this.$route.params.collectionHandle === vendor.handle
+        }
+      })
+    },
     productsForGrid(){
       if(this.$store.getters.products.length > 0){
         return this.$store.getters.products.filter(product => {
@@ -59,7 +114,7 @@ export default Vue.extend({
       const breadcrumbs = [];
       if(this.$route.params.collectionHandle) {
         breadcrumbs.push({
-          label: Utilities.tagReadable(this.$route.params.collectionHandle + ' Merch'),
+          label: this.$store.getters['brands/currentBrandTitle'] + ' Merch',
           url: {
             name: "Collection",
             params: {

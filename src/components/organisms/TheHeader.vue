@@ -1,6 +1,6 @@
 <template>
   <div class="header-container">
-    <header>
+    <header :style="styles">
       <aside class="left">
         <div :class="{hamburger: true, x:showMobileMenu}" @click="showMobileMenu=!showMobileMenu">
           <div />
@@ -8,16 +8,35 @@
           <div />
         </div>
         <nav class="desktop-menu">
-          <router-link v-for="(menuItem, index) in menuItems" :key="index" :to="menuItem.route" :class="menuItem.class">
-            {{menuItem.title}}
-          </router-link>
+          <div v-for="(menuItem, index) in menuItems" :key="index" :class="menuItem.class" @click="toggleMenu(index)">
+            <span class="title">{{menuItem.title}}</span>
+            <div v-if="menuItem.sections" :class="{
+              'section-container': true,
+              open: openMenuItemIndex === index,
+              closed: openMenuItemIndex !== index
+            }"
+            @click.stop>
+              <div v-for="(section, sectionIndex) in menuItem.sections" :key="sectionIndex" class="section">
+                <span class="title">{{section.title}}</span>
+                <router-link v-for="(child, childIndex) in section.children" :key="childIndex" :to="{
+                  name: 'TagInCollection',
+                  params: {
+                    collectionHandle: $store.getters['brands/isCurrentBrandThirdParty'] ? $store.getters['brands/currentBrandHandle'] : 'all',
+                    tag: child.tag
+                  }
+                }">
+                  {{child.title}}
+                </router-link>
+              </div>
+            </div>
+          </div>
         </nav>
       </aside>
       <div class="logo-container">
-        <router-link v-if="isThirdPartyBrand" class="third-party-brand-link" :to="{name: 'BrandHome', collectionHandle: this.brand}">
+        <router-link v-if="$store.getters['brands/isCurrentBrandThirdParty']" class="third-party-brand-link" :to="{name: 'BrandHome', collectionHandle: $store.getters['brands/currentBrandHandle']}">
           <img :src="thirdPartyBrandLogoUrl"/>
         </router-link>
-        <router-link :to="{name: 'Home'}" class="house-brand-link">
+        <router-link v-else :to="{name: 'Home'}" class="house-brand-link">
           <img :src="houseBrandLogoUrl"/>
         </router-link>
       </div>
@@ -29,10 +48,35 @@
     <transition name="fade">
       <div v-if="showMobileMenu" class="mobile-menu-container" @click="showMobileMenu=false">
         <nav class="mobile-menu" @click.stop>
-          <router-link v-for="(menuItem, index) in menuItems" :key="index" :to="menuItem.route" :class="menuItem.class">
-            {{menuItem.title}}
-            <IconSvg v-if="menuItem.class && menuItem.class.includes('chevron')" name="chevron" />
-          </router-link>
+          <component
+            v-for="(menuItem, index) in menuItems"
+            :key="index" :class="menuItem.class"
+            :is="menuItem.route ? 'router-link' : 'div'"
+            :to="menuItem.route"
+          >
+            <span :class="{
+              'menu-item': true,
+              'has-children': menuItem.sections ? true : false,
+              open: openMenuItemIndex === index,
+              closed: openMenuItemIndex !== index
+            }" @click="toggleMenu(index)">
+              {{menuItem.title}}
+              <IconSvg v-if="menuItem.sections || (menuItem.class && menuItem.class.includes('chevron'))" name="chevron" />
+            </span>
+            <nav class="mobile-menu" v-if="menuItem.sections">
+              <component
+                v-for="(childItem, index) in menuItem.sections[0].children"
+                :key="index" :class="childItem.class"
+                :is="childItem.route ? 'router-link' : 'div'"
+                :to="childItem.route"
+              >
+                <span class="menu-item">
+                  {{childItem.title}}
+                  <IconSvg v-if="childItem.class && childItem.class.includes('chevron')" name="chevron" />
+                </span>
+              </component>
+            </nav>
+          </component>
         </nav>
       </div>
     </transition>
@@ -45,48 +89,157 @@ import Vue from 'vue';
 import IconSvg from '../atoms/IconSvg.vue';
 
 export default Vue.extend({
-  props: {
-    brand: {
-      type: String,
-      required: true
-    },
-    isThirdPartyBrand: {
-      type: Boolean,
-      required: true
-    }
-  },
   components: {
     IconSvg
   },
   data(){
     return {
-      showMobileMenu: false
+      showMobileMenu: false,
+      openMenuItemIndex: false,
+      menuItems: [
+        {
+          title: 'Men',
+          class: 'bold',
+          open: false,
+          sections: [
+            {
+              title: 'Men',
+              children: [
+                {
+                  title: 'Shirts',
+                  tag: 'shirts'
+                },
+                {
+                  title: 'Hoodies & Jackets',
+                  tag: 'hoodies-and-jackets'
+                },
+                {
+                  title: 'Hats',
+                  tag: 'hats'
+                }
+              ]
+            },
+            {
+              title: 'More Merch',
+              children: [
+                {
+                  title: 'Backpacks & Bags',
+                  tag: 'backpacks-and-bags'
+                },
+                {
+                  title: 'Hats',
+                  tag: 'hats'
+                },
+                {
+                  title: 'Drinkware',
+                  tag: 'drinkware'
+                },
+                {
+                  title: 'Phone Cases',
+                  tag: 'phone-cases'
+                },
+                {
+                  title: 'Stickers',
+                  tag: 'stickers'
+                },
+                {
+                  title: 'See all Specialty Merch',
+                  tag: 'more-merch'
+                }
+              ]
+            }
+          ],
+        },
+        {
+          title: 'Women',
+          class: 'bold',
+          open: false,
+          sections: [
+            {
+              title: 'Women',
+              children: [
+                {
+                  title: "Women's Tops",
+                  tag: 'womens-tops'
+                },
+                {
+                  title: "Unisex Shirts",
+                  tag: 'shirts'
+                },
+                {
+                  title: 'Hoodies & Jackets',
+                  tag: 'hoodies-and-jackets'
+                },
+                {
+                  title: 'Hats',
+                  tag: 'hats'
+                }
+              ]
+            },
+            {
+              title: 'More Merch',
+              children: [
+                {
+                  title: 'Backpacks & Bags',
+                  tag: 'backpacks-and-bags'
+                },
+                {
+                  title: 'Hats',
+                  tag: 'hats'
+                },
+                {
+                  title: 'Drinkware',
+                  tag: 'drinkware'
+                },
+                {
+                  title: 'Phone Cases',
+                  tag: 'phone-cases'
+                },
+                {
+                  title: 'Stickers',
+                  tag: 'stickers'
+                },
+                {
+                  title: 'See all Specialty Merch',
+                  tag: 'more-merch'
+                }
+              ]
+            }
+          ],
+        }
+      ]
     }
   },
   computed :{
     thirdPartyBrandLogoUrl(){
-      return `${assetUrl}collection_logo_${this.brand}.png`;
+      return `${assetUrl}${this.$store.getters['brands/currentBrandHandle']}-logo.svg`;
     },
     houseBrandLogoUrl(){
-      return this.isThirdPartyBrand ? `${assetUrl}collection_logo_player-wear-simplified.png` : `${assetUrl}collection_logo_player-wear.png`;
+      return this.$store.getters['brands/isCurrentBrandThirdParty'] ? `${assetUrl}collection_logo_player-wear-simplified.png` : `${assetUrl}collection_logo_player-wear.png`;
     },
-    menuItems(){
-      return [
-        {
-          title: 'Men',
-          class: 'bold chevron',
-          route: {
-            name: 'Home'
-          }
-        },
-        {
-          title: 'Women',
-          class: 'bold chevron',
-          route: {
-            name: 'Home'
-          }
-        }
-      ]
+    styles(){
+      const styles = {
+        borderBottomColor: this.$store.getters['brands/currentBrandColor']
+      }
+      if(this.$store.getters['brands/currentBrandHeaderBackgroundImage']){
+        styles.backgroundImage = `url(${assetUrl}${this.$store.getters['brands/currentBrandHeaderBackgroundImage']})`;
+      }
+      return styles
+    }
+  },
+  watch: {
+    $route(){
+      this.openMenuItemIndex = false;
+    }
+  },
+  methods: {
+    toggleMenu(index){
+      if(this.openMenuItemIndex && this.openMenuItemIndex === index){
+        // close it
+        this.openMenuItemIndex = false
+      }else{
+        this.openMenuItemIndex = index
+      }
     }
   }
 });
@@ -108,6 +261,9 @@ export default Vue.extend({
     padding-left: @pagePadding;
     padding-right: @pagePadding;
     box-sizing: border-box;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    box-shadow: 0px 0px 3px #0008;
   }
 
   .hamburger{
@@ -155,24 +311,43 @@ export default Vue.extend({
   .mobile-menu{
     background: white;
     min-width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    text-transform: none;
+    font-weight: 600;
     a{
-      display: flex;
-      border-bottom:1px solid #0003;
-      padding: 0.75em @pagePadding;
+      display: block;
       text-decoration: none;
-      color: black;
-      line-height: 1.5rem !important;
-      align-items: center;
-      justify-content: space-between;
     }
   }
+  .menu-item{
+    display: grid;
+    border-bottom:1px solid #0003;
+    padding: 0.75em @pagePadding;
+    text-decoration: none;
+    color: black;
+    line-height: 1.5rem !important;
+    align-items: center;
+    justify-content: space-between;
+    grid-template-columns: 1fr 1em;
 
-  nav a.bold{
+    &.open .chevron{
+      transform: rotate(90deg);
+    }
+    .chevron{
+      transition: transform 200ms;
+    }
+  }
+  .closed + .mobile-menu{
+    display: none;
+  }
+
+  .mobile-menu .mobile-menu .menu-item{
+    padding-left: calc(@pagePadding * 2);
+    color: gray;
+  }
+
+  .bold, .title{
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   aside{
@@ -197,6 +372,8 @@ export default Vue.extend({
       max-width: 150px;
       max-height: 45px;
       object-fit: contain;
+      height: 100%;
+      width: 100%;
       display: block;
       margin:0 auto;
     }
@@ -209,6 +386,45 @@ export default Vue.extend({
   .desktop-menu {
     display: none;
     gap: 1.5em;
+    .section-container{
+      position: absolute;
+      background: white;
+      top: 100px;
+      left: 0;
+      right: 0;
+      width: 100%;
+      box-sizing: border-box;
+      color: black;
+      display: flex;
+      padding: 1.5em @pagePadding 2em @pagePadding;
+      gap: 3.5em;
+      font-weight: 600;
+      text-transform: none;
+      border-bottom: 1px solid #0002;
+      box-shadow: 0px 0px 200px #0004;
+      &.closed{
+        top: auto;
+        bottom: 100vh;
+        opacity: 0;
+      }
+      &.open{
+        top: 100px;
+        bottom: auto;
+        opacity: 1;
+      }
+    }
+    .title{
+      cursor: pointer;
+    }
+    .section{
+      padding-left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+    }
+    a{
+      color: black;
+    }
   }
   @media(min-width: @thirdbreakpoint){
     header{
@@ -221,19 +437,21 @@ export default Vue.extend({
       display: none;
     }
     .logo-container img{
-      max-width: 260px;
-      max-height: 60px;
+      max-width: 360px;
+      max-height: 77px;
       object-fit: contain;
     }
     .third-party-brand .house-brand-link{
       display: block;
       img{
         margin-top: 5px;
-        max-width: 100px;
+        max-width: 169px;
       }
     }
     .desktop-menu{
       display: flex;
+      gap: 3.5em;
+      margin-left: 1.5em;
     }
   }
 
@@ -242,5 +460,9 @@ export default Vue.extend({
   }
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
+  }
+
+  .korg header{
+    background-image: var(--asssetUrl)
   }
 </style>

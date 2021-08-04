@@ -8,6 +8,7 @@ const normalizeShopifyCart = shopifyCart => {
 			id: itemObj.variant_id,
 			title: itemObj.product_title,
 			variant: itemObj.variant_title,
+			vendor: itemObj.vendor,
 			image: itemObj.image,
 			price: itemObj.price,
 			quantity: itemObj.quantity
@@ -25,6 +26,7 @@ const normalizeShopifyProduct = shopifyProduct => {
 			id: shopifyProduct.variant_id,
 			image: shopifyProduct.image,
 			price: shopifyProduct.price,
+			vendor: shopifyProduct.vendor,
 			quantity: shopifyProduct.quantity,
 			title: shopifyProduct.product_title,
 			variant: shopifyProduct.variant_title

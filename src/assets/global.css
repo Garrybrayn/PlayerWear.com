@@ -31,7 +31,7 @@
 
 html, body {
     font-family: 'Open Sans', sans-serif;
-    line-height: 1.5em;
+    line-height: 1.5;
     padding: 0;
     margin: 0;
 }
@@ -117,7 +117,7 @@ a:hover {
 }
 
 .card__img--container {
-    max-width: 200px;
+
 }
 
 .card__img--ratio {
@@ -230,7 +230,8 @@ a:hover {
     bottom: 0;
     left: 0;
     box-shadow: 0px -5px 30px -10px rgba(0, 0, 0, 0.15);
-    padding: 20px
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .minicart__bottom .minicart__total {
@@ -321,14 +322,6 @@ a:hover {
     display: block
 }
 
-.minicart .quantity--input__button {
-    padding: 8px 20px
-}
-
-.minicart .quantity--input__input {
-    width: 40px;
-    padding: 6px 4px
-}
 
 @media only screen and (min-width: 768px) {
     #minicart__button:checked ~ .minicart__holder {
@@ -399,11 +392,12 @@ a:hover {
 
 
 .button {
-    padding: 0.5em 1em;
+    padding: 0.75em 1em;
     border-radius: 3px;
     display: inline-block;
     font-size: inherit !important;
     font-family: inherit !important;
+    line-height: 1.4rem;
 }
 
 .button--primary {
@@ -485,16 +479,17 @@ a:hover {
 
 .button--full-width {
     width: 100%;
-    max-width: 100%
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .quantity--input {
     margin-top: 8px;
-    border-radius: var(--borderRadius);
+    border-radius: var(--borderRadiusSmall);
     overflow: hidden;
     display: inline-flex;
     color: var(--inputContent);
-    border: 2px solid black;
+    border: 1px solid black;
 }
 
 .quantity--input__button {
@@ -502,11 +497,13 @@ a:hover {
     font-size: var(--baseFontSize);
     line-height: var(--baseFontSize);
     border: none;
-    border-radius: 0px
+    border-radius: 0px;
+    padding: 8px 0px;
+    width: 25px;
 }
 
 .quantity--input__input {
-    width: 80px;
+    width: 50px;
     text-align: center;
     -moz-appearance: textfield;
     border: 0;
@@ -1102,10 +1099,15 @@ a:hover {
     transform: translateY(-100%);
     transition: all 0.25s
 }
+.search__results .card--default{
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+}
 
 .search__container--abs .search__container--wrapper {
-    padding: 24px 32px;
-    background: var(--bodyBackgroundColor)
+    padding: 1px 16px;
+    background: white;
 }
 
 .search__container--abs.focused {
@@ -1115,13 +1117,14 @@ a:hover {
 
 .search__container--abs form input {
     font-size: 25px;
-    width: calc(100% - 35px);
-    max-width: 780px;
+    box-sizing: border-box;
+    width: 100%;
     padding: 8px 16px;
     margin-top: 8px;
-    padding-left: 0px;
-    background: transparent;
-    border: none
+    background: #0001;
+    border: none;
+    border-radius: var(--borderRadiusSmall);
+    outline: none;
 }
 
 .search__container--abs .search__icon--submit {
@@ -1129,7 +1132,9 @@ a:hover {
     padding: 0px;
     margin: 0px !important;
     background: transparent;
-    border: none
+    border: none;
+    float: right;
+    display: none;
 }
 
 .search__container--abs .search__overlay {
@@ -1163,7 +1168,9 @@ a:hover {
 }
 
 .search__results a {
-    text-decoration: none
+    text-decoration: none;
+    display: block;
+    width: 100%;
 }
 
 .search__icon:hover {
@@ -1178,7 +1185,6 @@ a:hover {
     padding: 0px 8px;
     background: var(--bodyBackgroundColor);
     z-index: 14;
-    max-width: 600px;
     display: none
 }
 
@@ -1192,7 +1198,8 @@ a:hover {
     width: 100%;
     padding: 8px;
     border-radius: var(--borderRadiusSmall);
-    margin-bottom: 8px
+    margin-bottom: 8px;
+    flex-direction: column;
 }
 
 .search__container--inline .search__results .card--default:hover {
@@ -1356,9 +1363,14 @@ a:hover {
 @media only screen and (max-width: 767px) {
     .search__container--abs.focused .search__results {
         position: absolute;
+        top: 130px;
+        right: 0;
+        left: 0;
         width: 100vw;
-        left: 0px;
-        display: block
+        display: flex;
+        box-sizing: border-box;
+        overflow: scroll;
+        flex-wrap: wrap;
     }
 
     .search__results--abs {
@@ -1371,7 +1383,7 @@ a:hover {
         width: 100%;
         padding: 8px;
         border-radius: var(--borderRadiusSmall);
-        margin-bottom: 8px
+        margin-bottom: 8px;
     }
 
     .search__results--abs .card--default:hover {
@@ -1380,7 +1392,7 @@ a:hover {
     }
 
     .search__results--abs .card__img--container {
-        max-width: 80px;
+
         margin: 0px !important;
         margin-right: 12px !important
     }
@@ -1397,7 +1409,8 @@ a:hover {
         width: 100%;
         max-height: 85vh;
         max-width: none;
-        padding-bottom: 24px
+        padding-bottom: 24px;
+        overflow: scroll;
     }
 }
 
@@ -2572,7 +2585,6 @@ a:hover {
 
 form {
     margin: auto auto;
-    max-width: 680px;
     width: 100%;
     display: block
 }
@@ -2591,7 +2603,6 @@ form input {
 }
 
 form .button--submit {
-    width: auto;
     padding-left: 24px;
     padding-right: 24px;
     margin-right: 24px
@@ -2674,6 +2685,14 @@ summary {
 }
 template {
     display: none
+}
+
+.card__title{
+    margin-top: 0.25em;
+}
+
+.card__price.jsPrice{
+    font-weight: bolder;
 }
 
 

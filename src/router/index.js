@@ -1,13 +1,16 @@
 import Vue from 'vue';
-import Utilities from '../utilities';
 import VueRouter from 'vue-router';
+import Meta from 'vue-meta'
+import store from '../store';
 import HomePage from '../components/pages/HomePage.vue';
+import UpsellPage from '../components/pages/UpsellPage.vue';
 import ProductPage from '../components/pages/ProductPage.vue';
 import CollectionPage from '../components/pages/CollectionPage.vue';
 import ShopifyPage from '../components/pages/ShopifyPage.vue';
 import BlankPage from '../components/pages/BlankPage.vue';
 
 Vue.use(VueRouter);
+Vue.use(Meta);
 
 const routes = [
 
@@ -24,13 +27,13 @@ const routes = [
   // Brand Homepages
   // =============================================
   {
-    path: `/:collectionHandle(${Utilities.allBrands.join('|')})`,
+    path: `/:collectionHandle(${store.getters['brands/allHandles'].join('|')})`,
     redirect: {
       name: 'BrandHome'
     }
   },
   {
-    path: `/pages/:collectionHandle(${Utilities.allBrands.join('|')})`,
+    path: `/pages/:collectionHandle(${store.getters['brands/allHandles'].join('|')})`,
     name: 'BrandHome',
     component: HomePage,
   },
@@ -39,12 +42,12 @@ const routes = [
   // Collection Pages
   // =============================================
   {
-    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)`,
+    path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)`,
     name: 'Collection',
     component: CollectionPage,
   },
   {
-    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/:tag`,
+    path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)/:tag`,
     name: 'TagInCollection',
     component: CollectionPage,
   },
@@ -58,10 +61,35 @@ const routes = [
     component: ProductPage,
   },
   {
-    path: `/collections/:collectionHandle(${Utilities.allBrands.join('|')}|all)/products/:productHandle`,
+    path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)/products/:productHandle`,
     alias: `/products/:productHandle`,
     name: 'ProductInCollection',
     component: ProductPage,
+  },
+  {
+    path: `/products_preview`,
+    name: 'ProductPreview',
+    beforeEnter(to, from, next) {
+      console.log(to, from);
+      const link = document.querySelector('link[rel=canonical]');
+      if(link && link.href){
+        const productHandle = link.href.split('/').pop();
+        return next({
+          name: 'Product',
+          params: { productHandle }
+        })
+      }
+      next(false);
+    }
+  },
+
+  // =============================================
+  // Checkout & Upsell
+  // =============================================
+  {
+    path: `/pages/pre-checkout`,
+    name: 'PreCheckout',
+    component: UpsellPage,
   },
 
   // =============================================

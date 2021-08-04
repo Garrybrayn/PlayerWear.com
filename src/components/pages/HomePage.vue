@@ -1,38 +1,37 @@
 <template>
   <div>
     <Strip class="full-width header-image">
-      <img :src="assetUrl('home-header.png')" class="header-image"/>
+      <img :src="assetUrl(`${brand}-home-header.jpg`)" class="header-image"/>
     </Strip>
-    <Strip class="tag-cards">
+    <Strip class="tag-cards narrow">
       <TagCard
-        v-for="(tag, index) in mainCategories"
-        :src="assetUrl(`tag-image-${tag.tag}.jpg`)"
+        v-for="(tag, index) in topSixCategories"
+        :src="assetUrl(`${brand}-${tag.tag}.jpg`)"
         :key="index"
         :buttonLabel="tag.label"
         :tag="tag.tag"
       />
     </Strip>
     <Strip v-if="featuredProducts" class="featured-products full-width">
-      <ProductCarousel :products="featuredProducts" :slide-width="400"/>
+      <ProductCarousel :products="featuredProducts" :slide-width="400" :show-product-title="false" :show-product-price="false" :show-product-color="false" show-product-icon="shopping-bag" :pagination-enabled="false"/>
     </Strip>
-    <Strip class="tag-cards-large">
+    <Strip class="tag-cards-large really-narrow">
       <TagCard
-        :src="assetUrl(`tag-image-shirts.jpg`)"
-        buttonLabel="T-Shirts"
-        tag="shirts"
-      />
-      <TagCard
-        :src="assetUrl(`tag-image-hats.jpg`)"
-        buttonLabel="Hats"
-        tag="hats"
+        v-for="(tag, index) in extraCategories"
+        :src="assetUrl(`${brand}-${tag.tag}.jpg`)"
+        :key="index"
+        :buttonLabel="tag.label"
+        :tag="tag.tag"
       />
     </Strip>
     <Strip class="full-width header-image">
-      <img :src="assetUrl('tag-hero-image-shoes.png')" class="header-image" loading="lazy"/>
+      <router-link :to="$store.getters['brands/currentBrandPath']('sections.home.midHero.link') || '/'">
+        <img :src="assetUrl(`${brand}-mid-hero.jpg`)" class="header-image" loading="lazy"/>
+      </router-link>
     </Strip>
     <h1 class="center">DESIGNS</h1>
-    <Strip class="designs">
-      <div v-for="(design, index) in designs" :key="index">
+    <Strip class="designs narrow">
+      <div v-for="(design, index) in designsForBrand" :key="index">
         <router-link :to="{
           name: 'TagInCollection',
           params: {
@@ -40,11 +39,11 @@
             tag: `${design}-design`
           }
         }">
-          <img :src="assetUrl(`design-${design}.jpg`)" loading="lazy"/>
+          <img :src="assetUrl(`${design}-design.jpg`)" loading="lazy"/>
         </router-link>
       </div>
     </Strip>
-    <Strip v-if="featuredTShirts" class="featured-products full-width">
+    <Strip v-if="featuredTShirts" class="featured-shirts full-width">
       <ProductCarousel :products="featuredTShirts" :slide-width="400"/>
     </Strip>
   </div>
@@ -57,51 +56,34 @@ import ProductCarousel from "../organisms/ProductCarousel.vue";
 import Utilities from '../../utilities';
 
 export default Vue.extend({
+  metaInfo(){
+    return {
+      title: `${this.$store.getters['brands/currentBrandName']} T-Shirts, Hoodies, Hats, Bags & More`
+    }
+  },
   components: {
     Strip,
     ProductCarousel,
     TagCard
   },
-  data(){
-    return {
-      mainCategories: [
-        {
-          tag: 'shirts',
-        },
-        {
-          tag: 'hats',
-        },
-        {
-          tag: 'hoodies-and-jackets',
-          label: 'Hoodies'
-        },
-        {
-          tag: 'bags-and-backpacks',
-          label: 'Bags'
-        },
-        {
-          tag: 'shop-women',
-        },
-        {
-          tag: 'more-merch'
-        }
-      ],
-      designs: [
-        'korg-on-repeat',
-        'korg-kronos',
-        'korg-in-3d',
-        'vox-elevated',
-        'vox-1957',
-        'vox-lightning'
-      ]
-    }
-  },
   computed:{
+    brand(){
+      return this.$store.getters['brands/currentBrandHandle']
+    },
+    categories(){
+      return this.$store.getters['brands/currentBrandPath']('sections.home.categories') || []
+    },
+    topSixCategories(){
+      return this.categories.slice(0, 6);
+    },
+    extraCategories(){
+      return this.categories.slice(6, 8);
+    },
     featuredProducts(){
       return Utilities.arrayShuffle(
         this.$store.getters.productsByTagAndVendor(
           'featured',
-          this.$route.params.collectionHandle,
+          this.$store.getters['brands/isCurrentBrandThirdParty'] ? this.brand : null,
           10
         )
       )
@@ -110,10 +92,16 @@ export default Vue.extend({
       return Utilities.arrayShuffle(
         this.$store.getters.productsByTagAndVendor(
           'featured-t-shirt',
-          this.$route.params.collectionHandle,
+          this.$store.getters['brands/isCurrentBrandThirdParty'] ? this.brand : null,
           10
         )
       )
+    },
+    designsForBrand(){
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        return Utilities.arrayShuffle(this.$store.getters['brands/currentBrandDesigns'])
+      }
+      return Utilities.arrayShuffle(this.$store.getters['brands/allDesigns']);
     }
   },
   beforeMount(){
@@ -176,15 +164,27 @@ export default Vue.extend({
 
   .featured-products{
     box-sizing: border-box;
-    background: #eee;
+    background: #000;
+    padding: @pagePadding;
+    /deep/ .VueCarousel-inner{
+      gap: @pagePadding;
+    }
     /deep/ .VueCarousel-slide{
-      padding: @pagePadding;
+      padding: 0;
     }
     /deep/ .product-image img {
       filter: brightness(100%) !important;
     }
+  }
+
+  .featured-shirts{
+    box-sizing: border-box;
+    background: #eee;
+    /deep/ .product-image img {
+      filter: brightness(100%) !important;
+    }
     /deep/ .product-card{
-      padding-bottom: 1em;
+      margin-bottom: 1em;
     }
     border-bottom: 1em solid #eee;
     padding-bottom: 1em;
@@ -201,9 +201,9 @@ export default Vue.extend({
     .designs{
       grid-template-columns: 1fr 1fr 1fr;
     }
-    .featured-products{
+    .featured-shirts{
        /deep/ .product-card{
-        padding-bottom: 2em;
+        margin-bottom: 2em;
       }
       padding: 2em 50px !important;
     }

@@ -1,9 +1,9 @@
 <template>
   <div class="page-breadcrumbs">
-    <div class="page-breadcrumb" v-for="(breadcrumb, index) in breadcrumbs" :key="index">
+    <h1 class="page-breadcrumb" v-for="(breadcrumb, index) in breadcrumbs" :key="index">
       <router-link v-if="breadcrumb.url" :to="breadcrumb.url">{{breadcrumb.label}}</router-link>
       <span v-if="!breadcrumb.url">{{breadcrumb.label}}</span>
-    </div>
+    </h1>
   </div>
 </template>
 <script lang="ts">
@@ -20,7 +20,6 @@ export default Vue.extend({
 </script>
 <style scoped lang="less">
   .page-breadcrumbs{
-    font-size: 0.8rem;
     font-weight: 600;
     padding: 1.25em 0;
   }
@@ -29,8 +28,10 @@ export default Vue.extend({
     text-decoration: none;
   }
   .page-breadcrumb{
+    font-size: 0.8rem;
     display: inline;
     text-decoration: none;
+    text-transform: none;
     &:not(:last-child):after{
       display: inline;
       content:'/';

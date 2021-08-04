@@ -88,9 +88,8 @@ export default {
       client.graphQLClient.send(productsQuery).then(({ model }) => {
         model.products.forEach(product => {
           context.commit('SET_PRODUCT', product)
-          resolve(product);
         })
-        resolve();
+        resolve(model.products);
       }).catch(e => {
         reject(e);
       });
