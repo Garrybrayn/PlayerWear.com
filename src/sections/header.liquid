@@ -5,9 +5,13 @@
     <div class="search__container--wrapper">
         <h4 class="search__title">{{ 'general.search.heading' | t }} <span
                     onclick="closeSearch(this)">{% render 'get-icon', icon: 'close' %}</span></h4>
-        <form method="get" action="/search" onsubmit="event.preventDefault(); openSearch(this);">
-            <button type="submit" class="search__icon--submit">{% render 'get-icon', icon: 'search' %}</button>
-            <input autocomplete="off" placeholder="{{ 'general.search.placeholder' | t }}" name="q"
+        <form method="get" action="/search" onsubmit="event.preventDefault(); openSearch(this);" role="search">
+            <button type="submit" class="search__icon--submit">
+                {% render 'get-icon', icon: 'search' %}
+                <span style="display: none">Search</span>
+            </button>
+            <label for="search" style="display: none">Search</label>
+            <input autocomplete="off" id="search" placeholder="{{ 'general.search.placeholder' | t }}" name="q"
                    onfocus="openSearch(this)" type="search" data-search>
         </form>
     </div>

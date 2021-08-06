@@ -70,9 +70,12 @@ export default Vue.extend({
   },
   computed:{
     slidesPerPage(){
-      return Math.max(
+      return Math.min(
+        Math.max(
           Math.floor(this.parentWidth / this.slideWidth),
           1
+        ),
+        this.products.length
       );
     },
     navigationEnabled(){

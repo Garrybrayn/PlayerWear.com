@@ -1,8 +1,9 @@
 <template>
   <div class="input-number">
-    <span @click="$emit('change', Math.max(value - 1, min))">-</span>
-    <input type="text" :value="value" @change="$emit('change', $event.value)" :min="min" :max="max"/>
-    <span @click="$emit('change', Math.min(value + 1, max))">+</span>
+    <label for="quantity" style="display: none;">Quantity</label>
+    <span @click="$emit('change', Math.max(value - 1, min))" aria-label="Decrease Quantity">-</span>
+    <input type="text" :value="value" @change="$emit('change', $event.value)" :min="min" :max="max" id="quantity"/>
+    <span @click="$emit('change', Math.min(value + 1, max))" aria-label="Increase Quantity">+</span>
   </div>
 </template>
 <script lang="ts">

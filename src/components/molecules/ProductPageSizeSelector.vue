@@ -2,7 +2,7 @@
   <div class="product-size-selector">
     <label>
       <b>SIZE:</b>
-      <span v-if="sizeGuide" @click="showSizeGuide=true">Size Guide</span>
+      <span v-if="sizeGuide" @click="showSizeGuide=true" role="link" aria-label="View Size Guide">Size Guide</span>
     </label>
     <div class="product-size-options">
       <div v-for="(sizeVariant, index) in sizeVariants"
@@ -11,7 +11,10 @@
            available: sizeVariant.available,
            selected: sizeVariant.selected
          }"
-         @click="$emit('select', sizeVariant.id)">
+         :aria-label="`Select Size ${sizeVariant.label}`"
+         :aria-selected="sizeVariant.selected"
+         @click="$emit('select', sizeVariant.id)"
+      >
         {{sizeVariant.label}}
       </div>
     </div>

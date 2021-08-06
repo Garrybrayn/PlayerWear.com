@@ -6,7 +6,7 @@
         :key="index"
         :class="{ selected: option.handle === value }"
         :src="option.image"
-        :alt="`${alt} - ${option.label}`"
+        :alt="`Select Color ${option.label}`"
         @click.native="$emit('select', option.handle)"
         @mouseover.native="hoveredOption = option"
         @mouseout.native="hoveredOption = null"

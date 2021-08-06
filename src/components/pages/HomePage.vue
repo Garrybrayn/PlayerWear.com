@@ -1,7 +1,8 @@
 <template>
   <div>
-    <Strip class="full-width header-image">
-      <img :src="assetUrl(`${brand}-home-header.jpg`)" class="header-image" :alt="pageTitle" :title="pageTitle"/>
+    <h1 class="meta">{{pageTitle}}</h1>
+    <Strip class="full-width header-image" role="banner">
+      <img :src="assetUrl(`${brand}-home-header.jpg`)" class="header-image" :alt="pageTitle" />
     </Strip>
     <Strip class="tag-cards narrow">
       <TagCard
@@ -26,12 +27,12 @@
         :tag="tag.tag"
       />
     </Strip>
-    <Strip class="full-width header-image">
+    <Strip class="full-width header-image" role="banner">
       <router-link :to="$store.getters['brands/currentBrandPath']('sections.home.midHero.link') || '/'">
-        <img :src="assetUrl(`${brand}-mid-hero.jpg`)" class="header-image" loading="lazy" :alt="pageTitle" :title="pageTitle"/>
+        <img :src="assetUrl(`${brand}-mid-hero.jpg`)" class="header-image" loading="lazy" :alt="pageTitle" />
       </router-link>
     </Strip>
-    <h1 class="center">DESIGNS</h1>
+    <span class="heading-1 center">DESIGNS</span>
     <Strip class="designs narrow">
       <div v-for="(design, index) in designsForBrand" :key="index">
         <router-link :to="{
@@ -41,7 +42,7 @@
             tag: `${design}-design`
           }
         }">
-          <img :src="assetUrl(`${design}-design.jpg`)" loading="lazy" :alt="`${tagReadable(design)} T-Shirts, Hoodies, Hats, Bags & More`" :title="`${tagReadable(design)} T-Shirts, Hoodies, Hats, Bags & More`"/>
+          <img :src="assetUrl(`${design}-design.jpg`)" loading="lazy" :alt="`${tagReadable(design)} T-Shirts, Hoodies, Hats, Bags & More`"/>
         </router-link>
       </div>
     </Strip>
@@ -114,7 +115,7 @@ export default Vue.extend({
     // Load featured products
     this.$store.dispatch('loadProductsByTagAndVendor', {
       first: 10,
-      tag: 'featured',
+      tag: 'featured AND -tag:featured-t-shirt',
       vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : null
     });
 
@@ -134,6 +135,12 @@ export default Vue.extend({
 </script>
 <style scoped lang="less">
   @import '../../less/variables';
+
+  h1.meta {
+    position: absolute;
+    top: -10em;
+    z-index: -1000;
+  }
 
   section{
     margin-bottom: 2em;

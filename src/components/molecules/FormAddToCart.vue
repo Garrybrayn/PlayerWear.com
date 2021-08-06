@@ -1,8 +1,9 @@
 <template>
-  <form class="buy-button-container">
-    <input v-show="false" type="number" :value="quantity" data-qty-input @change="$emit('changeQuantity', $event)"/>
+  <form class="buy-button-container" role="form">
+    <label for="quantity-input" style="display: none;">Quantity</label>
+    <input v-show="false" type="number" :value="quantity" data-qty-input @change="$emit('changeQuantity', $event)" id="quantity-input"/>
     <input name="id" type="hidden" :value="selectedVariantIdDecoded" :data-variant-id="selectedVariantIdDecoded" />
-    <InputNumber v-if="showQuantitySelector" :value="quantity" data-qty-input @change="$emit('changeQuantity', $event)"/>
+    <InputNumber v-if="showQuantitySelector" :value="quantity" data-qty-input @change="$emit('changeQuantity', $event)" />
     <Button
       v-if="!showPlaceholders"
       type="submit"
@@ -10,6 +11,7 @@
       :class="{'buy-button': true, 'full-width': true, disabled: selectedVariantIdDecoded?false:true}"
       @click.native="addToCart($event)"
       :data-original-text="buyButtonLabel"
+      aria-label="Add to Cart"
     >
       <span data-button-text>{{buyButtonLabel}}</span>
     </Button>

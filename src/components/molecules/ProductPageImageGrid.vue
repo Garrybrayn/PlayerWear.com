@@ -3,18 +3,18 @@
     <div class="product-page-image-grid-container">
       <Carousel class="mobile" :per-page="1" pagination-position="bottom-overlay" pagination-color="rgba(128,128,128, 0.5)" pagination-active-color="rgba(128,128,128, 1)" :pagination-padding="5">
         <Slide v-for="(image, index) in imagesToShow" :key="index">
-          <ProductImage :src="image && image.src || null" :alt="alt" :title="alt"/>
+          <ProductImage :src="image && image.src || null" :alt="`${alt} - Photo ${index + 1}`" />
         </Slide>
       </Carousel>
       <div :class="{'product-page-image-grid': true, 'show-more-images': showMoreImages }">
-          <ProductImage v-for="(image, index) in imagesToShow" :key="index" :src="image && image.src || null" :alt="alt" :title="alt" @click.native="selectedImageIndex = index"/>
+          <ProductImage v-for="(image, index) in imagesToShow" :key="index" :src="image && image.src || null" :alt="`${alt} - Photo ${index + 1}`" @click.native="selectedImageIndex = index"/>
       </div>
       <Button v-if="images && images.length > 7" class="button-show-more round" @click="showMoreImages = !showMoreImages">Show {{showMoreOrLessImagesLabel}} images</Button>
     </div>
     <Modal v-if="selectedImageIndex !== false" @close="selectedImageIndex=false">
       <Carousel class="desktop" :navigateTo="[selectedImageIndex, false]" :per-page="1" pagination-position="bottom-overlay" pagination-color="rgba(128,128,128, 0.5)" pagination-active-color="rgba(128,128,128, 1)" :pagination-padding="5">
         <Slide v-for="(image, index) in imagesToShow" :key="index">
-          <img :src="image && image.src" :alt="alt" :title="alt" @load="$event.target.style.opacity=1" />
+          <img :src="image && image.src" :alt="`${alt} - Photo ${index + 1}`" @load="$event.target.style.opacity=1" />
         </Slide>
       </Carousel>
     </Modal>

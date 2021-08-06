@@ -44,8 +44,8 @@
             <div class="note" v-show="!showPlaceholders">
               <i class="uil uil-truck" />
               SPECIAL Flat Rate Shipping $4.00
-              <p v-if="false">We ship to the United States and 12 US territories.</p>
-              <p class="warning" v-if="false">We do NOT ship anywhere outside the 50 United States and 12 US territories.</p>
+              <p v-if="$store.getters['users/isOutsideShippingZone']">We ship to the United States and 12 US territories.</p>
+              <p class="warning" v-if="$store.getters['users/isOutsideShippingZone']">We do NOT ship anywhere outside the 50 United States and 12 US territories.</p>
             </div>
             <b v-show="description">DESCRIPTION:</b>
             <div v-html="description" class="description"/>
@@ -59,7 +59,7 @@
     </Strip>
 
     <Strip class="related-products full-width">
-      <h1 class="center">You might like</h1>
+      <div class="heading-1 center">You might like</div>
       <ProductCarousel :products="relatedProducts" :slide-width="400"/>
     </Strip>
   </Page>
@@ -229,6 +229,7 @@ export default Vue.extend({
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.fetchProductColorData(to.params.productHandle);
+      vm.$store.dispatch('users/getGeoLocation');
     })
   },
   beforeRouteUpdate(to, from, next) {

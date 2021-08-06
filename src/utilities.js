@@ -6,6 +6,7 @@ const data = {
     }
     return a;
   },
+  escape: string => string.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/["']/g, ""),
   tagify: content => content.toLowerCase().replace(' ','-'),
   tagReadable: tag => String(tag || "")
     .toLowerCase()

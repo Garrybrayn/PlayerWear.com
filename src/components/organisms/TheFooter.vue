@@ -6,7 +6,7 @@
   <Strip>
     <div>
       <router-link :to="{name: 'Home'}">
-        <img :src="assetUrl('collection_logo_player-wear.png')" width="200">
+        <img :src="assetUrl('collection_logo_player-wear.png')" width="200" alt="PlayerWear.com - Great merch for musicians and music lovers.">
       </router-link>
       <p>
         Great merch for musicians<br>
@@ -14,19 +14,19 @@
       </p>
       <router-link to="/collections/all">Shop All Brands</router-link>
     </div>
-    <nav v-if="$store.getters['brands/isCurrentBrandThirdParty']">
+    <nav v-if="$store.getters['brands/isCurrentBrandThirdParty']" role="navigation" :aria-label="`${ thirdPartyBrandName } Merch Categories`">
       <span class="title">{{ thirdPartyBrandName }} Merch</span>
       <router-link v-for="(menuItem, index) in thirdPartyBrandLinks" :key="index" :to="menuItem.route" :class="menuItem.class">
         {{menuItem.title}}
       </router-link>
     </nav>
-    <nav v-if="relatedBrands">
+    <nav v-if="relatedBrands"  role="navigation" aria-label="Related Brand Navigation">
       <span class="title">Other Merch Options</span>
-      <router-link v-for="(relatedBrand, index) in relatedBrands" :key="index" :to="{name: 'BrandHome', collectionHandle: relatedBrand}">
+      <router-link v-for="(relatedBrand, index) in relatedBrands" :key="index" :to="{name: 'BrandHome', params: { collectionHandle: relatedBrand }}">
         {{ tagReadable(relatedBrand) }} Merch
       </router-link>
     </nav>
-    <nav>
+    <nav role="navigation" aria-label="Company Links">
       <span class="title">Player Wear</span>
       <router-link v-for="(menuItem, index) in houseMenu" :key="index" :to="menuItem.route" :class="menuItem.class">
         {{menuItem.title}}
@@ -34,7 +34,7 @@
     </nav>
   </Strip>
   <Strip>
-    <div class="legal-links">
+    <div class="legal-links" role="contentinfo">
       <p>
         © Copyright Player Wear 2021 All Rights Reserved.
       </p>

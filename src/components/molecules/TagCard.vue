@@ -1,5 +1,5 @@
 <template>
-  <router-link class="tag-card" :to="route">
+  <router-link class="tag-card" :to="route" role="tab" :aria-label="alt" :aria-hidden="false">
     <ProductImage :src="src" :alt="alt"/>
     <Button class="white" v-if="buttonLabelReadable">
       {{ buttonLabelReadable }}

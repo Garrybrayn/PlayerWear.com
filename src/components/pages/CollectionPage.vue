@@ -3,7 +3,7 @@
     <Breadcrumbs :breadcrumbs="breadcrumbs" />
     <div class="collection-page">
       <div>
-        <TagSelector :options="tagOptions" :value="$route.params.tag"/>
+        <TagSelector :options="tagOptions" :value="$route.params.tag" role="navigation" aria-label="Category Navigation"/>
         <br />
         <TagSelector
           v-if="$store.getters['brands/isCurrentBrandHouseBrand']"
@@ -13,7 +13,7 @@
         />
       </div>
       <div class="product-grid">
-        <ProductCard v-for="(product, index) in productsForGrid" :key="index" :product="product"/>
+        <ProductCard v-for="(product, index) in productsForGrid" :key="index" :product="product" role="navigation" aria-label="Brand Navigation"/>
       </div>
     </div>
   </Page>
@@ -68,7 +68,8 @@ export default Vue.extend({
       return this.tags.map(tag => {
         return {
           value: tag,
-          label: tag.replace(/-/ig,' ').replace(' and ', ' & '),
+          label: Utilities.tagReadable(tag),
+          name: Utilities.tagReadable(`${this.$route.params.collectionHandle} ${tag}`),
           link: {
             name: 'TagInCollection',
             params: {
@@ -85,6 +86,7 @@ export default Vue.extend({
         return {
           value: vendor.handle,
           label: vendor.title,
+          name: `See All ${vendor.title} Products`,
           link: {
             name: this.$route.params.tag ? 'TagInCollection' : 'Collection',
             params: {
@@ -125,6 +127,17 @@ export default Vue.extend({
         });
       }
       if(this.$route.params.tag){
+        if(this.$route.params.tag.includes('design')){
+          breadcrumbs.push({
+            label: 'Shop By Design',
+            url: {
+              name: "Designs",
+              params: {
+                collectionHandle: this.$route.params.collectionHandle
+              }
+            }
+          });
+        }
         breadcrumbs.push({
           label: Utilities.tagReadable(this.$route.params.tag)
         });

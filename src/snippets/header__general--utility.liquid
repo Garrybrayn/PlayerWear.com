@@ -1,5 +1,8 @@
 <div class="user__button">
-    <label for="user__button">{% render 'get-icon', icon: 'user' %}</label>
+    <label for="user__button">
+        {% render 'get-icon', icon: 'user' %}
+        <span style="display: none;">Access My Account</span>
+    </label>
     <input type="checkbox" class="hide" id="user__button">
     <div class="user__holder">
         {% if customer %}
@@ -15,14 +18,15 @@
         <a class="user__link"
            href="{{ routes.cart_url }}">{% render 'get-icon', icon: 'shopping-bag' %}{{ 'general.buttons.view_cart' | t }}</a>
     </div>
-    <label class="overlay" for="user__button"></label>
 </div>
 
-<span class="search__icon hide-desktop" onclick="openSearch(false)">{% render 'get-icon', icon: 'search' %}</span>
+<span class="search__icon" onclick="openSearch(false)">{% render 'get-icon', icon: 'search' %}</span>
 
 <div class="minicart__button minicart__button--{{ section.settings.cartIcon }}">
     <input type="checkbox" id="minicart__button">
-    <label class="overlay" for="minicart__button"></label>
+    <label class="overlay" for="minicart__button">
+        <span style="display: none;">Cart</span>
+    </label>
     <label class="minicart__label" for="minicart__button" data-cart-settings="count" data-cart-container>
         {% render 'get-icon', icon: section.settings.cartIcon %}
         <span class="item__count" id="minicart-item-count" data-count>0</span>
@@ -30,4 +34,5 @@
     <div class="minicart__holder minicart--{{- settings.cartStyle }}" data-cart-settings="product-list" data-cart-container>
         <div data-product-list class=""></div>
     </div>
+
 </div>

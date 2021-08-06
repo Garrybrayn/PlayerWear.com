@@ -170,7 +170,7 @@ export default Vue.extend({
     }
     &.disabled {
       background: @gray2;
-      color: @gray5;
+      color: @white;
       cursor: not-allowed;
       &:hover, &:active{
         background: @gray2;

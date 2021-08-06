@@ -3,7 +3,7 @@
     <label v-if="title">{{ title }}</label>
     <ul>
       <li v-for="(tag, index) in options" :key="index">
-        <router-link :to="tag.link">{{ tag.label }}</router-link>
+        <router-link :to="tag.link" role="link" :aria-label="tag.name">{{ tag.label }}</router-link>
       </li>
     </ul>
     <v-select :value="value" :options="options" @input="$router.push($event.link)"/>

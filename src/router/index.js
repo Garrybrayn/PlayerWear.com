@@ -6,6 +6,7 @@ import HomePage from '../components/pages/HomePage.vue';
 import UpsellPage from '../components/pages/UpsellPage.vue';
 import ProductPage from '../components/pages/ProductPage.vue';
 import CollectionPage from '../components/pages/CollectionPage.vue';
+import DesignsPage from '../components/pages/DesignsPage.vue';
 import ShopifyPage from '../components/pages/ShopifyPage.vue';
 import BlankPage from '../components/pages/BlankPage.vue';
 
@@ -36,6 +37,15 @@ const routes = [
     path: `/pages/:collectionHandle(${store.getters['brands/allHandles'].join('|')})`,
     name: 'BrandHome',
     component: HomePage,
+  },
+
+  // =============================================
+  // Design Pages
+  // =============================================
+  {
+    path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)/designs`,
+    name: 'Designs',
+    component: DesignsPage,
   },
 
   // =============================================
@@ -102,6 +112,29 @@ const routes = [
   },
 
   // =============================================
+  // WEBAIM Testing Workaround
+  // =============================================
+  // {
+  //   path: '/data/getpage*',
+  //   name: 'WebAimWave',
+  //   component: BlankPage,
+  //   beforeEnter(to, from, next) {
+  //     console.log(to, from);
+  //     const bases = document.getElementsByTagName('base')
+  //     if(bases.length > 0){
+  //       const href = bases[0].href;
+  //       const url = new URL(href);
+  //       const path = url.pathname;
+  //       console.log({
+  //         href, url, path
+  //       })
+  //       next(path)
+  //     }
+  //     next();
+  //   }
+  // },
+
+  // =============================================
   // Catchall
   // =============================================
   {
@@ -115,13 +148,13 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
-  scrollBehavior (to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    } else {
-      return { x: 0, y: 0 }
-    }
-  }
+  // scrollBehavior (to, from, savedPosition) {
+  //   if (savedPosition) {
+  //     return savedPosition
+  //   } else {
+  //     return { x: 0, y: 0 }
+  //   }
+  // }
 });
 
 export default router;

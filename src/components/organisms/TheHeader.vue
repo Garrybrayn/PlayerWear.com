@@ -1,13 +1,13 @@
 <template>
   <div class="header-container">
     <header :style="styles">
-      <aside class="left">
+      <div class="aside left">
         <div :class="{hamburger: true, x:showMobileMenu}" @click="showMobileMenu=!showMobileMenu">
           <div />
           <div />
           <div />
         </div>
-        <nav class="desktop-menu">
+        <nav class="desktop-menu" role="navigation" aria-label="Main Navigation">
           <div v-for="(menuItem, index) in menuItems" :key="index" :class="menuItem.class" @click="toggleMenu(index)">
             <span class="title">{{menuItem.title}}</span>
             <div v-if="menuItem.sections" :class="{
@@ -31,23 +31,23 @@
             </div>
           </div>
         </nav>
-      </aside>
+      </div>
       <div class="logo-container">
         <router-link v-if="$store.getters['brands/isCurrentBrandThirdParty']" class="third-party-brand-link" :to="{name: 'BrandHome', collectionHandle: $store.getters['brands/currentBrandHandle']}">
-          <img :src="thirdPartyBrandLogoUrl" :alt="title" :title="title"/>
+          <img :src="thirdPartyBrandLogoUrl" :alt="title" />
         </router-link>
         <router-link v-else :to="{name: 'Home'}" class="house-brand-link">
-          <img :src="houseBrandLogoUrl" :alt="title" :title="title"/>
+          <img :src="houseBrandLogoUrl" :alt="title" />
         </router-link>
       </div>
-      <aside class="right">
+      <div class="aside right">
 
-      </aside>
+      </div>
     </header>
 
     <transition name="fade">
       <div v-if="showMobileMenu" class="mobile-menu-container" @click="showMobileMenu=false">
-        <nav class="mobile-menu" @click.stop>
+        <nav class="mobile-menu" @click.stop role="navigation" aria-label="Main Navigation">
           <component
             v-for="(menuItem, index) in menuItems"
             :key="index" :class="menuItem.class"
@@ -63,7 +63,7 @@
               {{menuItem.title}}
               <IconSvg v-if="menuItem.sections || (menuItem.class && menuItem.class.includes('chevron'))" name="chevron" />
             </span>
-            <nav class="mobile-menu" v-if="menuItem.sections">
+            <nav class="mobile-menu" v-if="menuItem.sections" role="navigation" :aria-label="`${menuItem.title} Navigation`">
               <component
                 v-for="(childItem, index) in menuItem.sections[0].children"
                 :key="index" :class="childItem.class"
@@ -212,7 +212,7 @@ export default Vue.extend({
   },
   computed :{
     title(){
-      return 'sup';
+      return this.$store.getters['brands/currentBrandName'];
     },
     thirdPartyBrandLogoUrl(){
       return `${assetUrl}${this.$store.getters['brands/currentBrandHandle']}-logo.svg`;
@@ -353,7 +353,7 @@ export default Vue.extend({
     font-weight: 700;
   }
 
-  aside{
+  .aside{
     flex-grow: 1;
     gap: 2em;
     display: flex;

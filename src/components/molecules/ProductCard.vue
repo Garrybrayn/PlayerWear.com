@@ -1,5 +1,5 @@
 <template>
-  <component :is="componentType" :class="{'product-card': true, placeholder }" :to="route" :disabled="product?false:true">
+  <component :is="componentType" :class="{'product-card': true, placeholder }" :to="route" :disabled="product?false:true" role="tab" :aria-label="escape(title)" aria-hidden="false">
     <ProductImage :src="imageOne" :alt="altText" class="first" />
     <ProductImage :src="imageTwo || imageOne" :alt="altText" :class="{second: true, zoom:imageTwo?false:true}" :preload="true"/>
     <div v-if="showProductIcon" class="product-icon" :style="{color: $store.getters['brands/currentBrandColor']}" >
@@ -149,6 +149,9 @@ export default Vue.extend({
       }
     }
   },
+  methods: {
+    escape: string => Utilities.escape(string)
+  }
 });
 </script>
 <style scoped lang="less">
@@ -194,7 +197,8 @@ export default Vue.extend({
   }
   .product-color{
     font-size: 0.9em;
-    color: @gray3;
+    color: @black;
+    opacity: 0.75;
     .placeholder-content{
       width: 50px;
     }

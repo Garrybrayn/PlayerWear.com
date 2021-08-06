@@ -1,8 +1,8 @@
 <template>
-  <div id="vue-app" :class="classes">
+  <div id="vue-app" :class="classes" role="application">
     <TheHeader />
     <div ref="contentForLayout" />
-    <router-view class="page-content" />
+    <router-view class="page-content" rol="main"/>
     <TheFooter />
   </div>
 </template>
@@ -95,6 +95,15 @@ export default Vue.extend({
     display: inline-block;
   }
   h1, h2{
+    &.center{
+      text-align: center
+    }
+  }
+  .heading-1{
+    font-size: 35px;
+    font-weight: bolder;
+    display: block;
+    margin-bottom: 0.25em;
     &.center{
       text-align: center
     }

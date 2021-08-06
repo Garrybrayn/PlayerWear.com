@@ -1,10 +1,11 @@
 <template>
   <div :class="{'product-image': true, placeholder: src ? false : true}">
-    <img v-if="src" :src="src" loading="lazy" :class="{loaded: loaded}" :alt="alt" :title="alt" @load="loaded = true"/>
+    <img v-if="src" :src="src" loading="lazy" :class="{loaded: loaded}" :alt="escape(alt)" @load="loaded = true"/>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import Utilities from '../../utilities';
 
 export default Vue.extend({
   props: {
@@ -42,6 +43,9 @@ export default Vue.extend({
     preloadImage(){
       const image = new Image();
       image.src = this.src;
+    },
+    escape(string){
+      return Utilities.escape(string);
     }
   }
 });

@@ -22,11 +22,15 @@ export default Vue.extend({});
       padding-left: 0;
       padding-right: 0;
     }
-    &.narrow{
-      width: 80%;
-    }
-    &.really-narrow{
-      width: 70%;
+  }
+  @media(min-width: @secondbreakpoint){
+    section {
+      &.narrow{
+        width: 80%;
+      }
+      &.really-narrow{
+        width: 70%;
+      }
     }
   }
 </style>
