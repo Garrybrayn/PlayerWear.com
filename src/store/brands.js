@@ -11,7 +11,9 @@ export default {
         title: "Player Wear",
         theme: {
           colors: {
-            brand: '#94f03a'
+            brand: '#c3fd34',
+            dark: '#464646',
+            light: '#ebebeb'
           }
         },
         sections: {
@@ -43,7 +45,21 @@ export default {
               {
                 tag: 'hats',
               }
-            ]
+            ],
+            midHero: {
+              title: 'Embroidered Tie-Dye Hoodie',
+              buttonLabel: 'See Details',
+              link: {
+                name: 'ProductInCollection',
+                params: {
+                  collectionHandle: 'vox',
+                  productHandle: 'vox-lightning-unisex-champion-embroidered-tie-dye-hoodie'
+                },
+                query: {
+                  tag: 'hoodies-and-jackets'
+                }
+              }
+            }
           }
         }
       },
@@ -59,7 +75,9 @@ export default {
         relatedBrands: ['vox','blackstar'],
         theme: {
           colors: {
-            brand: '#36e3d7'
+            brand: '#36e3d7',
+            dark: '#2cbab0',
+            light: '#a6fcf5'
           }
         },
         sections: {
@@ -93,6 +111,8 @@ export default {
               },
             ],
             midHero: {
+              title: 'Korg "Stax" 3/4 Sleeve ',
+              buttonLabel: 'See Details',
               link: {
                 name: 'ProductInCollection',
                 params: {
@@ -118,7 +138,9 @@ export default {
         ],
         theme: {
           colors: {
-            brand: '#a39161'
+            brand: '#a39161',
+            dark: '#82744d',
+            light: '#eedcac'
           },
         },
         relatedBrands: ['korg','blackstar'],
@@ -153,6 +175,8 @@ export default {
               },
             ],
             midHero: {
+              title: 'Embroidered Tie-Dye Hoodie',
+              buttonLabel: 'See Details',
               link: {
                 name: 'ProductInCollection',
                 params: {
@@ -207,6 +231,8 @@ export default {
               },
             ],
             midHero: {
+              title: '',
+              buttonLabel: '',
               link: {
                 name: 'ProductInCollection',
                 params: {
@@ -234,7 +260,9 @@ export default {
         ],
         theme: {
           colors: {
-            brand: '#fa4616'
+            brand: '#fa4616',
+            dark: '#d83c13',
+            light: '#f6c1b3'
           }
         },
         sections: {
@@ -268,6 +296,8 @@ export default {
               }
             ],
             midHero: {
+              title: 'Headphone Hoodie',
+              buttonLabel: 'See Details',
               link: {
                 name: 'ProductInCollection',
                 params: {
@@ -323,6 +353,12 @@ export default {
     },
     currentBrandColor: (state, getters) => {
       return getters.currentBrand.theme.colors.brand
+    },
+    currentBrandColorDark: (state, getters) => {
+      return getters.currentBrand.theme.colors.dark
+    },
+    currentBrandColorLight: (state, getters) => {
+      return getters.currentBrand.theme.colors.light
     },
     currentBrandDesigns: (state, getters) => {
       return getters.currentBrand.designs.map(design => `${getters.currentBrandHandle}-${design}`) || []

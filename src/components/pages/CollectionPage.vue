@@ -56,6 +56,7 @@ export default Vue.extend({
         'hoodies-and-jackets',
         'backpacks-and-bags',
         'shop-women',
+        'shop-kids',
         'more-merch'
       ]
     }
@@ -119,7 +120,7 @@ export default Vue.extend({
         breadcrumbs.push({
           label: this.$store.getters['brands/currentBrandTitle'],
           url: {
-            name: "Collection",
+            name: "BrandHome",
             params: {
               collectionHandle: this.$route.params.collectionHandle
             }

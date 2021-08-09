@@ -34,18 +34,24 @@
               :size-guide="sizeGuide"
               @select="selectedVariantId = $event"
             />
+            <div v-if="soldOutMessage" class="note warning">
+              <i class="uil uil-fire" />
+              {{ soldOutMessage }}
+            </div>
             <FormAddToCart
+              v-if="!soldOutMessage"
               :selectedVariantIdDecoded="selectedVariantIdDecoded"
               :quantity="quantity"
               :buyButtonLabel="buyButtonLabel"
               :showPlaceholders="showPlaceholders"
               @changeQuantity="quantity=$event"
+              @addToCart="$emit('addToCart', $event)"
             />
             <div class="note" v-show="!showPlaceholders">
               <i class="uil uil-truck" />
               SPECIAL Flat Rate Shipping $4.00
-              <p v-if="$store.getters['users/isOutsideShippingZone']">We ship to the United States and 12 US territories.</p>
-              <p class="warning" v-if="$store.getters['users/isOutsideShippingZone']">We do NOT ship anywhere outside the 50 United States and 12 US territories.</p>
+              <p v-if="$store.getters['customers/isOutsideShippingZone']">We ship to the United States and 12 US territories.</p>
+              <p class="warning" v-if="$store.getters['customers/isOutsideShippingZone']">We do NOT ship anywhere outside the 50 United States and 12 US territories.</p>
             </div>
             <b v-show="description">DESCRIPTION:</b>
             <div v-html="description" class="description"/>
@@ -116,6 +122,16 @@ export default Vue.extend({
       }
       return null
     },
+    soldOutMessage(){
+      if(this.selectedVariant && !this.selectedVariant.availableForSale){
+        if(this.options.length > 1 || this.colors.length > 1){
+          return 'This option is sold out.'
+        }else{
+          return 'SOLD OUT'
+        }
+      }
+      return null;
+    },
     selectedVariantPrice(){
       return this.selectedVariant ? Number(this.selectedVariant.price) : null
     },
@@ -131,7 +147,7 @@ export default Vue.extend({
       return this.product ? `${this.product.title}${this.selectedColor? ` - ${this.selectedColor.label}`: ''}` : ''
     },
     colors(){
-      return this.$store.state.products.colorOptions[this.$route.params.productHandle]
+      return this.$store.state.products.colorOptions[this.$route.params.productHandle] || []
     },
     selectedColor(){
       if(this.colors){
@@ -140,7 +156,7 @@ export default Vue.extend({
       return '';
     },
     options(){
-      return this.product && this.product.options ? this.product.options : null
+      return this.product && this.product.options ? this.product.options : []
     },
     images(){
       if(this.product && this.product.images){
@@ -187,13 +203,25 @@ export default Vue.extend({
         breadcrumbs.push({
           label: this.$store.getters['brands/currentBrandTitle'],
           url: {
-            name: "Collection",
+            name: "BrandHome",
             params: {
               collectionHandle: this.$store.getters['brands/currentBrandHandle']
             }
           }
         });
         if(this.$route.query.tag){
+          if(this.$route.query.tag.includes('design')){
+            breadcrumbs.push({
+              label: 'Shop By Design',
+              url: {
+                name: "Designs",
+                params: {
+                  collectionHandle: this.$route.params.collectionHandle,
+                  tag: this.$route.query.tag
+                }
+              }
+            });
+          }
           breadcrumbs.push({
             label: Utilities.tagReadable(this.$route.query.tag),
             url: {
@@ -229,7 +257,7 @@ export default Vue.extend({
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.fetchProductColorData(to.params.productHandle);
-      vm.$store.dispatch('users/getGeoLocation');
+      vm.$store.dispatch('customers/getGeoLocation');
     })
   },
   beforeRouteUpdate(to, from, next) {

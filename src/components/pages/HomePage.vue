@@ -27,9 +27,19 @@
         :tag="tag.tag"
       />
     </Strip>
-    <Strip class="full-width header-image" role="banner">
+    <Strip class="full-width header-image mid-hero" role="banner">
       <router-link :to="$store.getters['brands/currentBrandPath']('sections.home.midHero.link') || '/'">
         <img :src="assetUrl(`${brand}-mid-hero.jpg`)" class="header-image" loading="lazy" :alt="pageTitle" />
+        <div class="hero-overlay-container">
+          <div class="hero-overlay">
+            <div class="heading-1" >
+              {{ $store.getters['brands/currentBrandPath']('sections.home.midHero.title') }}
+            </div>
+            <Button class="uppercase" :style="{ backgroundColor: $store.getters['brands/currentBrandColorLight'], color: 'black' }">
+              {{ $store.getters['brands/currentBrandPath']('sections.home.midHero.buttonLabel') }}
+            </Button>
+          </div>
+        </div>
       </router-link>
     </Strip>
     <span class="heading-1 center">DESIGNS</span>
@@ -53,6 +63,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import Button from "../atoms/Button.vue";
 import Strip from "../atoms/Strip.vue";
 import TagCard from "../molecules/TagCard.vue";
 import ProductCarousel from "../organisms/ProductCarousel.vue";
@@ -65,6 +76,7 @@ export default Vue.extend({
     }
   },
   components: {
+    Button,
     Strip,
     ProductCarousel,
     TagCard
@@ -147,12 +159,47 @@ export default Vue.extend({
   }
 
   .header-image{
+    position: relative;
+    &.mid-hero{
+      height: 80vw;
+    }
     img{
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+    .hero-overlay-container{
+      position: absolute;
+      width: 100%;
+      top:0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .hero-overlay{
+      backdrop-filter: brightness(0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 2em 3em;
+      .heading-1{
+        color: white;
+        text-transform: uppercase;
+        text-align: center;
+        line-height: 1em;
+        font-size: 1.5em;
+      }
+    }
   }
+
+
+
   .tag-cards{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -218,6 +265,15 @@ export default Vue.extend({
         margin-bottom: 2em;
       }
       padding: 2em 50px !important;
+    }
+    .hero-overlay{
+      max-width: 60%;
+    }
+    .mid-hero{
+      height: auto !important;
+      .heading-1{
+        font-size: 44px !important;
+      }
     }
   }
   @media(min-width: @thirdbreakpoint){

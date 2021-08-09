@@ -5,12 +5,12 @@ import cart from './cart';
 import brands from './brands';
 import products from './products';
 import pages from './pages';
-import users from './users';
+import customers from './customers';
 Vue.use(Vuex);
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
-  modules: ['users']
+  modules: ['customers']
 })
 
 export default new Vuex.Store({
@@ -20,6 +20,6 @@ export default new Vuex.Store({
     brands,
     products,
     pages,
-    users
+    customers
   }
 });

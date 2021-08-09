@@ -1,15 +1,21 @@
 <template>
   <div id="vue-app" :class="classes" role="application">
-    <TheHeader />
+    <TheHeader @toggleCart="showCart = !showCart"/>
     <div ref="contentForLayout" />
-    <router-view class="page-content" rol="main"/>
+    <router-view
+      class="page-content"
+      rol="main"
+      @addToCart="addToCart"
+    />
     <TheFooter />
+    <TheCart :class="{closed: !showCart}" @close="showCart=false"/>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
 import TheHeader from './components/organisms/TheHeader.vue';
 import TheFooter from './components/organisms/TheFooter.vue';
+import TheCart from './components/organisms/TheCart.vue';
 
 export default Vue.extend({
   metaInfo: {
@@ -27,11 +33,13 @@ export default Vue.extend({
   },
   components: {
     TheHeader,
-    TheFooter
+    TheFooter,
+    TheCart
   },
   data(){
     return {
-      contentForLayout: null
+      contentForLayout: null,
+      showCart: false
     }
   },
   mounted(){
@@ -44,6 +52,7 @@ export default Vue.extend({
         this.contentForLayout = contentElement
       }
     }
+    this.$store.dispatch('cart/initialize');
   },
   computed: {
     brand(){
@@ -62,7 +71,7 @@ export default Vue.extend({
         classes[this.brand] = true;
       }
       return classes;
-    }
+    },
   },
   watch: {
     $route: {
@@ -76,10 +85,18 @@ export default Vue.extend({
         }
       }
     }
+  },
+  methods: {
+    addToCart(payload){
+      this.$store.dispatch('cart/addItem', payload).then(() => {
+        this.showCart = true;
+      })
+    }
   }
 });
 </script>
 <style lang="less">
+  @import './less/unicons.css';
   @import './less/variables';
   #vue-app{
     line-height: 1.5;
@@ -100,7 +117,7 @@ export default Vue.extend({
     }
   }
   .heading-1{
-    font-size: 35px;
+    font-size: 25px;
     font-weight: bolder;
     display: block;
     margin-bottom: 0.25em;
@@ -111,6 +128,9 @@ export default Vue.extend({
   @media(min-width: @thirdbreakpoint){
     #vue-app{
       padding-top: 100px;
+    }
+    .heading-1{
+      font-size: 35px;
     }
   }
 </style>

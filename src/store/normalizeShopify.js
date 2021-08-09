@@ -8,7 +8,9 @@ const normalizeShopifyCart = shopifyCart => {
 			id: itemObj.variant_id,
 			title: itemObj.product_title,
 			variant: itemObj.variant_title,
+			handle: itemObj.handle,
 			vendor: itemObj.vendor,
+      options_with_values: itemObj.options_with_values,
 			image: itemObj.image,
 			price: itemObj.price,
 			quantity: itemObj.quantity
@@ -25,11 +27,13 @@ const normalizeShopifyProduct = shopifyProduct => {
 		[shopifyProduct.variant_id]: {
 			id: shopifyProduct.variant_id,
 			image: shopifyProduct.image,
+			title: shopifyProduct.product_title,
+			variant: shopifyProduct.variant_title,
 			price: shopifyProduct.price,
+			handle: shopifyProduct.handle,
 			vendor: shopifyProduct.vendor,
 			quantity: shopifyProduct.quantity,
-			title: shopifyProduct.product_title,
-			variant: shopifyProduct.variant_title
+      options_with_values: shopifyProduct.options_with_values,
 		}
 	};
 };

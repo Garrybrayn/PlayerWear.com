@@ -24,7 +24,7 @@ export default Vue.extend({
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 12;
   }
   button{
@@ -35,5 +35,7 @@ export default Vue.extend({
     margin: 1em;
     align-self: flex-end;
     justify-self: flex-end;
+    background: white;
+    color: black;
   }
 </style>

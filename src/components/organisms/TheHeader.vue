@@ -41,7 +41,16 @@
         </router-link>
       </div>
       <div class="aside right">
-
+        <button @click="$emit('toggleCart')" aria-label="Search">
+          <IconSvg name="magnifying-glass" />
+          <span class="label">Search</span>
+        </button>
+        <button @click="$emit('toggleCart')" aria-label="View Shopping Cart">
+          <i class="uil-shopping-cart icon">
+            <span class="cart-item-count">{{ $store.getters['cart/uniqueItemCount']}}</span>
+          </i>
+          <span class="label">View Cart</span>
+        </button>
       </div>
     </header>
 
@@ -355,11 +364,38 @@ export default Vue.extend({
 
   .aside{
     flex-grow: 1;
-    gap: 2em;
+    gap: 1em;
     display: flex;
     flex-basis: 0;
     &.right{
       justify-content: flex-end;
+      button{
+        background: transparent;
+        margin:0;
+        padding: 0;
+        color: white;
+        border: none;
+        position: relative;
+      }
+      .icon{
+        font-size: 1.4rem;
+        vertical-align: middle;
+      }
+      .label{
+        display: none;
+      }
+      .cart-item-count{
+        position: absolute;
+        right: -0.5em;
+        font-size: 11px;
+        background: white;
+        border:2px solid black;
+        border-radius: 1.5rem;
+        color: black;
+        padding: 0.2em 0.3em;
+        font-weight: 700;
+        font-style: normal;
+      }
     }
     a{
       color: white;
@@ -371,8 +407,10 @@ export default Vue.extend({
     display: flex;
     flex-direction: column;
     flex-grow: 0;
+    height: 45px;
+    width: 111px;
     img{
-      max-width: 150px;
+      max-width: 111px;
       max-height: 45px;
       object-fit: contain;
       height: 100%;
@@ -385,6 +423,7 @@ export default Vue.extend({
   .third-party-brand .house-brand-link{
     display: none;
   }
+
 
   .desktop-menu {
     display: none;
@@ -439,10 +478,14 @@ export default Vue.extend({
     .mobile-menu-container{
       display: none;
     }
-    .logo-container img{
-      max-width: 360px;
-      max-height: 77px;
-      object-fit: contain;
+    .logo-container {
+        width: 360px;
+        height: 80px;
+        img{
+          max-width: 360px;
+          max-height: 80px;
+          object-fit: contain;
+        }
     }
     .third-party-brand .house-brand-link{
       display: block;
@@ -456,7 +499,19 @@ export default Vue.extend({
       gap: 3.5em;
       margin-left: 1.5em;
     }
+    .aside.right{
+      .icon{
+        font-size: 1.75rem;
+      }
+      button:last-child{
+        margin-right: 2em;
+      }
+      .cart-item-count{
+        font-size: 0.8rem;
+      }
+    }
   }
+
 
   .fade-enter-active, .fade-leave-active {
     transition: opacity 250ms;

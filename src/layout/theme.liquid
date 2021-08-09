@@ -3,250 +3,138 @@
 
 <!doctype html>
 <html lang="en">
-<head>
-    {%- capture pageTitle -%}
+    <head>
+        {%- capture pageTitle -%}
 
-        {%- if request.path == '/' -%}
-            PlayerWear.com - Official Merch for Musicians & Music Lovers
-        {%- elsif request.path contains '/product/' -%}
-            {%- comment -%} Alternative Route for Product Page {%- endcomment -%}
-            {{- product.title -}}
-        {%- elsif request.path contains '/pages/' -%}
-            {% if brandName.size > 0 %}
-                {%- comment -%} Brand Landing Page {%- endcomment -%}
-                Official {{ brandName | capitalize }} Merch | T-Shirts, Hats, Hoodies & More
-            {% else %}
-                {%- comment -%} Regular Page {%- endcomment -%}
-                {{- page_title}} | Official Merch
-            {%- endif -%}
-        {%- elsif request.path contains '/collections/all/designs' -%}
-            {%- comment -%} Designs - all brands {%- endcomment -%}
-            Official Merch Designs for Musicians & Music Lovers
-        {%- elsif request.path contains '/collections/all/' -%}
-            {%- comment -%} TagInCollection - all brands {%- endcomment -%}
-            {%- for tag in current_tags -%}
-                {%- assign words = tag | split: '-' -%}
-                {%- for word in words -%} {{ word | capitalize }}*{%- endfor -%}
-            {%- endfor -%}
-            | Official Merch for Musicians & Music Lovers
-        {%- elsif request.path contains '/collections/all' -%}
-            {%- comment -%} Collection - all brands {%- endcomment -%}
-             Official Merch | T-Shirts, Hats, Hoodies & More
-        {%- elsif request.path contains '/collections' -%}
-            {%- if request.path contains '/designs' -%}
-                {%- comment -%} Designs - brand-specific {%- endcomment -%}
-                Official {{ brandName | capitalize }} Merch Designs
-            {%- elsif current_tags -%}
-                {%- comment -%} TagInCollection - brand-specific {%- endcomment -%}
-                Official {{ brandName | capitalize -}}*
+            {%- if request.path == '/' -%}
+                PlayerWear.com - Official Merch for Musicians & Music Lovers
+            {%- elsif request.path contains '/product/' -%}
+                {%- comment -%} Alternative Route for Product Page {%- endcomment -%}
+                {{- product.title -}}
+            {%- elsif request.path contains '/pages/' -%}
+                {% if brandName.size > 0 %}
+                    {%- comment -%} Brand Landing Page {%- endcomment -%}
+                    Official {{ brandName | capitalize }} Merch | T-Shirts, Hats, Hoodies & More
+                {% else %}
+                    {%- comment -%} Regular Page {%- endcomment -%}
+                    {{- page_title}} | Official Merch
+                {%- endif -%}
+            {%- elsif request.path contains '/collections/all/designs' -%}
+                {%- comment -%} Designs - all brands {%- endcomment -%}
+                Official Merch Designs
+            {%- elsif request.path contains '/collections/all/' -%}
+                {%- comment -%} TagInCollection - all brands {%- endcomment -%}
                 {%- for tag in current_tags -%}
                     {%- assign words = tag | split: '-' -%}
                     {%- for word in words -%} {{ word | capitalize }}*{%- endfor -%}
                 {%- endfor -%}
-            {%- elsif product.title -%}
-                {%- comment -%} Product {%- endcomment -%}
-                {{- product.title -}}
-            {%- else -%}
-                {%- comment -%} Product {%- endcomment -%}
-                Official {{ brandName | capitalize }} Merch | T-Shirts, Hats, Hoodies & More
+                | Official Merch
+            {%- elsif request.path contains '/collections/all' -%}
+                {%- comment -%} Collection - all brands {%- endcomment -%}
+                 Official Merch | T-Shirts, Hats, Hoodies & More
+            {%- elsif request.path contains '/collections' -%}
+                {%- if request.path contains '/designs' -%}
+                    {%- comment -%} Designs - brand-specific {%- endcomment -%}
+                    Official {{ brandName | capitalize }} Merch Designs
+                {%- elsif current_tags -%}
+                    {%- comment -%} TagInCollection - brand-specific {%- endcomment -%}
+                    Official {{ brandName | capitalize -}}*
+                    {%- for tag in current_tags -%}
+                        {%- assign words = tag | split: '-' -%}
+                        {%- for word in words -%} {{ word | capitalize }}*{%- endfor -%}
+                    {%- endfor -%}
+                {%- elsif product.title -%}
+                    {%- comment -%} Product {%- endcomment -%}
+                    {{- product.title -}}
+                {%- else -%}
+                    {%- comment -%} Product {%- endcomment -%}
+                    Official {{ brandName | capitalize }} Merch | T-Shirts, Hats, Hoodies & More
+                {%- endif -%}
             {%- endif -%}
-        {%- endif -%}
-    {%- endcapture -%}
+        {%- endcapture -%}
 
-    {% assign pageTitle = pageTitle | split: "*" | join: " " %}
+        {% assign pageTitle = pageTitle | split: "*" | join: " " %}
 
-    {%- capture fullPageTitle -%}
-        {{- pageTitle | strip_newlines -}}*
-        {%- unless page_title contains 'PlayerWear.com' %}for Musicians & Music Lovers by PlayerWear.com{%- endunless -%}
-    {%- endcapture -%}
-    {% assign fullPageTitle = fullPageTitle | split: "*" | join: " " %}
+        {%- capture fullPageTitle -%}
+            {{- pageTitle | strip_newlines -}}*
+            {%- unless page_title contains 'PlayerWear.com' %}for Musicians & Music Lovers by PlayerWear.com{%- endunless -%}
+        {%- endcapture -%}
+        {% assign fullPageTitle = fullPageTitle | split: "*" | join: " " %}
 
-    <title>
-        {{- fullPageTitle | escape -}}
-    </title>
-    {% if page_description %}
-        <meta name="description" content="{{- page_description | escape -}}"/>
-        <meta name="og:description" content="{{- page_description | escape -}}"/>
-    {% else %}
-        <meta name="description" content="{{- fullPageTitle | escape -}}"/>
-        <meta name="og:description" content="{{- fullPageTitle | escape -}}"/>
-    {% endif %}
-    {%- if product.title -%}
-        <meta property="og:type" content="product">
-        <meta property="og:title" content="{{- pageTitle | escape -}}" />
-    {%- elsif collection.id -%}
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="{{- pageTitle | escape -}}" />
-    {%- else -%}
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="{{- fullPageTitle | escape -}}" />
-    {%- endif %}
-    <meta property="og:locale" content="en_US" />
+        <title>
+            {{- fullPageTitle | escape -}}
+        </title>
 
-    <link rel="canonical" href="{{ canonical_url }}"/>
-    <link href="https://static.boostertheme.co" rel="preconnect" crossorigin>
-    <link rel="dns-prefetch" href="//static.boostertheme.co">
-    <link href="https://theme.boostertheme.com" rel="preconnect" crossorigin>
-    <link rel="dns-prefetch" href="//theme.boostertheme.com">
-    <link rel="preload" href="https://static.boostertheme.co/js/supportscreen.min.js,theme.5_1_3.min.js" as="script">
-    <link rel="prefetch" href="https://static.boostertheme.co/js/supportscreen.min.js,theme.5_1_3.min.js">
-    <meta charset="utf-8">
-    <meta name="robots" content="index, follow">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta property="og:url" content="https://player-wear.com{{ request.path }}" />
+        <meta charset="utf-8">
+        <meta name="robots" content="index, follow">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 
-    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:url" content="https://player-wear.com{{ request.path }}" />
+        {% if page_description %}
+            <meta name="description" content="{{- page_description | escape -}}"/>
+            <meta name="og:description" content="{{- page_description | escape -}}"/>
+        {% else %}
+            <meta name="description" content="{{- fullPageTitle | escape -}}"/>
+            <meta name="og:description" content="{{- fullPageTitle | escape -}}"/>
+        {% endif %}
+        {%- if product.title -%}
+            <meta property="og:type" content="product">
+            <meta property="og:title" content="{{- pageTitle | escape -}}" />
+        {%- elsif collection.id -%}
+            <meta property="og:type" content="website">
+            <meta property="og:title" content="{{- pageTitle | escape -}}" />
+        {%- else -%}
+            <meta property="og:type" content="website">
+            <meta property="og:title" content="{{- fullPageTitle | escape -}}" />
+        {%- endif %}
 
-    {% if settings.favicon != blank %}
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | img_url: '180x180', crop: 'center' }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ settings.favicon | img_url: '32x32', crop: 'center' }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ settings.favicon | img_url: '16x16', crop: 'center' }}">
-        <link rel="manifest" href="{{ 'site.webmanifest' | asset_url }}">
-        <meta name="msapplication-TileColor" content="{{ settings.primaryFill }}">
-        <meta name="theme-color" content={{ settings.primaryFill }}">
-    {% endif %}
 
-    {% capture editor_check %}{% section 'placeholder_section' %}{% endcapture %}
-    {% if editor_check contains 'data-shopify-editor-section' %}
-      {% assign is_editor = true %}
-    {% else %}
-      {% assign is_editor = false %}
-    {% endif %}
+        <link rel="canonical" href="{{ canonical_url }}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-    {% if is_editor %}
-      {{ content_for_header }}
-      {% assign is_admin = true %}
-    {% else %}
-      {% capture admin_check %}{{ content_for_header }}{% endcapture %}
-      {{ admin_check }}
-      {% if admin_check contains 'previewBarInjector' or admin_check contains 'adminBarInjector' %}
-        {% assign is_admin = true %}
-      {% else %}
-        {% assign is_admin = false %}
-      {% endif %}
-    {% endif %}
+        {% if settings.favicon != blank %}
+            <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | img_url: '180x180', crop: 'center' }}">
+            <link rel="icon" type="image/png" sizes="32x32" href="{{ settings.favicon | img_url: '32x32', crop: 'center' }}">
+            <link rel="icon" type="image/png" sizes="16x16" href="{{ settings.favicon | img_url: '16x16', crop: 'center' }}">
+            <link rel="manifest" href="{{ 'site.webmanifest' | asset_url }}">
+            <meta name="msapplication-TileColor" content="#000000">
+            <meta name="theme-color" content="#000000">
+        {% endif %}
 
-    {{ 'global.css' | asset_url | stylesheet_tag }}
+        {{ 'global.css' | asset_url | stylesheet_tag }}
 
-    {% unless settings.headHTML == blank %}
-      {{ settings.headHTML }}
-    {% endunless %}
-    {% unless settings.headJS == blank %}
-      <script>
-      {{ settings.headJS }}
-      </script>
-    {% endunless %}
-    {{ 'https://code.jquery.com/jquery-3.6.0.min.js' | script_tag }}
-    {{ 'utilities.js' | asset_url | script_tag }}
+        <script>
+            window.assetUrl = `{{ 'theme.js' | asset_url }}/`.replace('theme.js','').split('?')[0];
+        </script>
+        {{ content_for_header}}
+    </head>
+    <body>
+        <div id="vue-app"></div>
+        {{ 'app.js' | asset_url | script_tag }}
+        {{ 'chunk-vendors.js' | asset_url | script_tag }}
 
-    {% capture brandName %}{% render 'brand-name' %}{% endcapture %}
-    {% assign brandName = brandName | strip_newlines |  strip |  downcase %}
-    {% if brandName.size > 0 %}
-        {% capture stylesheetFilename %}{{ brandName }}.css{% endcapture %}
-        {{ stylesheetFilename | asset_url | stylesheet_tag }}
-        {% if brandName == "korg" or brandName == "vox" or brandName == "blackstar" %}
-            {{ 'theme-black.css' | asset_url | stylesheet_tag }}
-        {%  endif %}
-    {% else %}
-        {{ 'theme-black.css' | asset_url | stylesheet_tag }}
-        {{ 'house-brand.css' | asset_url | stylesheet_tag }}
-    {%  endif %}
-
-  {% render 'shogun-head' %}
-
-<script>
-    window.assetUrl = `{{ 'theme.js' | asset_url }}/`.replace('theme.js','').split('?')[0];
-</script>
-</head>
-  <body>
-    <div id="booster__popup--holder" class="booster__popup--holder"></div>
-    {% section 'header' %}
-    <div id="vue-app"></div>
-    <div id="content_for_layout" style="display: none;">
-        {{ content_for_layout }}
-    </div>
-    {{ 'app.js' | asset_url | script_tag }}
-    {{ 'chunk-vendors.js' | asset_url | script_tag }}
-
-    <script>
-        {% capture locales %}
-        {
-            {% if settings.multilanguage %}
-            {% for locale in shop.enabled_locales %}
-          "{{ locale.iso_code | downcase }}"
-        :
-          {
-            primary: {{ locale.primary }},
-            url: "{{ locale.root_url }}"
-          }
-        ,
-            {% endfor %}
-            {% endif %}
-        }
-        {% endcapture %}
-        {% capture currencies %}
-        [
-            {% unless settings.shopCurrency == 'none' %}
-            {% if settings.shopCurrency == 'convert' %}
-            {% assign currencyArr = settings.enabledCurrencies | upcase | replace: ' ', '' | split: ',' %}
-            {% unless currencyArr contains shop.currency.iso_code %}
-          "{{ shop.currency.iso_code | upcase }}",
-            {% endunless %}
-            {% for currency in currencyArr %}
-          "{{ currency | strip }}",
-            {% endfor %}
-            {% else %}
-            {% for currency in shop.enabled_currencies %}
-          "{{ currency.iso_code | upcase }}",
-            {% endfor %}
-            {% endif %}
-            {% endunless %}
-        ]
-        {% endcapture %}
-
-        const bstri18n = {
-          locales: {{ locales }},
-          currencies: {{ currencies }},
-          currency_mode: "{{ settings.shopCurrency }}",
-          currency_format: "{{ shop.money_with_currency_format }}"
-        }
-    </script>
-    <template id="productCardTemplate">
-        {% render 'product-card-template' %}
-    </template>
-    <script>
-        {% capture emptySearch %}
-            {% for item in collections[settings.emptySearch].products limit: 5 %}
-                <div class="col-12 col-md-1-5">
-                    {% render 'product-card-search', product: item, dsize: '1-5' %}
-                </div>
-            {% endfor %}
-        {% endcapture %}
-        const emptySearch = `{{ emptySearch }}`;
-        {% render 'shop-info' %}
-        const _settings = {{ settings | json }};
-        const _bstrLocale = {
-          buttons: {
-            sold_out: `{{ 'general.buttons.sold_out' | t | strip }}`,
-            select: `{{ 'general.buttons.add_to_cart_selection' | t | strip }}`,
-            adding: `{{ 'general.buttons.add_to_cart_loading' | t | strip }}`
-          },
-          recentlyBought: {
-            purchased: `{{ 'recently_bought.purchased' | t | strip }}`,
-            ago: `{{ 'recently_bought.ago' | t | strip }}`,
-            someone: `{{ 'recently_bought.someone' | t | strip }}`
-          }
-        }
-    </script>
-    {{ "/services/javascripts/currencies.js" | script_tag }}
-    {% if false %}
-        <script src="https://static.boostertheme.co/js/supportscreen.min.js,theme_5_1_3.min.js" onload="initTheme();"></script>
-    {% endif %}
-    {{ 'unicons.css' | asset_url | stylesheet_tag }}
-    {% include 'mw_CS_objects' %}
-
+        <div id="user_button" class="user__button" style="display: none">
+            <label for="user__button">
+                {% render 'get-icon', icon: 'user' %}
+                <span style="display: none;">Access My Account</span>
+            </label>
+            <input type="checkbox" class="hide" id="user__button">
+            <div class="user__holder">
+                {% if customer %}
+                    <a class="user__link" href="{{ routes.account_url }}">{% render 'get-icon', icon: 'user' %}Account</a>
+                    <a class="user__link" href="{{ routes.account_logout_url }}">{% render 'get-icon', icon: 'signout' %}Log out</a>
+                {% else %}
+                    <a class="user__link" href="{{ routes.account_login_url }}">{% render 'get-icon', icon: 'signin' %}Sign In</a>
+                    <a class="user__link" href="{{ routes.account_register_url }}">{% render 'get-icon', icon: 'signup' %} Register</a>
+                {% endif %}
+            </div>
+        </div>
+        <div id="content_for_layout" style="display: none;">
+            {{ content_for_layout }}
+        </div>
     </body>
 </html>

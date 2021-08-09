@@ -161,7 +161,7 @@ export default {
           .then(product => {
 
             const productsQuery = client.graphQLClient.query((root) => {
-              root.addConnection('products', {args: {first: 10, query: `title:${product.title}`}}, (product) => {
+              root.addConnection('products', {args: {first: 10, query: `title:"${product.title}"`}}, (product) => {
                 product.add('title');
                 product.add('handle');
                 product.addConnection('metafields', {args: {first: 10}}, (metafield) => {

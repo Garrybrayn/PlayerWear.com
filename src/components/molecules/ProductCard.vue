@@ -18,7 +18,13 @@
       <span v-if="placeholder" class="placeholder-content" />
     </div>
     <div v-if="showBuyButton">
-      <FormAddToCart :selectedVariantIdDecoded="selectedVariantIdDecoded" :show-quantity-selector="false" :quantity="quantity" :buy-button-label="buyButtonLabel"/>
+      <FormAddToCart
+        :selectedVariantIdDecoded="selectedVariantIdDecoded"
+        :show-quantity-selector="false"
+        :quantity="quantity"
+        :buy-button-label="buyButtonLabel"
+        @addToCart="$emit('addToCart', $event)"
+      />
     </div>
   </component>
 </template>

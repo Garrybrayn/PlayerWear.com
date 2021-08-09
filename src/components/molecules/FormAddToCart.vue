@@ -1,22 +1,16 @@
 <template>
-  <form class="buy-button-container" role="form">
-    <label for="quantity-input" style="display: none;">Quantity</label>
-    <input v-show="false" type="number" :value="quantity" data-qty-input @change="$emit('changeQuantity', $event)" id="quantity-input"/>
-    <input name="id" type="hidden" :value="selectedVariantIdDecoded" :data-variant-id="selectedVariantIdDecoded" />
-    <InputNumber v-if="showQuantitySelector" :value="quantity" data-qty-input @change="$emit('changeQuantity', $event)" />
+  <div class="buy-button-container" role="form">
+    <InputNumber v-if="showQuantitySelector" :value="quantity" @change="$emit('changeQuantity', $event)" />
     <Button
       v-if="!showPlaceholders"
-      type="submit"
-      :disabled="selectedVariantIdDecoded?false:true"
-      :class="{'buy-button': true, 'full-width': true, disabled: selectedVariantIdDecoded?false:true}"
-      @click.native="addToCart($event)"
-      :data-original-text="buyButtonLabel"
       aria-label="Add to Cart"
-    >
-      <span data-button-text>{{buyButtonLabel}}</span>
-    </Button>
+      :disabled="disabled"
+      :class="{'buy-button': true, 'full-width': true, disabled}"
+      :label="buyButtonLabel"
+      @click.native="addToCart($event)"
+    />
     <span class="placeholder-content" />
-  </form>
+  </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
@@ -49,24 +43,18 @@ export default Vue.extend({
     InputNumber,
     Button
   },
-  data(){
-    return {
-      cartElement: null
+  computed: {
+    disabled(){
+      return this.selectedVariantIdDecoded ? false : true
     }
   },
-  mounted(){
-    this.cartElement = document.getElementById('booster__popup--holder');
-  },
   methods: {
-    openCartOnce(){
-      document.getElementById('minicart__button').click();
-      this.cartElement.removeEventListener("DOMSubtreeModified", this.openCartOnce, false);
-    },
-    addToCart(event){
-      event.preventDefault();
+    addToCart(){
       if(this.selectedVariantIdDecoded){
-        this.cartElement.addEventListener("DOMSubtreeModified", this.openCartOnce, false);
-        boosterCart.addToCart(event.currentTarget, event)
+        this.$emit('addToCart', {
+          id: this.selectedVariantIdDecoded,
+          quantity: this.quantity
+        })
       }
     }
   }

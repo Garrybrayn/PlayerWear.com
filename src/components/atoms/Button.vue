@@ -136,8 +136,7 @@ export default Vue.extend({
     }
     &.uppercase{
       text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     &.secondary {
