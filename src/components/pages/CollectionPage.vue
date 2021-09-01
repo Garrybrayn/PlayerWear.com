@@ -80,6 +80,7 @@ export default Vue.extend({
     return {
       loadNextPage: null,
       initialLoadFinished: false,
+      width: null,
       tags: [
         'shirts',
         'womens-tops',
@@ -213,7 +214,6 @@ export default Vue.extend({
           label: this.tagReadable(this.$route.params.tag.replace(this.$store.getters['brands/currentBrandTitle'].toLowerCase(),''))
         });
       }
-
       return breadcrumbs;
     }
   },
@@ -225,13 +225,13 @@ export default Vue.extend({
         this.$store.dispatch('load', {
           tag: to.params.tag,
           vendor: to.params.collectionHandle,
-          first: 6
+          first: this.isDesktop() ? 6 : 4
         }).then(async loadNextPage => {
 
           // Initial load has finished.
           this.initialLoadFinished = true;
           this.loadNextPage = loadNextPage || false;
-
+          console.log(this.shouldLoadNextPage())
           if(this.shouldLoadNextPage()){
             // There's empty space and more content to load
             // Load the next page.
@@ -252,7 +252,7 @@ export default Vue.extend({
     }
   },
   mounted(){
-
+    this.width = window.innerWidth;
     window.addEventListener('scroll', this.onScroll, { passive: true });
   },
   beforeDestroy(){

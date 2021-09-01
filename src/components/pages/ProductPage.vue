@@ -37,7 +37,7 @@
             />
             <div v-if="soldOutMessage" class="note warning">
               <div>
-                <i class="uil uil-fire" />
+                <IconSvg name="fire" />
                 {{ soldOutMessage }}
               </div>
             </div>
@@ -91,7 +91,7 @@
     <Modal v-if="showShippingDetails" @close="showShippingDetails=false">
       <div class="modal-contents">
         <div class="heading-1">
-          <i class="uil uil-truck" />$4.00 Flat Rate Shipping
+          <IconSvg name="truck" />$4.00 Flat Rate Shipping
         </div>
         <p>
           Our special Flat Rate Shipping applies to shipments to

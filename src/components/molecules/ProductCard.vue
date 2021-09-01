@@ -1,9 +1,18 @@
 <template>
   <component :is="componentType" :class="{'product-card': true, placeholder, 'sold-out': soldOut }" :to="route" :disabled="product?false:true" role="tab" :aria-label="escape(title)" aria-hidden="false">
-    <ProductImage :src="imageOne" :alt="altText" class="first" />
-    <ProductImage :src="imageTwo || imageOne" :alt="altText" :class="{second: true, zoom:imageTwo?false:true}" :preload="true"/>
+    <ProductImage
+      :src="imageOne"
+      :alt="altText"
+      class="first" />
+    <ProductImage
+      v-if="isDesktop()"
+      :src="imageTwo || imageOne"
+      :alt="altText"
+      :class="{second: true, zoom:imageTwo?false:true}"
+      :preload="true"
+    />
     <div v-if="showProductIcon" class="product-icon" :style="{color: $store.getters['brands/currentBrandColor']}" >
-      <i :class="`uil uil-${showProductIcon}`"></i>
+      <IconSvg :name="showProductIcon" />
     </div>
     <div v-if="showProductPrice" class="product-price">
       {{ price }}
@@ -18,7 +27,7 @@
       <span v-if="placeholder" class="placeholder-content" />
     </div>
     <div v-if="soldOut" class="product-sold-out">
-      SOLD OUT<i class="uil-fire" />
+      SOLD OUT<IconSvg name="fire" />
     </div>
     <div v-if="showBuyButton">
       <FormAddToCart
@@ -35,6 +44,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import FormAddToCart from "../molecules/FormAddToCart.vue";
+import IconSvg from "../atoms/IconSvg.vue";
 import ProductImage from "../atoms/ProductImage.vue";
 
 export default Vue.extend({
@@ -69,7 +79,8 @@ export default Vue.extend({
   },
   components: {
     ProductImage,
-    FormAddToCart
+    FormAddToCart,
+    IconSvg
   },
   data(){
     return {

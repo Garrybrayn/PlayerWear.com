@@ -2,20 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Meta from 'vue-meta'
 import store from '../store';
-import HomePage from '../components/pages/HomePage.vue';
-import ContactPage from '../components/pages/ContactPage.vue';
-import UpsellPage from '../components/pages/UpsellPage.vue';
-import ProductPage from '../components/pages/ProductPage.vue';
-import CollectionPage from '../components/pages/CollectionPage.vue';
-import DesignsPage from '../components/pages/DesignsPage.vue';
-import ShopifyPage from '../components/pages/ShopifyPage.vue';
-import MissingPage from '../components/pages/MissingPage.vue';
-import CheckoutOptionsPage from '../components/pages/CheckoutOptionsPage.vue';
-import AccountProfilePage from '../components/pages/AccountProfilePage.vue';
-import AccountSignInPage from '../components/pages/AccountSignInPage.vue';
-import AccountRegisterPage from "@/components/pages/AccountRegisterPage";
-import AccountPasswordResetPage from "@/components/pages/AccountPasswordResetPage";
-import AccountInvalidTokenPage from "@/components/pages/AccountInvalidTokenPage";
 
 Vue.use(VueRouter);
 Vue.use(Meta);
@@ -28,12 +14,12 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: HomePage,
+    component: () => import('../components/pages/HomePage.vue'),
   },
   {
     path: `/pages/contact`,
     name: 'Contact',
-    component: ContactPage,
+    component: () => import('../components/pages/ContactPage.vue'),
   },
 
   // =============================================
@@ -48,7 +34,7 @@ const routes = [
   {
     path: `/pages/:collectionHandle(${store.getters['brands/allHandles'].join('|')})`,
     name: 'BrandHome',
-    component: HomePage,
+    component: () => import('../components/pages/HomePage.vue'),
   },
 
   // =============================================
@@ -57,7 +43,7 @@ const routes = [
   {
     path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)/designs`,
     name: 'Designs',
-    component: DesignsPage,
+    component: () => import('../components/pages/DesignsPage.vue'),
   },
 
   // =============================================
@@ -66,12 +52,12 @@ const routes = [
   {
     path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)`,
     name: 'Collection',
-    component: CollectionPage,
+    component: () => import('../components/pages/CollectionPage.vue'),
   },
   {
     path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)/:tag`,
     name: 'TagInCollection',
-    component: CollectionPage,
+    component: () => import('../components/pages/CollectionPage.vue'),
   },
 
   // =============================================
@@ -80,7 +66,7 @@ const routes = [
   {
     path: `/products/:productHandle`,
     name: 'Product',
-    component: ProductPage,
+    component: () => import('../components/pages/ProductPage.vue'),
     meta: {
       bodyClass: 'offset-chat-button'
     }
@@ -89,28 +75,9 @@ const routes = [
     path: `/collections/:collectionHandle(${store.getters['brands/allHandles'].join('|')}|all)/products/:productHandle`,
     alias: `/products/:productHandle`,
     name: 'ProductInCollection',
-    component: ProductPage,
+    component: () => import('../components/pages/ProductPage.vue'),
     meta: {
       bodyClass: 'offset-chat-button'
-    }
-  },
-  {
-    path: `/products_preview`,
-    name: 'ProductPreview',
-    meta: {
-      bodyClass: 'offset-chat-button'
-    },
-    beforeEnter(to, from, next) {
-      console.log(to, from);
-      const link = document.querySelector('link[rel=canonical]');
-      if(link && link.href){
-        const productHandle = link.href.split('/').pop();
-        return next({
-          name: 'Product',
-          params: { productHandle }
-        })
-      }
-      next(false);
     }
   },
 
@@ -120,32 +87,32 @@ const routes = [
   {
     path: `/account/register`,
     name: 'AccountRegister',
-    component: AccountRegisterPage,
+    component: () => import('../components/pages/AccountRegisterPage.vue'),
   },
   {
     path: `/account/login`,
     name: 'AccountSignIn',
-    component: AccountSignInPage,
+    component: () => import('../components/pages/AccountSignInPage.vue'),
   },
   {
     path: `/account/orders`,
     name: 'AccountOrders',
-    component: MissingPage,
+    component: () => import('../components/pages/MissingPage.vue'),
   },
   {
     path: `/account/profile`,
     name: 'AccountProfile',
-    component: AccountProfilePage,
+    component: () => import('../components/pages/AccountProfilePage.vue'),
   },
   {
     path: `/account/reset/:customerId/:resetToken`,
     name: 'AccountPasswordReset',
-    component: AccountPasswordResetPage,
+    component: () => import('../components/pages/AccountPasswordResetPage.vue'),
   },
   {
     path: `/account/invalid_token`,
     name: 'AccountInvalidToken',
-    component: AccountInvalidTokenPage,
+    component: () => import('../components/pages/AccountInvalidTokenPage.vue'),
   },
 
   // =============================================
@@ -154,12 +121,12 @@ const routes = [
   {
     path: `/pages/checkout-options`,
     name: 'CheckoutOptions',
-    component: CheckoutOptionsPage,
+    component: () => import('../components/pages/CheckoutOptionsPage.vue'),
   },
   {
     path: `/pages/pre-checkout`,
     name: 'PreCheckout',
-    component: UpsellPage,
+    component: () => import('../components/pages/UpsellPage.vue'),
     meta: {
       bodyClass: 'hide-chat-button'
     }
@@ -167,7 +134,7 @@ const routes = [
   {
     path: `/cart`,
     name: 'Cart',
-    component: UpsellPage,
+    component: () => import('../components/pages/UpsellPage.vue'),
     meta: {
       bodyClass: 'hide-chat-button'
     }
@@ -179,7 +146,7 @@ const routes = [
   {
     path: `/pages/:pageHandle`,
     name: 'ShopifyPage',
-    component: ShopifyPage,
+    component: () => import('../components/pages/ShopifyPage.vue'),
     meta: {
       includeContentForLayout: true
     }
@@ -187,7 +154,7 @@ const routes = [
   {
     path: `/pages/:pageHandle/:hash`,
     name: 'ShopifyPageWithHash',
-    component: ShopifyPage,
+    component: () => import('../components/pages/ShopifyPage.vue'),
     meta: {
       includeContentForLayout: true
     }
@@ -195,7 +162,7 @@ const routes = [
   {
     path: `/challenge`,
     name: 'ChallengePage',
-    component: ShopifyPage,
+    component: () => import('../components/pages/ShopifyPage.vue'),
     meta: {
       includeContentForLayout: true
     }
@@ -207,12 +174,12 @@ const routes = [
   {
     path: '/oops',
     name: 'MissingPage',
-    component: MissingPage
+    component: () => import('../components/pages/MissingPage.vue'),
   },
   {
     path: '*',
     name: 'CatchAll',
-    component: MissingPage
+    component: () => import('../components/pages/MissingPage.vue'),
   },
 ];
 

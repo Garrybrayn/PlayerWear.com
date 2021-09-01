@@ -1,9 +1,10 @@
 <template>
   <div :class="{'product-image': true, placeholder: !loaded }">
     <img
-      v-if="src"
-      :src="src"
+      v-if="srcLarge"
+      :src="srcLarge"
       :srcset="srcset"
+      :sizes="sizes"
       loading="lazy"
       :class="{loaded: loaded}"
       :alt="escape(alt)"
@@ -19,6 +20,10 @@ export default Vue.extend({
     src: {
       type: String,
       required: false
+    },
+    sizes: {
+      type: String,
+      default: "(max-width: 412px) 50vw, (max-width: 800px) 33vw, 500px"
     },
     alt: {
       type: String,
@@ -36,18 +41,21 @@ export default Vue.extend({
     }
   },
   computed: {
+    srcLarge(){
+      return this.src.replace('.jpg',`_1000x.jpg`)
+    },
     srcset(){
       return [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map(width => {
         return `${this.src.replace('.jpg', `_${width}x.jpg`)} ${width}w`
       }).join(',')
-     }
+    }
   },
   watch:{
-    src:{
+    srcLarge:{
       immediate: true,
       handler(){
         this.loaded = false;
-        if(this.src && this.preload){
+        if(this.srcLarge && this.preload){
           this.preloadImage();
         }
       }
@@ -56,7 +64,7 @@ export default Vue.extend({
   methods: {
     preloadImage(){
       const image = new Image();
-      image.src = this.src;
+      image.src = this.srcLarge;
     }
   }
 });

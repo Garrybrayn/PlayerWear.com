@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
-import client from './ShopifyGraphqlClientWithCustomer';
+import client from './ShopifyGraphqlClient';
 
 export default {
   namespaced: true,
@@ -84,6 +84,7 @@ export default {
         })
     }),
     signin: (context, credentials) => new Promise((resolve, reject) => {
+      console.log(credentials, client, client.customer);
       client.customer
         .createAccessToken({email: credentials.email, password: credentials.password})
         .then(results => {

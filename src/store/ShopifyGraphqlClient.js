@@ -1,4 +1,4 @@
-import Client from 'shopify-buy-with-tags/index.unoptimized.umd';
+import Client from './shopify-buy/index.es.js'
 
 // Initializing a client to return content in the store's primary language
 export default Client.buildClient({

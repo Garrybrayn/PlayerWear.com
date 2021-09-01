@@ -6,14 +6,13 @@
         <router-link :to="tag.link" role="link" :aria-label="tag.name">{{ tag.label }}</router-link>
       </li>
     </ul>
-    <v-select :value="value" :options="options" @input="$router.push($event.link)"/>
+    <select :value="value" @change="onChange">
+      <option v-for="option in options" :key="option.value" :value="JSON.stringify(option.link)" :selected="option.selected">{{option.label}}</option>
+    </select>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css';
-Vue.component('v-select', vSelect)
 
 export default Vue.extend({
   props: {
@@ -25,6 +24,11 @@ export default Vue.extend({
     },
     value: {
       type: String,
+    }
+  },
+  methods: {
+    onChange(e){
+      this.$router.push(JSON.parse(e.target.value))
     }
   }
 });
@@ -55,14 +59,18 @@ export default Vue.extend({
       border-bottom: 1px solid black;
     }
   }
-  .v-select{
+  select{
     text-transform: capitalize;
+    width: 100%;
+    font: inherit;
+    padding: 0.5em;
+    box-sizing: border-box;
   }
   @media(min-width: @thirdbreakpoint){
     label, ul, li{
       display: block;
     }
-    .v-select{
+    select{
       display: none;
     }
     .tag-selector{

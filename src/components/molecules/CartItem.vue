@@ -20,7 +20,7 @@
       </div>
       <div class="button-delete-container">
         <Button @click="remove" class="button-delete link">
-          <i class="uil-trash-alt" />
+          <IconSvg name="trash" />
         </Button>
       </div>
     </div>
@@ -31,6 +31,7 @@ import Vue from 'vue';
 import ProductImage from "../atoms/ProductImage.vue";
 import Button from "../atoms/Button.vue";
 import InputNumber from "../atoms/InputNumber.vue";
+import IconSvg from "../atoms/IconSvg.vue";
 
 export default Vue.extend({
   props: {
@@ -41,7 +42,8 @@ export default Vue.extend({
   components: {
     ProductImage,
     InputNumber,
-    Button
+    Button,
+    IconSvg
   },
   computed: {
     price(){

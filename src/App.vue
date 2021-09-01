@@ -62,8 +62,9 @@ export default Vue.extend({
         this.contentForLayout = contentElement
       }
     }
-    this.$store.dispatch('cart/initialize');
-    this.$store.dispatch('customers/fetch').catch(() => {});
+
+    // this.$store.dispatch('cart/initialize');
+    // this.$store.dispatch('customers/fetch').catch(() => {});
   },
   computed: {
     brand(){
@@ -99,13 +100,13 @@ export default Vue.extend({
         if(to){
           this.$store.commit('brands/SET_ROUTE', to);
         }
-        this.showSearch = false;
         this.repositionChatButton();
-
         if('join' in to.query){
           this.showMailingListModal = true;
         }
-
+        if(this.showSearch){
+          this.showSearch = false;
+        }
         if(to.name == 'Cart'){
           this.showCart = true;
         }
@@ -141,8 +142,13 @@ export default Vue.extend({
 });
 </script>
 <style lang="less">
-  @import './less/unicons.css';
   @import './less/variables';
+  html, body {
+    font-family: Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    padding: 0;
+    margin: 0;
+  }
   #vue-app{
     line-height: 1.5;
     padding-top: 60px;

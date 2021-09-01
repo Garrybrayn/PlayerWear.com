@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 // import axios from 'axios';
 import Utilities from '../utilities';
-import client from './ShopifyGraphqlClientWithCustomer';
+import client from './ShopifyGraphqlClient';
 
 export default {
   namespaced: true,

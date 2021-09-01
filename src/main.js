@@ -21,7 +21,8 @@ Vue.mixin({
     tagReadable: Utilities.tagReadable,
     tagify: Utilities.tagify,
     escape: Utilities.escape,
-    arrayShuffle: Utilities.arrayShuffle
+    arrayShuffle: Utilities.arrayShuffle,
+    isDesktop: () => window.innerWidth > 600
   }
 })
 

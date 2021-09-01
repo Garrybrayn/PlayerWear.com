@@ -72,9 +72,9 @@
           <span class="label">Search</span>
         </button>
         <button @click="$emit('toggleCart')" aria-label="View Shopping Cart">
-          <i class="uil-shopping-cart icon">
+          <IconSvg name="cart">
             <span class="cart-item-count">{{ $store.getters['cart/uniqueItemCount']}}</span>
-          </i>
+          </IconSvg>
           <span class="label">View Cart</span>
         </button>
       </div>
@@ -498,7 +498,7 @@ export default Vue.extend({
     }
   }
 
-  .uil-shopping-cart:before{
+  .icon.cart:before{
     margin:0 !important;
   }
 

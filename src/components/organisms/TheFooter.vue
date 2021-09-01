@@ -6,7 +6,7 @@
   <Strip>
     <div>
       <router-link :to="{name: 'Home'}">
-        <img :src="assetUrl('collection_logo_player-wear.png')" width="200" alt="PlayerWear.com - Great merch for musicians and music lovers.">
+        <img :src="assetUrl('collection_logo_player-wear_x200.png')" width="200" height="44" alt="PlayerWear.com - Great merch for musicians and music lovers.">
       </router-link>
       <p>
         Great merch for musicians<br>
