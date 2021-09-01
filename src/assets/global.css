@@ -69,10 +69,12 @@ a:hover {
     left: 0;
     justify-content: flex-end;
     pointer-events: none;
+    touch-action: none;
 }
 
 #shopify-section-header > * {
     pointer-events: all;
+    touch-action: auto;
 }
 
 #shopify-section-header i {

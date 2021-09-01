@@ -4,7 +4,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Page from '../atoms/Page';
-import Utilities from '../../utilities';
 
 export default Vue.extend({
   components: {
@@ -12,13 +11,31 @@ export default Vue.extend({
   },
   metaInfo(){
     return {
-      title: Utilities.tagReadable(this.$route.params.pageHandle)
+      title: this.tagReadable(this.$route.params.pageHandle)
     }
   },
   computed: {
     htmlContents(){
       const page = this.$store.state.pages.pages[this.$route.params.pageHandle];
       return page ? page.body : null;
+    }
+  },
+  watch:{
+    htmlContents(){
+      if(this.$route.params.hash && this.htmlContents){
+        Vue.nextTick(() => {
+          const element = document.querySelector(`a[name=${this.$route.params.hash}]`);
+          if(element){
+            const headerOffset = 120;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition - headerOffset;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
+          }
+        })
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -33,7 +50,13 @@ export default Vue.extend({
   methods: {
     fetchPage(pageHandle) {
       // Load the product details
-      this.$store.dispatch('pages/fetch', pageHandle)
+      this.$store.dispatch('pages/fetch', pageHandle).then(page => {
+        if(!page){
+          this.$router.replace({
+            name: 'MissingPage'
+          })
+        }
+      })
     },
   }
 });

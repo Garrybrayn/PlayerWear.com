@@ -1,131 +1,63 @@
 import Vue from 'vue';
 
-import axios from 'axios';
+// import axios from 'axios';
 import Utilities from '../utilities';
-import {
-  normalizeShopifyCart,
-  normalizeShopifyProduct
-} from './normalizeShopify';
+import client from './ShopifyGraphqlClientWithCustomer';
 
-let state;
-const tes = true;
-
-if(tes){
-  state = {
-      items: {
-
-      },
-      note: null
-    };
-}else{
-  state = {"note":null,"items":{"40594729304223":{"id":40594729304223,"title":"KORG \"On Repeat\" Ladies’ Muscle Tank","variant":"L","handle":"korg-on-repeat-ladies-muscle-tank-black","vendor":"Korg","options_with_values":[{"name":"Size","value":"L"}],"image":"https://cdn.shopify.com/s/files/1/0568/7957/9295/products/womens-muscle-tank-black-heather-front-60f5cdb270944.jpg?v=1626721719","price":2500,"quantity":5},"40237432995999":{"id":40237432995999,"image":"https://cdn.shopify.com/s/files/1/0568/7957/9295/products/iphone-case-iphone-7-plus-8-plus-case-on-phone-60c3c5d753813.jpg?v=1623442940","title":"KORG \"Logo\" iPhone Case","variant":"iPhone 7 Plus/8 Plus","price":1550,"handle":"iphone-case","vendor":"Korg","quantity":1,"options_with_values":[{"name":"Size","value":"iPhone 7 Plus/8 Plus"}]}}}
-}
 export default {
   namespaced: true,
   state: {
-    shoppingCart: state,
-    isInitialized: false,
-    isFetching: false,
-    isOpen: false,
-    shippingThreshold: 50000
+    checkoutId: null,
+    checkout: null,
+    isOpen: false
   },
   mutations: {
-    initCart(state, payload) {
-      state.shoppingCart = payload;
-      state.isInitialized = true;
-    },
-    updateCartItem(state, payload) {
-      const { id, quantity } = payload;
-      Vue.set(state.shoppingCart.items[id],'quantity', quantity);
-      if (quantity < 1) {
-        Vue.delete(state.shoppingCart.items, id)
-      }
-      return state;
-    },
-    addCartItem(state, payload) {
-      Vue.set(state.shoppingCart, 'items', {
-        ...state.shoppingCart.items,
-        ...payload
-      })
-      return state;
+    SET_CHECKOUT(state, checkout){
+      state.checkoutId = checkout.id;
+      state.checkout = checkout;
     },
     toggleCart(state, payload) {
       Vue.set(state,'isOpen', payload === 'open')
       return state;
-    },
-    toggleFetching(state) {
-      state.isFetching = !state.isFetching;
-      Vue.set(state,'isFetching', !state.isFetching)
-      return state;
     }
   },
   actions: {
-    initialize: ({ commit, state }) => new Promise((resolve, reject) => {
-      if(state.isInitialized) {
-        resolve()
-      }else{
-        axios
-          .get('/cart.js')
-          .then(response => {
-            commit('initCart', normalizeShopifyCart(response.data));
-            resolve();
+    async initialize({commit, state, dispatch}){
+      if(!state.checkout){
+        if(!state.checkoutId){
+          // No existing checkout. Creating a new one.
+          await client.checkout.create().then(checkout => {
+            commit('SET_CHECKOUT', checkout)
           })
-          .catch(error => {
-            reject(error);
+        }else{
+          // Checkout exists. Fetch it.
+          await client.checkout.fetch(state.checkoutId).then(checkout => {
+            commit('SET_CHECKOUT', checkout)
           });
-      }
-    }),
-    updateItem: ({ commit, state }, payload) => {
-      if (state.isFetching) {
-        return;
-      } else {
-        commit('toggleFetching');
-        const { item, action } = payload;
-        const { id, quantity } = item;
-        const newQty =
-          action === 'increase'
-            ? quantity + 1
-            : action === 'decrease'
-            ? quantity - 1
-            : 0;
-        axios
-          .post('/cart/change.js', {
-            id: id.toString(),
-            quantity: newQty.toString()
-          })
-          .then(() => {
-            commit('updateCartItem', {
-              id,
-              quantity: newQty
-            });
-            commit('toggleFetching');
-          })
-          .catch(error => {
-            commit('toggleFetching');
-            return error.message;
-          });
+        }
+        await dispatch('updateEmail');
       }
     },
-    addItem: ({ commit, state }, payload) => {
-      if (state.isFetching) {
-        return;
-      } else {
-        commit('toggleFetching');
-        axios
-          .post('/cart/add.js', payload)
-          .then(response => {
-            commit(
-              'addCartItem',
-              normalizeShopifyProduct(response.data)
-            );
-            commit('toggleFetching');
-            commit('toggleCart', 'open');
-          })
-          .catch(error => {
-            commit('toggleFetching');
-            return error.message;
-          });
-      }
+    async addItem ({state, commit}, item){
+      commit(
+        'SET_CHECKOUT',
+        await client.checkout.addLineItems(
+          state.checkoutId,
+          [{
+            quantity: item.quantity,
+            variantId: item.idEncoded
+          }]
+        )
+      );
+    },
+    async updateItem ({state, commit}, item) {
+      commit(
+        'SET_CHECKOUT',
+        await client.checkout.updateLineItems(
+          state.checkoutId,
+          item
+        )
+      )
     },
     loadUpsellProducts: context => new Promise((resolve, reject) => {
       context
@@ -133,8 +65,12 @@ export default {
         .then(() => {
           const promises = context.getters.vendorsInCart.map(
             vendor => context.dispatch(
-              'loadProductsByTagAndVendor',
-              { first: 10, tag: 'upsell', vendor },
+              'load',
+              {
+                vendor,
+                tag: 'upsell',
+                limit: 10
+              },
               { root: true }
             )
           );
@@ -142,13 +78,24 @@ export default {
             .then(() => { resolve(); })
             .catch(e => { reject(e) })
       })
-    })
+    }),
+    async updateEmail({state, rootState, commit}){
+      if(rootState.customers.email){
+        commit('SET_CHECKOUT', await client.checkout.updateEmail(
+          state.checkout.id,
+          rootState.customers.email
+        ))
+      }
+    },
+    checkout({state}){
+      if(state.checkout && state.checkout.webUrl){
+        window.location.href = state.checkout.webUrl.replace('amplify-11-swag-store.myshopify.com','player-wear.com');
+      }
+    }
   },
   getters: {
     isOpen: state => state.isOpen,
-    shoppingCart: state => state.shoppingCart,
-    shippingThreshold: state => state.shippingThreshold,
-    items: state => Object.values(state.shoppingCart.items),
+    items: state => state.checkout && state.checkout.lineItems || [],
     uniqueItemCount: (state, getters) => getters.items.length,
     itemCount: (state, getters) => {
       let count = 0;
@@ -156,12 +103,11 @@ export default {
       return count;
     },
     vendorsInCart: (state, getters) => [...new Set(getters.items.map(item => item.vendor))],
-    subtotal: state => {
-      const items = state.shoppingCart.items;
+    subtotal: (state, getters) => {
       let total = 0;
-      if (items) {
-        Object.keys(items).forEach(key => {
-          total += items[key].price * items[key].quantity;
+      if (getters.items) {
+        getters.items.forEach(item => {
+          total += (item.variant.price * 100) * item.quantity;
         });
       }
       return total;
@@ -175,6 +121,7 @@ export default {
       products = products.filter(product => {
         const hasOneVariant = product.variants.length === 1;
         const variantIsAvailable = product.variants[0].availableForSale
+        // const isInCart = getters.items.find()
         return hasOneVariant && variantIsAvailable
       })
       return Utilities.arrayShuffle(products).slice(0, limit || 3);

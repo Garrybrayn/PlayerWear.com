@@ -18,6 +18,11 @@ export default Vue.extend({})
   .progress-spinner{
     display: inline-block;
     vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    &.center{
+      margin:0 auto;
+    }
   }
 
   .progress-spinner:before {
@@ -27,10 +32,10 @@ export default Vue.extend({})
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    border: 1px solid @grayLightMedium;
-    border-top-color: @grayLightMedium;
-    border-right-color: @grayDark;
-    border-bottom-color: @grayDark;
+    border: 1px solid @gray3;
+    border-top-color: @gray3;
+    border-right-color: @gray5;
+    border-bottom-color: @gray5;
     animation: spinner .6s linear infinite;
     opacity: 0.75;
     float: left;

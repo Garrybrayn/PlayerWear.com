@@ -33,6 +33,7 @@ export default Vue.extend({
   @import '../../less/variables';
   .tag-selector{
     line-height: 2em;
+    margin-bottom: 1em;
   }
   label {
     color: @gray1;
@@ -56,7 +57,6 @@ export default Vue.extend({
   }
   .v-select{
     text-transform: capitalize;
-    margin-bottom: 1em;
   }
   @media(min-width: @thirdbreakpoint){
     label, ul, li{
@@ -64,6 +64,9 @@ export default Vue.extend({
     }
     .v-select{
       display: none;
+    }
+    .tag-selector{
+      margin-bottom: 2em;
     }
   }
 </style>

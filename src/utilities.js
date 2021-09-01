@@ -6,12 +6,14 @@ const data = {
     }
     return a;
   },
+  assetUrl: filename => `${window.assetUrl}${filename}?v=${window.buildVersion}`,
   escape: string => string.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/["']/g, ""),
   tagify: content => content.toLowerCase().replace(' ','-'),
   tagReadable: tag => String(tag || "")
     .toLowerCase()
     .replace('design','')
     .replace('3d','3D')
+    .replace("womens","Women's")
     .replace(/-/ig,' ') // replace hyphens with spaces
     .replace(' and ', ' & ') // replace "and" with &
     .replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, s => s.toUpperCase()) //UC words

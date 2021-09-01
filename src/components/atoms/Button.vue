@@ -29,8 +29,7 @@ export default Vue.extend({
     },
     size: {
       type: String,
-      default: 'medium',
-      validator: value => ['small', 'medium', 'large'].includes(value)
+      default: 'medium'
     },
     icon: {
       type: String,
@@ -108,6 +107,7 @@ export default Vue.extend({
       box-sizing: border-box;
     &.full-width{
       width: 100%;
+      padding: 0.75em .5em;
     }
     &.link{
       color: @gray1;
@@ -154,7 +154,7 @@ export default Vue.extend({
     &.white {
       background: @white;
       color: @black;
-      box-shadow: 0px 0px 1em #0001;
+      box-shadow: 0px 0px 2 em rgba(0,0,0,0.03);
       &:hover{
         background: @white;
         color: @black;

@@ -5,7 +5,9 @@ module.exports = {
   },
   globals: {
     assetUrl: true,
-    boosterCart: true
+    buildNumber: true,
+    HTMLElement: true,
+    opr: true
   },
   extends: [
     'plugin:vue/essential',

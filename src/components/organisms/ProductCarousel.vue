@@ -16,6 +16,7 @@
         :show-product-color="showProductColor"
         :show-product-icon="showProductIcon"
         :show-buy-button="showBuyButton"
+        @addToCart="$emit('addToCart', $event)"
       />
     </Slide>
   </Carousel>

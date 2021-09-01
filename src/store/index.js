@@ -10,10 +10,21 @@ Vue.use(Vuex);
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
-  modules: ['customers']
+  modules: ['customers','cart'],
+  reducer: (state) => ({
+    customers: {
+      email: state.customers.email,
+      geolocation: state.customers.geolocation,
+      emailHasAccount: state.customers.emailHasAccount,
+      customerAccessToken: state.customers.customerAccessToken
+    },
+    cart: {
+      checkoutId: state.cart.checkoutId
+    }
+  })
 })
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
   modules: {
     cart,
@@ -23,3 +34,9 @@ export default new Vuex.Store({
     customers
   }
 });
+
+
+
+export default store
+
+

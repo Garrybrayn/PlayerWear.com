@@ -7,7 +7,7 @@
           <div />
           <div />
         </div>
-        <nav class="desktop-menu" role="navigation" aria-label="Main Navigation">
+        <nav class="desktop-menu" role="navigation" aria-label="Main Navigation" v-click-outside="closeMenu">
           <div v-for="(menuItem, index) in menuItems" :key="index" :class="menuItem.class" @click="toggleMenu(index)">
             <span class="title">{{menuItem.title}}</span>
             <div v-if="menuItem.sections" :class="{
@@ -36,12 +36,38 @@
         <router-link v-if="$store.getters['brands/isCurrentBrandThirdParty']" class="third-party-brand-link" :to="{name: 'BrandHome', collectionHandle: $store.getters['brands/currentBrandHandle']}">
           <img :src="thirdPartyBrandLogoUrl" :alt="title" />
         </router-link>
-        <router-link v-else :to="{name: 'Home'}" class="house-brand-link">
+        <router-link :to="{name: 'Home'}" class="house-brand-link">
           <img :src="houseBrandLogoUrl" :alt="title" />
         </router-link>
       </div>
       <div class="aside right">
-        <button @click="$emit('toggleCart')" aria-label="Search">
+        <div class="desktop-account-menu" v-if="showAccountMenu">
+          <div v-if="$store.getters['customers/isSignedIn']">
+            <span>
+              Signed in as:<br />
+              <b>{{ $store.state.customers.email }}</b>
+            </span>
+            <router-link :to="{name:'AccountOrders'}">
+              My Orders
+            </router-link>
+            <router-link :to="{name:'AccountProfile'}">
+              My Profile
+            </router-link>
+          </div>
+          <div v-else>
+            <router-link :to="{name:'AccountSignIn'}">
+              Sign In
+            </router-link>
+            <router-link :to="{name:'AccountRegister'}">
+              Register
+            </router-link>
+          </div>
+        </div>
+        <button class="desktop-account-menu-button" aria-label="My Account" @click="showAccountMenu=!showAccountMenu">
+          <IconSvg name="selfie" />
+          <span class="label">Account</span>
+        </button>
+        <button @click="$emit('toggleSearch')" aria-label="Search">
           <IconSvg name="magnifying-glass" />
           <span class="label">Search</span>
         </button>
@@ -58,10 +84,16 @@
       <div v-if="showMobileMenu" class="mobile-menu-container" @click="showMobileMenu=false">
         <nav class="mobile-menu" @click.stop role="navigation" aria-label="Main Navigation">
           <component
-            v-for="(menuItem, index) in menuItems"
+            v-for="(menuItem, index) in allMenuItems"
             :key="index" :class="menuItem.class"
-            :is="menuItem.route ? 'router-link' : 'div'"
-            :to="menuItem.route"
+            :is="menuItem.route || menuItem.tag ? 'router-link' : 'div'"
+            :to="menuItem.route ? menuItem.route : menuItem.tag ? {
+              name: 'TagInCollection',
+              params: {
+                tag: childItem.tag,
+                collectionHandle: $store.getters['brands/isCurrentBrandThirdParty'] ? $store.getters['brands/currentBrandHandle'] : 'all'
+              }
+            } : null"
           >
             <span :class="{
               'menu-item': true,
@@ -76,8 +108,14 @@
               <component
                 v-for="(childItem, index) in menuItem.sections[0].children"
                 :key="index" :class="childItem.class"
-                :is="childItem.route ? 'router-link' : 'div'"
-                :to="childItem.route"
+                :is="childItem.route || childItem.tag ? 'router-link' : 'div'"
+                :to="childItem.route ? childItem.route : childItem.tag ? {
+                  name: 'TagInCollection',
+                  params: {
+                    tag: childItem.tag,
+                    collectionHandle: $store.getters['brands/isCurrentBrandThirdParty'] ? $store.getters['brands/currentBrandHandle'] : 'all'
+                  }
+                } : null"
               >
                 <span class="menu-item">
                   {{childItem.title}}
@@ -96,13 +134,18 @@
 
 import Vue from 'vue';
 import IconSvg from '../atoms/IconSvg.vue';
+import ClickOutside from '../../directives/clickOutside'
 
 export default Vue.extend({
+  directives: {
+    ClickOutside
+  },
   components: {
     IconSvg
   },
   data(){
     return {
+      showAccountMenu: false,
       showMobileMenu: false,
       openMenuItemIndex: false,
       menuItems: [
@@ -223,18 +266,40 @@ export default Vue.extend({
     title(){
       return this.$store.getters['brands/currentBrandName'];
     },
+    allMenuItems(){
+      return this.menuItems.concat([{
+        title: 'Account',
+        class: '',
+        open: false,
+        sections: [
+          {
+            title: 'Account',
+            children: [
+              {
+                title: 'Sign In',
+                route: { name: 'AccountSignIn'}
+              },
+              {
+                title: 'Register',
+                route: { name: 'AccountRegister'}
+              }
+            ]
+          }
+        ]
+      }])
+    },
     thirdPartyBrandLogoUrl(){
-      return `${assetUrl}${this.$store.getters['brands/currentBrandHandle']}-logo.svg`;
+      return this.assetUrl(`${this.$store.getters['brands/currentBrandHandle']}-logo.svg`);
     },
     houseBrandLogoUrl(){
-      return this.$store.getters['brands/isCurrentBrandThirdParty'] ? `${assetUrl}collection_logo_player-wear-simplified.png` : `${assetUrl}collection_logo_player-wear.png`;
+      return this.assetUrl(this.$store.getters['brands/isCurrentBrandThirdParty'] ? `player-wear-logo-simplified.svg` : `collection_logo_player-wear.png`);
     },
     styles(){
       const styles = {
         borderBottomColor: this.$store.getters['brands/currentBrandColor']
       }
       if(this.$store.getters['brands/currentBrandHeaderBackgroundImage']){
-        styles.backgroundImage = `url(${assetUrl}${this.$store.getters['brands/currentBrandHeaderBackgroundImage']})`;
+        styles.backgroundImage = `url(${this.assetUrl(this.$store.getters['brands/currentBrandHeaderBackgroundImage'])})`;
       }
       return styles
     }
@@ -242,13 +307,17 @@ export default Vue.extend({
   watch: {
     $route(){
       this.openMenuItemIndex = false;
+      this.showMobileMenu = false;
+      this.showAccountMenu = false;
     }
   },
   methods: {
+    closeMenu(){
+      this.openMenuItemIndex = false
+    },
     toggleMenu(index){
-      if(this.openMenuItemIndex && this.openMenuItemIndex === index){
-        // close it
-        this.openMenuItemIndex = false
+      if(this.openMenuItemIndex === index){
+        this.closeMenu();
       }else{
         this.openMenuItemIndex = index
       }
@@ -324,7 +393,6 @@ export default Vue.extend({
     background: white;
     min-width: 300px;
     text-transform: none;
-    font-weight: 600;
     a{
       display: block;
       text-decoration: none;
@@ -364,18 +432,18 @@ export default Vue.extend({
 
   .aside{
     flex-grow: 1;
-    gap: 1em;
     display: flex;
     flex-basis: 0;
     &.right{
       justify-content: flex-end;
       button{
         background: transparent;
-        margin:0;
+        margin:0 1em 0 0;
         padding: 0;
         color: white;
         border: none;
         position: relative;
+        cursor: pointer;
       }
       .icon{
         font-size: 1.4rem;
@@ -386,7 +454,7 @@ export default Vue.extend({
       }
       .cart-item-count{
         position: absolute;
-        right: -0.5em;
+        right: -1em;
         font-size: 11px;
         background: white;
         border:2px solid black;
@@ -407,11 +475,12 @@ export default Vue.extend({
     display: flex;
     flex-direction: column;
     flex-grow: 0;
-    height: 45px;
-    width: 111px;
+    width: 181px;
+    height: 48px;
+    gap: 4px;
+    justify-content: center;
     img{
-      max-width: 111px;
-      max-height: 45px;
+      max-height: 34px;
       object-fit: contain;
       height: 100%;
       width: 100%;
@@ -420,14 +489,25 @@ export default Vue.extend({
     }
   }
 
-  .third-party-brand .house-brand-link{
-    display: none;
+  .third-party-brand{
+    .house-brand-link img{
+      max-height: 10px;
+    }
+    .logo-container{
+      justify-content: space-between;
+    }
+  }
+
+  .uil-shopping-cart:before{
+    margin:0 !important;
   }
 
 
   .desktop-menu {
     display: none;
-    gap: 1.5em;
+    > * + *{
+      margin-left: 3.5em;
+    }
     .section-container{
       position: absolute;
       background: white;
@@ -439,7 +519,6 @@ export default Vue.extend({
       color: black;
       display: flex;
       padding: 1.5em @pagePadding 2em @pagePadding;
-      gap: 3.5em;
       font-weight: 600;
       text-transform: none;
       border-bottom: 1px solid #0002;
@@ -462,12 +541,43 @@ export default Vue.extend({
       padding-left: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5em;
+      > * + *{
+        margin-top: 0.5em;
+      }
     }
     a{
       color: black;
     }
   }
+
+  .desktop-account-menu{
+    position: absolute;
+    top: calc(50% + 1em);
+    background: white;
+    right: 1em;
+    width: 275px;
+    padding: 0.5em 1em;
+    box-sizing: border-box;
+    border-radius: 3px;
+    box-shadow: 0px 0.5em 1em #0002;
+    color: black;
+    span, a{
+      color: black;
+      display: block;
+      border-bottom: 1px solid #eee;
+      padding:0.5em 0;
+      &:last-child{
+        border-bottom: none;
+      }
+    }
+    a:hover{
+      text-decoration: underline;
+    }
+  }
+  .desktop-account-menu, .desktop-account-menu-button{
+    display: none;
+  }
+
   @media(min-width: @thirdbreakpoint){
     header{
       height: @headerHeightDesktop;
@@ -479,25 +589,25 @@ export default Vue.extend({
       display: none;
     }
     .logo-container {
-        width: 360px;
-        height: 80px;
+        height: 79px;
+        width: 300px;
         img{
-          max-width: 360px;
-          max-height: 80px;
+          max-height: 56px;
           object-fit: contain;
         }
     }
     .third-party-brand .house-brand-link{
       display: block;
       img{
-        margin-top: 5px;
-        max-width: 169px;
+        max-height: 16px;
       }
     }
     .desktop-menu{
       display: flex;
-      gap: 3.5em;
       margin-left: 1.5em;
+      > * + *{
+        margin-left: 3.5em;
+      }
     }
     .aside.right{
       .icon{
@@ -509,6 +619,13 @@ export default Vue.extend({
       .cart-item-count{
         font-size: 0.8rem;
       }
+    }
+
+    .desktop-account-menu {
+      display: block;
+    }
+    .desktop-account-menu-button{
+      display: inline-block;
     }
   }
 

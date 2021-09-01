@@ -20,7 +20,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Page from "../atoms/Page.vue";
-import Utilities from "../../utilities";
 import Breadcrumbs from "../molecules/Breadcrumbs.vue";
 
 export default Vue.extend({
@@ -29,7 +28,7 @@ export default Vue.extend({
     if(this.$store.getters['brands/isCurrentBrandThirdParty']){
       title = this.$store.getters['brands/currentBrandName'];
     }
-    const tag = String(Utilities.tagReadable(this.$route.params.tag)).replace(
+    const tag = String(this.tagReadable(this.$route.params.tag)).replace(
       this.$store.getters['brands/currentBrandName'],''
     );
     if(tag){
@@ -46,9 +45,9 @@ export default Vue.extend({
   computed: {
     designsForBrand(){
       if(this.$store.getters['brands/isCurrentBrandThirdParty']){
-        return Utilities.arrayShuffle(this.$store.getters['brands/currentBrandDesigns'])
+        return this.arrayShuffle(this.$store.getters['brands/currentBrandDesigns'])
       }
-      return Utilities.arrayShuffle(this.$store.getters['brands/allDesigns']);
+      return this.arrayShuffle(this.$store.getters['brands/allDesigns']);
     },
     breadcrumbs(){
       const breadcrumbs = [];
@@ -68,10 +67,6 @@ export default Vue.extend({
         });
       return breadcrumbs;
     }
-  },
-  methods: {
-    assetUrl: filename => assetUrl + filename,
-    tagReadable: tag => Utilities.tagReadable(tag)
   }
 });
 </script>

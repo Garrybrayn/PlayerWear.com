@@ -1,7 +1,9 @@
 <template>
-  <div class="modal">
+  <div class="modal" @click="$emit('close')">
     <Button class="round" icon="x" @click="$emit('close')">Close</Button>
-    <slot />
+    <div @click.stop>
+      <slot />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -15,6 +17,7 @@ export default Vue.extend({
 });
 </script>
 <style scoped lang="less">
+  @import '../../less/variables';
   .modal{
     position: fixed;
     top:0;
@@ -27,6 +30,12 @@ export default Vue.extend({
     background: rgba(0, 0, 0, 0.5);
     z-index: 12;
   }
+  .modal-contents{
+    background: white;
+    padding: 1em 1.5em;
+    max-width: 600px;
+    box-sizing: border-box;
+  }
   button{
     position: absolute;
     z-index: 100;
@@ -37,5 +46,10 @@ export default Vue.extend({
     justify-self: flex-end;
     background: white;
     color: black;
+  }
+  @media(min-width:@secondbreakpoint){
+    .modal-contents{
+      padding: 2em 3em;
+    }
   }
 </style>

@@ -41,6 +41,19 @@
       <router-link v-for="(menuItem, index) in legalLinks" :key="index" :to="menuItem.route" :class="menuItem.class">
         {{menuItem.title}}
       </router-link>
+      <a @mouseenter="showDebug=true" @mouseleave="showDebug=false">
+        Debug
+        <div class="debug">
+          CUSTOMER<br />
+          Email: {{ $store.state.customers.email || 'None' }}<br />
+          Signed In: {{ $store.getters['customers/isSignedIn'] ? 'Yes': 'No' }}<br />
+          Has Account: {{ $store.state.customers.emailHasAccount ? 'Yes': 'No' }}<br />
+          CHECKOUT<BR />
+          Email: {{ $store.state.cart.checkout && $store.state.cart.checkout.email || 'None' }}<br />
+          <a @click="$store.dispatch('customers/signOut')" v-if="$store.getters['customers/isSignedIn']">Sign Out</a>
+          <a @click="reset">Reset</a>
+        </div>
+      </a>
       <a href="https://amplify11.com/marketing-to-musicians/" target="_blank">
         Website and Marketing By
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="138" height="21" viewBox="0 0 138 21">
@@ -60,7 +73,6 @@
 
 import Vue from 'vue';
 import Strip from "../atoms/Strip.vue";
-import Utilities from '../../utilities'
 
 export default Vue.extend({
   components: {
@@ -91,9 +103,19 @@ export default Vue.extend({
           }
         },
         {
+          title: 'Refunds',
+          route: {
+            name: 'ShopifyPageWithHash',
+            params: {
+              pageHandle: 'terms-and-conditions-of-sale',
+              hash: 'returns-and-refunds'
+            }
+          }
+        },
+        {
           title: 'Contact',
           route: {
-            name: 'ShopifyPage',
+            name: 'Contact',
             params: { pageHandle: 'contact' }
           }
         },
@@ -107,11 +129,19 @@ export default Vue.extend({
       ],
       legalLinks: [
         {
-          title: 'Terms and Conditions',
+          title: 'Terms and Conditions of Sale',
           class: '',
           route: {
             name: 'ShopifyPage',
-            params: {pageHandle: 'terms-and-conditions'}
+            params: {pageHandle: 'terms-and-conditions-of-sale'}
+          }
+        },
+        {
+          title: 'Terms of Use',
+          class: '',
+          route: {
+            name: 'ShopifyPage',
+            params: {pageHandle: 'terms-of-use'}
           }
         },
         {
@@ -120,6 +150,14 @@ export default Vue.extend({
           route: {
             name: 'ShopifyPage',
             params: {pageHandle: 'privacy-policy'}
+          }
+        },
+        {
+          title: 'Accessibility',
+          class: '',
+          route: {
+            name: 'ShopifyPage',
+            params: {pageHandle: 'accessibility'}
           }
         }
       ]
@@ -130,10 +168,15 @@ export default Vue.extend({
       return this.$store.getters['brands/currentBrandHandle']
     },
     thirdPartyBrandName(){
-      return Utilities.tagReadable(this.brand);
+      return this.$store.getters['brands/currentBrandName']
     },
     relatedBrands(){
-      return this.$store.getters['brands/currentBrandRelatedBrands']
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        return this.$store.getters['brands/currentBrandRelatedBrands'].filter(brandHandle => {
+          return this.$store.state.brands.brands[brandHandle].published
+        })
+      }
+      return null
     },
     thirdPartyBrandLinks(){
       return [
@@ -191,8 +234,12 @@ export default Vue.extend({
     }
   },
   methods: {
-    tagReadable: Utilities.tagReadable,
-    assetUrl: url => `${window.assetUrl}${url}`
+    reset(){
+      this.$store.dispatch('customers/signOut').then(() => {
+        localStorage.removeItem("vuex");
+        window.location.reload();
+      })
+    }
   }
 });
 </script>
@@ -242,7 +289,26 @@ export default Vue.extend({
     font-size: 0.9em;
     a{
       margin: 1em;
+      position: relative;
+
     }
+  }
+
+  .debug{
+    display: none;
+    position: absolute;
+    background: white;
+    color: black;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -150px;
+    width: 300px;
+    padding: 1rem;
+    box-sizing: border-box;
+    text-align: left;
+  }
+  a:hover .debug{
+    display: block;
   }
 
   @media(min-width: @firstbreakpoint){

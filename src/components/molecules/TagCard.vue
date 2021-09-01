@@ -11,7 +11,6 @@ import Vue from 'vue';
 
 import ProductImage from "../atoms/ProductImage.vue";
 import Button from "../atoms/Button.vue";
-import Utilities from '../../utilities';
 export default Vue.extend({
   props: {
     tag: {
@@ -36,7 +35,7 @@ export default Vue.extend({
   },
   computed: {
     buttonLabelReadable(){
-      return this.buttonLabel || Utilities.tagReadable(this.tag)
+      return this.buttonLabel || this.tagReadable(this.tag)
     },
     route(){
       return {

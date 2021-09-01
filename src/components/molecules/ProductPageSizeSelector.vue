@@ -2,30 +2,31 @@
   <div class="product-size-selector">
     <label>
       <b>SIZE:</b>
-      <span v-if="sizeGuide" @click="showSizeGuide=true" role="link" aria-label="View Size Guide">Size Guide</span>
+      <span v-if="sizeGuide" @click="$emit('clickShowSizeGuide')" role="link" aria-label="View Size Guide">
+        <IconSvg name="shirt" style="font-size: 1.25em; margin-right: 0.25em;" />Size Guide
+      </span>
     </label>
     <div class="product-size-options">
       <div v-for="(sizeVariant, index) in sizeVariants"
          :key="index"
          :class="{
-           available: sizeVariant.available,
+           'product-size-option': true,
+           'sold-out': !sizeVariant.available,
            selected: sizeVariant.selected
          }"
          :aria-label="`Select Size ${sizeVariant.label}`"
          :aria-selected="sizeVariant.selected"
-         @click="$emit('select', sizeVariant.id)"
+         @click="sizeVariant.available ? $emit('select', sizeVariant.id) : null"
       >
         {{sizeVariant.label}}
+        <IconSvg name="x" v-if="!sizeVariant.available" />
       </div>
     </div>
-    <Modal v-if="showSizeGuide" @close="showSizeGuide=false">
-      <div v-html="sizeGuide" class="size-guide-container"/>
-    </Modal>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import Modal from '../molecules/Modal.vue';
+import IconSvg from "../atoms/IconSvg.vue";
 
 export default Vue.extend({
   props: {
@@ -43,12 +44,7 @@ export default Vue.extend({
     }
   },
   components: {
-    Modal
-  },
-  data(){
-    return {
-      showSizeGuide: false
-    }
+    IconSvg
   },
   computed:{
     sizeVariants(){
@@ -56,7 +52,7 @@ export default Vue.extend({
         return this.variants.map(variant => {
           return {
             label: variant.selectedOptions[0].value,
-            available: variant.available,
+            available: variant.availableForSale,
             selected: variant.id === this.selectedVariantId,
             id: variant.id
           }
@@ -76,6 +72,16 @@ export default Vue.extend({
     text-decoration: underline;
     cursor: pointer;
   }
+  .safari-only{
+    .product-size-options{
+      > * + *{
+        margin-left: 10px;
+      }
+    }
+    .product-size-option{
+      margin-bottom: 10px;
+    }
+  }
   .product-size-options{
     margin-top: 0.5em;
     display: flex;
@@ -84,7 +90,7 @@ export default Vue.extend({
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
-    div{
+    .product-size-option{
       min-height: 40px;
       border:1px solid black;
       border-radius: 2px;
@@ -100,14 +106,22 @@ export default Vue.extend({
         color: #fff;
         background: #000;
       }
-    }
-  }
-  /deep/ .size-guide-container{
-    background: white;
-    padding: 2em 1em !important;
-    p {
-      font-size: 2em;
-      text-align: center;
+      &.sold-out{
+        color: @gray3;
+        border-color: @gray4;
+        background: fade(@gray5, 50%);
+        cursor: default;
+        position: relative;
+        overflow: hidden;
+        .x{
+          position: absolute;
+          top: 50%;
+          margin-top: -0.5em;
+          font-size: 60px;
+          opacity: 0.2;
+          color: @gray4;
+        }
+      }
     }
   }
   .modal /deep/ .table-responsive{

@@ -1,11 +1,18 @@
 <template>
-  <div :class="{'product-image': true, placeholder: src ? false : true}">
-    <img v-if="src" :src="src" loading="lazy" :class="{loaded: loaded}" :alt="escape(alt)" @load="loaded = true"/>
+  <div :class="{'product-image': true, placeholder: !loaded }">
+    <img
+      v-if="src"
+      :src="src"
+      :srcset="srcset"
+      loading="lazy"
+      :class="{loaded: loaded}"
+      :alt="escape(alt)"
+      @load="loaded = true"
+    />
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import Utilities from '../../utilities';
 
 export default Vue.extend({
   props: {
@@ -28,6 +35,13 @@ export default Vue.extend({
       loaded: false
     }
   },
+  computed: {
+    srcset(){
+      return [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map(width => {
+        return `${this.src.replace('.jpg', `_${width}x.jpg`)} ${width}w`
+      }).join(',')
+     }
+  },
   watch:{
     src:{
       immediate: true,
@@ -43,9 +57,6 @@ export default Vue.extend({
     preloadImage(){
       const image = new Image();
       image.src = this.src;
-    },
-    escape(string){
-      return Utilities.escape(string);
     }
   }
 });
@@ -54,11 +65,15 @@ export default Vue.extend({
   .product-image{
     position: relative;
     overflow: hidden;
-    background:#eee;
+    background: #eee;
+    transition: background 2s;
     &:after{
       display: block;
       content: "";
       padding-bottom: 122%;
+    }
+    &.placeholder{
+      animation: pulse 1.5s ease infinite;
     }
     img{
       position: absolute;
@@ -68,7 +83,7 @@ export default Vue.extend({
       filter: brightness(94%);
       object-fit: cover;
       opacity: 0;
-      transition: opacity 150ms;
+      transition: opacity 200ms;
       &.loaded {
         opacity: 1;
       }

@@ -3,11 +3,13 @@ const normalizeShopifyCart = shopifyCart => {
 		note: shopifyCart.note
 	};
 	let cartItemsObj = {};
+	console.log({items: shopifyCart.items});
 	shopifyCart.items.forEach(itemObj => {
 		cartItemsObj[itemObj.variant_id] = {
 			id: itemObj.variant_id,
 			title: itemObj.product_title,
 			variant: itemObj.variant_title,
+      key: itemObj.key,
 			handle: itemObj.handle,
 			vendor: itemObj.vendor,
       options_with_values: itemObj.options_with_values,
@@ -23,9 +25,11 @@ const normalizeShopifyCart = shopifyCart => {
 };
 
 const normalizeShopifyProduct = shopifyProduct => {
+  console.log({shopifyProduct})
 	return {
 		[shopifyProduct.variant_id]: {
 			id: shopifyProduct.variant_id,
+      key: shopifyProduct.key,
 			image: shopifyProduct.image,
 			title: shopifyProduct.product_title,
 			variant: shopifyProduct.variant_title,

@@ -1,7 +1,7 @@
 <template>
   <div v-if="item && item.quantity > 0" class="cart-item">
     <router-link :to="productRoute">
-      <ProductImage :src="item.image" :alt="item.title || ''" />
+      <ProductImage :src="item.variant.image.src" :alt="item.title || ''" />
     </router-link>
     <div class="item-details">
       <router-link class="item-title" :to="productRoute">
@@ -10,15 +10,15 @@
       <div class="item-price">
         ${{ price }}
       </div>
-      <div v-if="item.options_with_values && item.options_with_values.length > 0" class="item-variant">
-        <span v-for="(option, index) in item.options_with_values" :key="index">
+      <div v-if="item.variant.selectedOptions" class="item-variant">
+        <span v-for="(option, index) in item.variant.selectedOptions" :key="index">
           {{option.name}}: {{option.value}}
         </span>
       </div>
       <div>
         <InputNumber :value="item.quantity" @change="changeQuantity"/>
       </div>
-      <div>
+      <div class="button-delete-container">
         <Button @click="remove" class="button-delete link">
           <i class="uil-trash-alt" />
         </Button>
@@ -45,14 +45,14 @@ export default Vue.extend({
   },
   computed: {
     price(){
-      return (this.item.price / 100).toFixed(2);
+      return Number(this.item.variant.price).toFixed(2);
     },
     productRoute(){
       return {
         name: 'ProductInCollection',
         params: {
-          collectionHandle: String(this.item.vendor || "").toLowerCase(),
-          productHandle: this.item.handle
+          collectionHandle: this.$store.getters['brands/getBrandFromString'](this.item.variant.product.handle) || 'all',
+          productHandle: this.item.variant.product.handle
         }
       }
     }
@@ -60,20 +60,14 @@ export default Vue.extend({
   methods: {
     changeQuantity(newQuantity){
       this.$store.dispatch('cart/updateItem', {
-        action: newQuantity > this.item.quantity ? 'increase' : 'decrease',
-        item: {
-          id: this.item.id,
-          quantity: this.item.quantity
-        }
+        id: this.item.id,
+        quantity: newQuantity
       })
     },
     remove(){
       this.$store.dispatch('cart/updateItem', {
-        action: 'delete',
-        item: {
-          id: this.item.id,
-          quantity: this.item.quantity
-        }
+        id: this.item.id,
+        quantity: 0
       })
     }
   }
@@ -88,8 +82,10 @@ export default Vue.extend({
     padding: 1em;
     border-top: 1px solid #0002;
     margin-bottom: -1px;
-    gap: 1em;
     font-size: 0.9rem;
+    > * + *{
+      margin-left: 1em;
+    }
     &:last-child{
       border-bottom: 1px solid #0002;
     }
@@ -129,10 +125,16 @@ export default Vue.extend({
     height: 2em;
     margin-top: 0.5em;
   }
+  .button-delete-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
   .button-delete{
     margin:0 !important;
-    font-size: 1.25em;
+    margin-top: 0.5em !important;
     padding: 0 !important;
+    font-size: 1.25em !important;
     text-align: right;
     float: right;
   }

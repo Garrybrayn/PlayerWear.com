@@ -9,15 +9,33 @@ export default {
       "player-wear": {
         handle: "player-wear",
         title: "Player Wear",
+        published: true,
         theme: {
           colors: {
             brand: '#c3fd34',
             dark: '#464646',
-            light: '#ebebeb'
+            light: '#defa80'
+          }
+        },
+        instruments: {
+          guitar: {
+            tags: ['pw-dreadnaught-design']
+          },
+          bass: {
+
+          },
+          keyboard: {
+
+          },
+          drums: {
+
           }
         },
         sections: {
           home: {
+            hero: {
+              type: 'image'
+            },
             categories: [
               {
                 tag: 'shirts',
@@ -31,10 +49,11 @@ export default {
               },
               {
                 tag: 'backpacks-and-bags',
-                label: 'Bags'
+                label: 'Backpacks & Bags'
               },
               {
-                tag: 'shop-women',
+                tag: 'womens-tops',
+                label: "Women's Tops"
               },
               {
                 tag: 'more-merch'
@@ -66,11 +85,15 @@ export default {
       korg: {
         handle: "korg",
         title: "Korg",
+        published: true,
         designs: [
-          'on-repeat',
-          'kronos',
-          'in-3d',
-          'logo'
+          'synths',
+          'logo',
+          'geo',
+          'ilvkorg',
+          'nma',
+          'stax',
+          'waves'
         ],
         relatedBrands: ['vox','blackstar'],
         theme: {
@@ -82,6 +105,9 @@ export default {
         },
         sections: {
           home: {
+            hero: {
+              type: 'video'
+            },
             categories: [
               {
                 tag: 'shirts',
@@ -95,19 +121,20 @@ export default {
               },
               {
                 tag: 'backpacks-and-bags',
-                label: 'Bags'
+                label: 'Backpacks & Bags'
               },
               {
-                tag: 'shop-women',
+                tag: 'womens-tops',
+                label: "Women's Tops"
               },
               {
                 tag: 'more-merch'
               },
               {
-                tag: 'shirts',
+                tag: 'shop-kids',
               },
               {
-                tag: 'hats',
+                tag: 'drinkware',
               },
             ],
             midHero: {
@@ -130,6 +157,7 @@ export default {
       vox: {
         handle: "vox",
         title: "VOX",
+        published: true,
         designs: [
           'elevated',
           '1957',
@@ -146,6 +174,9 @@ export default {
         relatedBrands: ['korg','blackstar'],
         sections: {
           home: {
+            hero: {
+              type: 'video'
+            },
             categories: [
               {
                 tag: 'shirts',
@@ -159,10 +190,11 @@ export default {
               },
               {
                 tag: 'backpacks-and-bags',
-                label: 'Bags'
+                label: 'Backpacks & Bags'
               },
               {
-                tag: 'shop-women',
+                tag: 'womens-tops',
+                label: "Women's Tops"
               },
               {
                 tag: 'more-merch'
@@ -194,6 +226,7 @@ export default {
       blackstar: {
         handle: "blackstar",
         title: "Blackstar",
+        published: false,
         theme: {
           colors: {
             brand: '#a39161'
@@ -202,6 +235,9 @@ export default {
         relatedBrands: ['korg','vox'],
         sections: {
           home: {
+            hero: {
+              type: 'image'
+            },
             categories: [
               {
                 tag: 'shirts',
@@ -215,10 +251,11 @@ export default {
               },
               {
                 tag: 'backpacks-and-bags',
-                label: 'Bags'
+                label: 'Backpacks & Bags'
               },
               {
-                tag: 'shop-women',
+                tag: 'womens-tops',
+                label: "Women's Tops"
               },
               {
                 tag: 'more-merch'
@@ -250,13 +287,14 @@ export default {
       tascam: {
         handle: "tascam",
         title: "TASCAM",
+        published: false,
         designs: [
           'logo',
           'sam',
           'cassette',
-          'headphones',
-          'reels',
-          'meter'
+          'headphone',
+          'reel',
+          'vu',
         ],
         theme: {
           colors: {
@@ -267,6 +305,9 @@ export default {
         },
         sections: {
           home: {
+            hero: {
+              type: 'image'
+            },
             categories: [
               {
                 tag: 'shirts',
@@ -280,10 +321,11 @@ export default {
               },
               {
                 tag: 'backpacks-and-bags',
-                label: 'Bags'
+                label: 'Backpacks & Bags'
               },
               {
-                tag: 'shop-women',
+                tag: 'womens-tops',
+                label: "Women's Tops"
               },
               {
                 tag: 'more-merch'
@@ -328,7 +370,7 @@ export default {
     },
     allDesigns: (state, getters) => {
       let designs = [];
-      getters.all.forEach(brand => {
+      getters.all.filter(brand => brand.published).forEach(brand => {
         if(brand.designs){
           designs = designs.concat(brand.designs.map(design => `${brand.handle}-${design}`))
         }
@@ -338,11 +380,29 @@ export default {
     houseBrand: state => {
       return state.brands[state.houseBrandHandle]
     },
+    houseBrandInstruments: state => {
+      return state.brands[state.houseBrandHandle].instruments
+    },
+    houseBrandInstrumentHandles: (state, getters) => {
+      return Object.keys(getters.houseBrandInstruments)
+    },
+    houseBrandInstrumentTags: state => {
+      return Object
+        .values(state.brands.brands['player-wear'].instruments)
+        .map(item => item.tags||null)
+        .flat()
+        .filter(Boolean)
+    },
     currentBrandHandle: (state, getters) => {
       if(state.route && getters.allHandles.includes(state.route.params.collectionHandle)){
         return state.route.params.collectionHandle
       }else{
-        return state.houseBrandHandle
+        const brandFromUrlPath = getters.getBrandFromString(state.route.path);
+        if(brandFromUrlPath){
+          return brandFromUrlPath
+        }else{
+          return state.houseBrandHandle
+        }
       }
     },
     currentBrand: (state, getters) => {
@@ -388,5 +448,8 @@ export default {
         return null
       }
     },
+    getBrandFromString: (state, getters) => str => {
+      return getters.allHandles.find(brand => str.toLowerCase().includes(brand))
+    }
   }
 }

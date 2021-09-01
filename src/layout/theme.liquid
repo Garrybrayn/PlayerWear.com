@@ -5,7 +5,6 @@
 <html lang="en">
     <head>
         {%- capture pageTitle -%}
-
             {%- if request.path == '/' -%}
                 PlayerWear.com - Official Merch for Musicians & Music Lovers
             {%- elsif request.path contains '/product/' -%}
@@ -14,7 +13,7 @@
             {%- elsif request.path contains '/pages/' -%}
                 {% if brandName.size > 0 %}
                     {%- comment -%} Brand Landing Page {%- endcomment -%}
-                    Official {{ brandName | capitalize }} Merch | T-Shirts, Hats, Hoodies & More
+                    {{ brandName | capitalize }} T-Shirts, Hats, Hoodies | Player Wear Official {{ brandName | capitalize }} Gear
                 {% else %}
                     {%- comment -%} Regular Page {%- endcomment -%}
                     {{- page_title}} | Official Merch
@@ -35,38 +34,31 @@
             {%- elsif request.path contains '/collections' -%}
                 {%- if request.path contains '/designs' -%}
                     {%- comment -%} Designs - brand-specific {%- endcomment -%}
-                    Official {{ brandName | capitalize }} Merch Designs
+                    {{ brandName | capitalize }} logo T-Shirts, Hats, Hoodies, Backpacks & more | Player Wear Official {{ brandName | capitalize }} Gear
                 {%- elsif current_tags -%}
                     {%- comment -%} TagInCollection - brand-specific {%- endcomment -%}
-                    Official {{ brandName | capitalize -}}*
+                    {{ brandName | capitalize }}*
                     {%- for tag in current_tags -%}
                         {%- assign words = tag | split: '-' -%}
                         {%- for word in words -%} {{ word | capitalize }}*{%- endfor -%}
                     {%- endfor -%}
+                    | Official {{ brandName | capitalize }} T-Shirts, Long Sleeve, Sweatshirts and More | Player Wear
                 {%- elsif product.title -%}
                     {%- comment -%} Product {%- endcomment -%}
-                    {{- product.title -}}
+                    {{- product.title }} | Player Wear Official {{ brandName | capitalize }} Gear
                 {%- else -%}
-                    {%- comment -%} Product {%- endcomment -%}
-                    Official {{ brandName | capitalize }} Merch | T-Shirts, Hats, Hoodies & More
+                    {%- comment -%} Brand Collection Index (no tags) {%- endcomment -%}
+                    {{ brandName | capitalize }} T-Shirts, Hats, Hoodies, Backpacks & more | Player Wear Official {{ brandName | capitalize }} Gear
                 {%- endif -%}
             {%- endif -%}
         {%- endcapture -%}
 
-        {% assign pageTitle = pageTitle | split: "*" | join: " " %}
-
-        {%- capture fullPageTitle -%}
-            {{- pageTitle | strip_newlines -}}*
-            {%- unless page_title contains 'PlayerWear.com' %}for Musicians & Music Lovers by PlayerWear.com{%- endunless -%}
-        {%- endcapture -%}
-        {% assign fullPageTitle = fullPageTitle | split: "*" | join: " " %}
-
         <title>
-            {{- fullPageTitle | escape -}}
+            {{- pageTitle | strip_newlines | split: "*" | join: " " | escape -}}
         </title>
 
         <meta charset="utf-8">
-        <meta name="robots" content="index, follow">
+        <meta name="robots" content="noindex, nofollow">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 
@@ -90,29 +82,31 @@
             <meta property="og:title" content="{{- fullPageTitle | escape -}}" />
         {%- endif %}
 
-
         <link rel="canonical" href="{{ canonical_url }}"/>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-        {% if settings.favicon != blank %}
-            <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | img_url: '180x180', crop: 'center' }}">
-            <link rel="icon" type="image/png" sizes="32x32" href="{{ settings.favicon | img_url: '32x32', crop: 'center' }}">
-            <link rel="icon" type="image/png" sizes="16x16" href="{{ settings.favicon | img_url: '16x16', crop: 'center' }}">
-            <link rel="manifest" href="{{ 'site.webmanifest' | asset_url }}">
-            <meta name="msapplication-TileColor" content="#000000">
-            <meta name="theme-color" content="#000000">
-        {% endif %}
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ "apple-touch-icon.png" | asset_url }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ "favicon-32x32.png" | asset_url }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ "favicon-16x16.png" | asset_url }}">
+        <link rel="manifest" href="{{ "site.webmanifest" | asset_url }}">
+        <link rel="mask-icon" href="{{ "safari-pinned-tab.svg" | asset_url }}" color="#c3fd34">
+        <meta name="msapplication-TileColor" content="#c3fd34">
+        <meta name="theme-color" content="#c3fd34">
 
         {{ 'global.css' | asset_url | stylesheet_tag }}
 
         <script>
-            window.assetUrl = `{{ 'theme.js' | asset_url }}/`.replace('theme.js','').split('?')[0];
+            window.assetUrl = `{{ 'app.js' | asset_url }}/`.replace('app.js','').split('?')[0];
+            window.buildVersion = `{{ 'app.js' | asset_url }}/`.replace('app.js','').split('=')[1].replace('/','');
         </script>
         {{ content_for_header}}
     </head>
     <body>
+        <div id="content_for_layout" style="display: none;">
+            {{ content_for_layout }}
+        </div>
         <div id="vue-app"></div>
         {{ 'app.js' | asset_url | script_tag }}
         {{ 'chunk-vendors.js' | asset_url | script_tag }}
@@ -132,9 +126,6 @@
                     <a class="user__link" href="{{ routes.account_register_url }}">{% render 'get-icon', icon: 'signup' %} Register</a>
                 {% endif %}
             </div>
-        </div>
-        <div id="content_for_layout" style="display: none;">
-            {{ content_for_layout }}
         </div>
     </body>
 </html>

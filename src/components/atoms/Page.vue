@@ -40,7 +40,25 @@ export default Vue.extend({
     &.bottom-spacing{
       padding-bottom: 2em;
     }
+    &.narrow-fixed{
+      max-width: 1000px;
+    }
+    &.really-narrow-fixed{
+      max-width: 600px;
+    }
   }
+
+  @media(min-width: @secondbreakpoint){
+    main {
+      &.narrow, &.narrow-fixed{
+        width: 80%;
+      }
+      &.really-narrow, &.really-narrow-fixed{
+        width: 70%;
+      }
+    }
+  }
+
   @media(min-width:@thirdbreakpoint){
     main.top-spacing{
       padding-top: 50px;
@@ -58,4 +76,5 @@ export default Vue.extend({
       padding-bottom: 90px;
     }
   }
+
 </style>

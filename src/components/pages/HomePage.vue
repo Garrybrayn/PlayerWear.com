@@ -1,8 +1,12 @@
 <template>
   <div>
     <h1 class="meta">{{pageTitle}}</h1>
-    <Strip class="full-width header-image" role="banner">
-      <img :src="assetUrl(`${brand}-home-header.jpg`)" class="header-image" :alt="pageTitle" />
+    <Strip :class="`full-width banner ${heroType}`" role="banner">
+      <img v-if="heroType === 'image'" :src="assetUrl(`${brand}-home-header.jpg`)" :alt="pageTitle" />
+      <video v-if="heroType === 'video'" autoplay loop muted playsinline>
+        <source :src="`${heroSource.replace('.mp4','.webm')}`" type="video/webm"/>
+        <source :src="`${heroSource}`" type="video/mp4"/>
+      </video>
     </Strip>
     <Strip class="tag-cards narrow">
       <TagCard
@@ -27,9 +31,9 @@
         :tag="tag.tag"
       />
     </Strip>
-    <Strip class="full-width header-image mid-hero" role="banner">
+    <Strip class="full-width banner image mid-hero" role="banner">
       <router-link :to="$store.getters['brands/currentBrandPath']('sections.home.midHero.link') || '/'">
-        <img :src="assetUrl(`${brand}-mid-hero.jpg`)" class="header-image" loading="lazy" :alt="pageTitle" />
+        <img :src="assetUrl(`${brand}-mid-hero.jpg`)" loading="lazy" :alt="pageTitle" />
         <div class="hero-overlay-container">
           <div class="hero-overlay">
             <div class="heading-1" >
@@ -67,7 +71,6 @@ import Button from "../atoms/Button.vue";
 import Strip from "../atoms/Strip.vue";
 import TagCard from "../molecules/TagCard.vue";
 import ProductCarousel from "../organisms/ProductCarousel.vue";
-import Utilities from '../../utilities';
 
 export default Vue.extend({
   metaInfo(){
@@ -81,9 +84,24 @@ export default Vue.extend({
     ProductCarousel,
     TagCard
   },
+  data(){
+    return {
+      isMobileOrDesktop: 'mobile'
+    }
+  },
   computed:{
     pageTitle(){
-      return `${this.$store.getters['brands/currentBrandName']} T-Shirts, Hoodies, Hats, Bags & More`;
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        return `${this.$store.getters['brands/currentBrandName']} T-Shirts, Hats, Hoodies | Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`
+      }else{
+        return `Player Wear Officially Licensed Merch for Musicians & Music Lovers. PlayerWear.com`
+      }
+    },
+    heroType(){
+      return this.$store.getters['brands/currentBrandPath']('sections.home.hero.type') === 'video' ? 'video' : 'image'
+    },
+    heroSource(){
+      return this.assetUrl(this.heroType == 'video' ? `${this.brand}-hero-${this.isMobileOrDesktop}.mp4`:`${this.brand}-korg-hero.jpg`)
     },
     brand(){
       return this.$store.getters['brands/currentBrandHandle']
@@ -98,7 +116,7 @@ export default Vue.extend({
       return this.categories.slice(6, 8);
     },
     featuredProducts(){
-      return Utilities.arrayShuffle(
+      return this.arrayShuffle(
         this.$store.getters.productsByTagAndVendor(
           'featured',
           this.$store.getters['brands/isCurrentBrandThirdParty'] ? this.brand : null,
@@ -107,7 +125,7 @@ export default Vue.extend({
       )
     },
     featuredTShirts(){
-      return Utilities.arrayShuffle(
+      return this.arrayShuffle(
         this.$store.getters.productsByTagAndVendor(
           'featured-t-shirt',
           this.$store.getters['brands/isCurrentBrandThirdParty'] ? this.brand : null,
@@ -117,31 +135,36 @@ export default Vue.extend({
     },
     designsForBrand(){
       if(this.$store.getters['brands/isCurrentBrandThirdParty']){
-        return Utilities.arrayShuffle(this.$store.getters['brands/currentBrandDesigns'])
+        return this.arrayShuffle(this.$store.getters['brands/currentBrandDesigns'])
       }
-      return Utilities.arrayShuffle(this.$store.getters['brands/allDesigns']);
+      return this.arrayShuffle(this.$store.getters['brands/allDesigns']);
     }
   },
   beforeMount(){
 
     // Load featured products
-    this.$store.dispatch('loadProductsByTagAndVendor', {
-      first: 10,
+    this.$store.dispatch('load', {
       tag: 'featured AND -tag:featured-t-shirt',
-      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : null
+      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all',
+      limit: 10,
     });
 
     // Load featured t-shirts
-    this.$store.dispatch('loadProductsByTagAndVendor', {
-      first: 10,
+    this.$store.dispatch('load', {
+      limit: 10,
       tag: 'featured-t-shirt',
-      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : null
+      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all'
     });
-
+    window.addEventListener('resize', this.setWindowWidth)
+    this.setWindowWidth();
   },
-  methods:{
-    assetUrl: filename => assetUrl + filename,
-    tagReadable: tag => Utilities.tagReadable(tag)
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setWindowWidth)
+  },
+  methods: {
+    setWindowWidth(){
+      this.isMobileOrDesktop = window.innerWidth < '800' ? 'mobile' : 'desktop'
+    }
   }
 });
 </script>
@@ -158,15 +181,22 @@ export default Vue.extend({
     margin-bottom: 2em;
   }
 
-  .header-image{
+  .banner{
     position: relative;
+    background: #eee;
+    &.image{
+      padding-top: 31%;
+    }
+    &.video{
+      padding-top: 20%;
+    }
     &.mid-hero{
       height: 80vw;
     }
-    img{
+    img, video{
+      position: absolute;
+      top: 0;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
     .hero-overlay-container{
       position: absolute;
@@ -225,8 +255,8 @@ export default Vue.extend({
     box-sizing: border-box;
     background: #000;
     padding: @pagePadding;
-    /deep/ .VueCarousel-inner{
-      gap: @pagePadding;
+    /deep/ .VueCarousel-inner > *{
+      margin-left: @pagePadding;
     }
     /deep/ .VueCarousel-slide{
       padding: 0;

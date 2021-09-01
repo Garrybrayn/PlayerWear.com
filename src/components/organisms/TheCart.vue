@@ -22,10 +22,15 @@
           </div>
         </div>
         <div class="form">
-          <input v-if="!$store.state.customers.email" type="email" placeholder="Enter your Email" ref="emailInput"/>
-          <p class="error" v-if="showEmailError">Enter your email address to continue.</p>
+          <input v-if="!$store.getters['customers/isSignedIn']" :value="$store.state.customers.email" type="email" placeholder="Enter your Email" ref="emailInput"/>
+          <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
+          <div  v-if="!$store.getters['customers/isSignedIn']" class="checkbox-input">
+            <input type="checkbox" ref="acceptsMarketingInput" id="acceptsMarketingInput" checked/>
+            <label for="acceptsMarketingInput">Send me discounts and specials.</label>
+          </div>
           <Button @click="checkout" class="button-checkout" :has-chevron="true">
             Checkout
+            <ProgressSpinner v-if="showProgressSpinner"/>
           </Button>
         </div>
       </div>
@@ -36,15 +41,18 @@
 import Vue from 'vue';
 import Button from '../atoms/Button';
 import CartItem from '../molecules/CartItem';
+import ProgressSpinner from "../atoms/ProgressSpinner.vue";
 
 export default Vue.extend({
   components: {
     Button,
-    CartItem
+    CartItem,
+    ProgressSpinner
   },
   data(){
     return {
-      showEmailError: false
+      errorMessage: null,
+      showProgressSpinner: false
     }
   },
   computed: {
@@ -66,15 +74,69 @@ export default Vue.extend({
   },
   methods: {
     checkout(){
-      this.showEmailError = false;
-      this.$store.commit('customers/SET_EMAIL', this.$refs.emailInput.value);
-      if(this.$store.getters['customers/hasValidEmail']){
-        this.$router.push({
-          name: 'PreCheckout'
-        })
+      this.errorMessage = null;
+      if(this.$refs.emailInput && this.$refs.emailInput.value){
+        this.$store.commit('customers/SET_EMAIL', this.$refs.emailInput.value);
+      }
+
+      // If the customer is on the upsell page
+      // immediately redirect them to the checkout
+      if(this.$route.name === 'PreCheckout' || this.$route.name === 'Cart'){
+        this.showProgressSpinner = true;
+        this.$store.dispatch('cart/checkout');
+
+      // If the customer is on the checkout options page
+      // Leave them here.
+      }if(this.$route.name === 'CheckoutOptions'){
         this.$emit('close');
+
+      // Customer is signed in.
+      // Send them to pre-checkout
+      }else if(this.$store.getters['customers/isSignedIn']){
+        this.$emit('close');
+        this.$router.push({ name: 'PreCheckout' });
+
       }else{
-        this.showEmailError = true;
+        // Customer is not signed in.
+        // Check to make sure their email format is valid.
+        if(this.$store.getters['customers/hasValidEmail']){
+
+
+          if(this.$store.state.customers.emailHasAccount) {
+            // This customer already has an account but is not signed in.
+            // Redirect them to checkout options to allow them to sign in.
+            this.$emit('close');
+            this.$router.push({name: 'CheckoutOptions'});
+
+          }else{
+            // We don't know if this customer has an account yet.
+            // Try to create a new account for them
+            this.showProgressSpinner = true;
+            this.$store.dispatch('customers/create', {
+              email: this.$refs.emailInput.value,
+              acceptsMarketing: this.$refs.acceptsMarketingInput.checked ? true : false
+            })
+              .then(results => {
+                console.log(results)
+
+                // A new customer was created. Redirect them to pre-checkout
+                this.$emit('close');
+                this.$router.push({name: 'PreCheckout'});
+              })
+              .catch(error => {
+                // Assuming either "TAKEN" or "CUSTOMER_DISABLED" error
+                // In either case, redirect to checkout options.
+                console.error(error);
+                this.$emit('close');
+                this.$router.push({name: 'CheckoutOptions'});
+              })
+              .finally(() => {
+                this.showProgressSpinner = false;
+              })
+          }
+        }else{
+          this.errorMessage = 'Enter your email address to continue.';
+        }
       }
     }
   }
@@ -91,10 +153,11 @@ export default Vue.extend({
     bottom:0;
     left:0;
     background: #0005;
-    z-index: 2;
+    z-index: 3;
     transition: opacity 250ms ease-in-out;
     &.closed{
       pointer-events: none;
+      touch-action: none;
       opacity: 0;
       .cart {
         bottom: -10vh;
@@ -116,7 +179,6 @@ export default Vue.extend({
     bottom: 0;
     flex-direction: column;
     transition: all 500ms;
-    font-size: 0.9rem;
 
     &.empty{
       font-weight: 600;
@@ -178,7 +240,7 @@ export default Vue.extend({
     flex-direction: column;
     align-content: stretch;
     justify-content: stretch;
-    input{
+    input[type=email]{
       height: 40px;
       font: inherit;
       padding: 0.5em 1em;
@@ -186,9 +248,17 @@ export default Vue.extend({
       margin-bottom: 0em;
       margin-top: 1em;
     }
+    .checkbox-input{
+      padding: 0.5em;
+      font-size: 90%;
+      color: @gray2;
+      input{
+        margin-right: 0.5em;
+      }
+    }
     button{
       margin-top: 0.5em;
-      font-size: 125%;
+      font-size: 125% !important;
       padding: 0.45em 0em;
       font-weight: 600;
     }
@@ -199,6 +269,7 @@ export default Vue.extend({
     .cart-overlay{
       &.closed{
         pointer-events: none;
+        touch-action: none;
         opacity: 0;
         .cart {
           right: -450px;

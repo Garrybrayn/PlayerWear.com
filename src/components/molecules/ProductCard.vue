@@ -1,5 +1,5 @@
 <template>
-  <component :is="componentType" :class="{'product-card': true, placeholder }" :to="route" :disabled="product?false:true" role="tab" :aria-label="escape(title)" aria-hidden="false">
+  <component :is="componentType" :class="{'product-card': true, placeholder, 'sold-out': soldOut }" :to="route" :disabled="product?false:true" role="tab" :aria-label="escape(title)" aria-hidden="false">
     <ProductImage :src="imageOne" :alt="altText" class="first" />
     <ProductImage :src="imageTwo || imageOne" :alt="altText" :class="{second: true, zoom:imageTwo?false:true}" :preload="true"/>
     <div v-if="showProductIcon" class="product-icon" :style="{color: $store.getters['brands/currentBrandColor']}" >
@@ -17,9 +17,13 @@
       {{ color }}
       <span v-if="placeholder" class="placeholder-content" />
     </div>
+    <div v-if="soldOut" class="product-sold-out">
+      SOLD OUT<i class="uil-fire" />
+    </div>
     <div v-if="showBuyButton">
       <FormAddToCart
         :selectedVariantIdDecoded="selectedVariantIdDecoded"
+        :selectedVariantId="selectedVariantId"
         :show-quantity-selector="false"
         :quantity="quantity"
         :buy-button-label="buyButtonLabel"
@@ -30,7 +34,6 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import Utilities from '../../utilities';
 import FormAddToCart from "../molecules/FormAddToCart.vue";
 import ProductImage from "../atoms/ProductImage.vue";
 
@@ -59,6 +62,10 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    showPriceOnButton:{
+      type: Boolean,
+      default: true
+    }
   },
   components: {
     ProductImage,
@@ -66,13 +73,15 @@ export default Vue.extend({
   },
   data(){
     return {
-      quantity: 1
+      quantity: 1,
+      selectedVariantId: null
     }
   },
   computed:{
     componentType(){
       if(this.showBuyButton){
-        return 'div'
+        return 'router-link';
+        // return 'div'
       }else{
         return 'router-link';
       }
@@ -81,19 +90,33 @@ export default Vue.extend({
       return this.product ? false : true
     },
     title() {
-      return this.product && this.product.title ? this.product.title : ''
+      return this.product && this.product.title ? this.product.title : '';
     },
     altText() {
       return this.color ? `${this.title}  - ${this.color}` : this.title
     },
     imageOne() {
-      return this.product && this.product.images && this.product.images[0] ? this.product.images[0].src : ''
+      if(this.product){
+        if(this.product.images && this.product.images[0]){
+          return this.product.images[0].src
+        }else if(this.product.image){
+          return this.product.image
+        }
+      }
+      return '';
     },
     imageTwo(){
       return this.product && this.product.images && this.product.images[1] ? this.product.images[1].src : ''
     },
     price(){
-      return this.product && this.product.variants ? `$${this.product.variants[0].price.replace('.00','')}` : '';
+      if(this.product){
+        if(this.product.variants && this.product.variants[0]){
+          return `$${this.product.variants[0].price.replace('.00','')}`
+        }else if(this.product.price){
+          return `$${this.product.price}`
+        }
+      }
+      return '';
     },
     color(){
       if(this.product && this.product.metafields){
@@ -106,13 +129,13 @@ export default Vue.extend({
       return this.product && this.product.variants ? this.product.variants : null
     },
     selectedVariant(){
-      if(this.variants){
-        return this.variants.find(variant => variant.id === this.selectedVariantId);
-      }
-      return null
+      return this.selectedVariantId && this.variants ? this.variants.find(variant => variant.id === this.selectedVariantId) : null
     },
     total(){
-      return this.selectedVariant ? this.selectedVariant.price * this.quantity : null;
+      return this.selectedVariant ? this.selectedVariant.price * this.quantity : 0;
+    },
+    soldOut() {
+      return this.product && this.product.soldOut;
     },
     selectedVariantIdDecoded(){
       return this.selectedVariantId ? atob(this.selectedVariantId).split('/').slice(-1)[0] : false;
@@ -121,8 +144,8 @@ export default Vue.extend({
       return this.selectedVariant ? Number(this.selectedVariant.price) : null
     },
     buyButtonLabel(){
-      if(this.selectedVariant){
-        return `Add to Cart - $${ this.total }`
+      if(this.total){
+        return `Add to Cart${this.showPriceOnButton? `- $${ this.total }`:''}`
       }else{
         return 'Select an Option';
       }
@@ -133,7 +156,7 @@ export default Vue.extend({
         route = {
           name: "ProductInCollection",
           params: {
-            collectionHandle: Utilities.tagify(this.product.vendor),
+            collectionHandle: this.tagify(this.product.vendor),
             productHandle: this.product.handle
           }
         };
@@ -149,14 +172,11 @@ export default Vue.extend({
     variants:{
       immediate: true,
       handler(){
-        if(this.variants && this.variants.length === 1 && !this.selectedVariantId){
+        if(this.variants && this.variants.length === 1){
           this.selectedVariantId = this.variants[0].id
         }
       }
     }
-  },
-  methods: {
-    escape: string => Utilities.escape(string)
   }
 });
 </script>
@@ -168,16 +188,9 @@ export default Vue.extend({
   .product-card{
     display: block;
     position: relative;
-    &:hover{
-      .first{
-        display: none;
-      }
-      .second{
-        display: block;
-      }
-    }
     color: @black;
     text-decoration: none;
+    font-size: 90%;
   }
   .product-image {
     &.second{
@@ -221,5 +234,25 @@ export default Vue.extend({
     bottom: 1em;
     left: 1em;
     zoom: 1.25
+  }
+  .product-sold-out{
+    font-size: 0.9em;
+    color: @red;
+    font-weight: 700;
+  }
+
+  @media(min-width: @firstbreakpoint){
+    .product-card{
+      font-size: 100%;
+      &:hover{
+        .first{
+          display: none;
+        }
+        .second{
+          display: block;
+        }
+      }
+    }
+
   }
 </style>

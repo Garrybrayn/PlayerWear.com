@@ -58,6 +58,14 @@ export default Vue.extend({
   .bold{
     font-weight: 800;
   }
+  .safari-only{
+    .product-color-list{
+      > * + *{
+        margin-left: 10px;
+        margin-bottom: 10px;
+      }
+    }
+  }
   .product-color-list{
     margin-top: 0.5em;
     display: flex;

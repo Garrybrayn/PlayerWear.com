@@ -1,5 +1,5 @@
 <template>
-  <div :class="`contains-${imagesToShow.length}`">
+  <div :class="`contains-${imagesToShow.length} ${showMoreImages?'show-all-images':'show-limited-images'}`">
     <div class="product-page-image-grid-container">
       <Carousel class="mobile" :per-page="1" pagination-position="bottom-overlay" pagination-color="rgba(128,128,128, 0.5)" pagination-active-color="rgba(128,128,128, 1)" :pagination-padding="5">
         <Slide v-for="(image, index) in imagesToShow" :key="index">
@@ -59,6 +59,13 @@ export default Vue.extend({
       return this.showMoreImages ? 'less':'more';
     }
   },
+  watch:{
+    showMoreImages(){
+      if(!this.showMoreImages){
+        window.scrollTo(0, 0);
+      }
+    }
+  }
 });
 </script>
 <style scoped lang="less">
@@ -137,18 +144,29 @@ export default Vue.extend({
   /deep/ .VueCarousel-dot[aria-selected=false]{
     transform: scale(.7);
   }
+
   .button-show-more{
     position: absolute;
     bottom: 40px;
     width: 200px;
     left: 50%;
     margin-left: -100px;
-    background: #0009;
     font-size: 0.9em;
     display: none;
+    background: fade(@white, 75%);
+    backdrop-filter: blur(5px) contrast(0.75) brightness(1.5);
+    color: @black;
+    font-weight: 600;
+    box-shadow: 0 0 1em #0001;
+    transition: all 250ms;
     &:hover{
-      background: #000;
+      background: white;
     }
+  }
+  .show-all-images .button-show-more{
+    bottom: -80px;
+    background: black;
+    color: white;
   }
 
   .modal{

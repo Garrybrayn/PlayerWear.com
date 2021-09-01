@@ -1,6 +1,6 @@
 <template>
-  <div class="buy-button-container" role="form">
-    <InputNumber v-if="showQuantitySelector" :value="quantity" @change="$emit('changeQuantity', $event)" />
+  <div class="buy-button-container" role="form" @click.stop @click.prevent>
+    <InputNumber v-if="!showPlaceholders && showQuantitySelector" :value="quantity" @change="$emit('changeQuantity', $event)" />
     <Button
       v-if="!showPlaceholders"
       aria-label="Add to Cart"
@@ -20,6 +20,9 @@ import Button from "../atoms/Button.vue";
 export default Vue.extend({
   props: {
     selectedVariantIdDecoded: {
+      type: [String, Boolean]
+    },
+    selectedVariantId: {
       type: [String, Boolean]
     },
     quantity: {
@@ -53,6 +56,7 @@ export default Vue.extend({
       if(this.selectedVariantIdDecoded){
         this.$emit('addToCart', {
           id: this.selectedVariantIdDecoded,
+          idEncoded: this.selectedVariantId,
           quantity: this.quantity
         })
       }

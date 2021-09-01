@@ -1,6 +1,6 @@
 <template>
   <Page :bottom-spacing="true" :top-spacing="false" class="full-width">
-    <Strip :class="{placeholder: showPlaceholders}">
+    <Strip :class="{placeholder: showPlaceholders, 'product-page-container': true}">
       <Breadcrumbs :breadcrumbs="breadcrumbs" />
       <div class="product-page" data-v-sticky-container>
         <ProductPageImageGrid
@@ -33,25 +33,45 @@
               :selected-variant-id="selectedVariantId"
               :size-guide="sizeGuide"
               @select="selectedVariantId = $event"
+              @clickShowSizeGuide="showSizeGuide=true"
             />
             <div v-if="soldOutMessage" class="note warning">
-              <i class="uil uil-fire" />
-              {{ soldOutMessage }}
+              <div>
+                <i class="uil uil-fire" />
+                {{ soldOutMessage }}
+              </div>
             </div>
             <FormAddToCart
               v-if="!soldOutMessage"
               :selectedVariantIdDecoded="selectedVariantIdDecoded"
+              :selectedVariantId="selectedVariantId"
               :quantity="quantity"
               :buyButtonLabel="buyButtonLabel"
               :showPlaceholders="showPlaceholders"
               @changeQuantity="quantity=$event"
               @addToCart="$emit('addToCart', $event)"
             />
-            <div class="note" v-show="!showPlaceholders">
-              <i class="uil uil-truck" />
-              SPECIAL Flat Rate Shipping $4.00
-              <p v-if="$store.getters['customers/isOutsideShippingZone']">We ship to the United States and 12 US territories.</p>
-              <p class="warning" v-if="$store.getters['customers/isOutsideShippingZone']">We do NOT ship anywhere outside the 50 United States and 12 US territories.</p>
+            <div v-if="!showSizeSelector && sizeGuide" class="note link" @click="showSizeGuide=true">
+              <div>
+                <IconSvg name="shirt" />
+                View Size Guide
+              </div>
+            </div>
+            <div class="note" v-show="!showPlaceholders" :style="{background: $store.getters['brands/currentBrandColorLight']}">
+              <div class="link" @click="showShippingDetails=true">
+                <IconSvg name="truck" />
+                <b>SPECIAL Flat Rate Shipping $4.00 in USA</b>
+                <p v-if="$store.getters['customers/isOutsideShippingZone']">We ship to the United States and 12 US territories.</p>
+                <p class="warning" v-if="$store.getters['customers/isOutsideShippingZone']">We do NOT ship anywhere outside the 50 United States and 12 US territories.</p>
+              </div>
+              <div>
+                <IconSvg name="shirt-filled" />
+                All products are made to order and are ready to ship in 3-6 business days.
+              </div>
+              <div>
+                <IconSvg name="star" />
+                30-day satisfaction guarantee
+              </div>
             </div>
             <b v-show="description">DESCRIPTION:</b>
             <div v-html="description" class="description"/>
@@ -68,13 +88,35 @@
       <div class="heading-1 center">You might like</div>
       <ProductCarousel :products="relatedProducts" :slide-width="400"/>
     </Strip>
+    <Modal v-if="showShippingDetails" @close="showShippingDetails=false">
+      <div class="modal-contents">
+        <div class="heading-1">
+          <i class="uil uil-truck" />$4.00 Flat Rate Shipping
+        </div>
+        <p>
+          Our special Flat Rate Shipping applies to shipments to
+          <b>All 50 U.S. states plus the following U.S. territories:</b>
+          America Samoa, Guam, Federated States of Micronesia, Marshall Islands, Northern Mariana Islands, Palau, Puerto Rico and the Virgin Islands.
+        </p>
+        <p>
+          We do not currently ship outside if these locations, but will be expanded to more of the world soon. If
+          you are interested <a href="mailto:support@player-wear.com?subject=Request: Support shipping to my area">email us</a>
+          and let us know where you are at. We will be entering the markets with the most requests first.
+        </p>
+      </div>
+    </Modal>
+    <Modal v-if="showSizeGuide" @close="showSizeGuide=false">
+      <div v-html="sizeGuide" class="modal-contents"/>
+    </Modal>
   </Page>
 </template>
 <script lang="ts">
 import Vue from 'vue';
 import Page from '../atoms/Page.vue';
+import IconSvg from '../atoms/IconSvg.vue';
 import Strip from '../atoms/Strip.vue';
 import FormAddToCart from '../molecules/FormAddToCart.vue';
+import Modal from '../molecules/Modal.vue';
 import ProductPageImageGrid from '../molecules/ProductPageImageGrid.vue';
 import Breadcrumbs from '../molecules/Breadcrumbs.vue';
 import ProductColorSelector from '../molecules/ProductColorSelector.vue';
@@ -82,18 +124,28 @@ import ProductPageSizeSelector from '../molecules/ProductPageSizeSelector.vue';
 import ProductCarousel from '../organisms/ProductCarousel.vue';
 
 import VueStickyDirective from '@renatodeleao/vue-sticky-directive'
-import Utilities from '../../utilities';
 
 export default Vue.extend({
   metaInfo(){
+    const titleParts = [this.title];
+    if(this.$route.query.tag){
+      titleParts.push(`| ${this.tagReadable(this.$route.query.tag)}`)
+    }
+    if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+      titleParts.push(`| Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`);
+    }else{
+      titleParts.push(`| Player Wear Officially Licensed Merch`);
+    }
     return {
-      title: `${this.title}`
+      title: titleParts.join(' ')
     }
   },
   components: {
     Page,
     Strip,
     Breadcrumbs,
+    Modal,
+    IconSvg,
     ProductPageImageGrid,
     ProductColorSelector,
     ProductPageSizeSelector,
@@ -105,6 +157,8 @@ export default Vue.extend({
   },
   data(){
     return {
+      showSizeGuide: false,
+      showShippingDetails: false,
       selectedVariantId: null,
       quantity: 1
     }
@@ -114,7 +168,7 @@ export default Vue.extend({
       return this.$store.state.products.products[this.$route.params.productHandle];
     },
     relatedProducts(){
-      return this.$store.getters.relatedProducts(this.$route.params.productHandle, 8);
+      return this.$store.getters.relatedProducts(this.$route.params.productHandle, this.$route.query.tag, 8);
     },
     selectedVariant(){
       if(this.variants){
@@ -139,9 +193,9 @@ export default Vue.extend({
       return this.variants ? Math.min(...(this.variants.map(variant => Number(variant.price)))) : null
     },
     priceReadable(){
-      let price = this.selectedVariantPrice || this.lowestVariantPrice;
-      price = Number.isInteger(price) ? price : Number(price).toFixed(2);
-      return `$${price} USD`;
+      const price = this.selectedVariantPrice || this.lowestVariantPrice;
+      const priceString = Number.isInteger(price) ? price : Number(price).toFixed(2);
+      return price ? `$${priceString} USD` : null;
     },
     title(){
       return this.product ? `${this.product.title}${this.selectedColor? ` - ${this.selectedColor.label}`: ''}` : ''
@@ -195,7 +249,8 @@ export default Vue.extend({
       }
     },
     total(){
-      return this.selectedVariant ? this.selectedVariant.price * this.quantity : null;
+      const total = this.selectedVariant ? this.selectedVariant.price * this.quantity : null;
+      return Number.isInteger(total) ? total : Number(total).toFixed(2)
     },
     breadcrumbs(){
       const breadcrumbs = [];
@@ -223,7 +278,7 @@ export default Vue.extend({
             });
           }
           breadcrumbs.push({
-            label: Utilities.tagReadable(this.$route.query.tag),
+            label: this.tagReadable(this.$route.query.tag.replace(this.$store.getters['brands/currentBrandTitle'].toLowerCase(),'')),
             url: {
               name: "TagInCollection",
               params: {
@@ -252,6 +307,30 @@ export default Vue.extend({
           this.selectedVariantId = this.variants[0].id
         }
       }
+    },
+    'product.id': {
+      immediate: true,
+      handler(){
+        if(this.product && this.product.id){
+          // LOAD RELATED PRODUCTS BY VENDOR/TAG
+          console.log('loading related products')
+          this.$store.dispatch('load', {
+            tag: this.$route.query.tag,
+            vendor: this.product.vendor,
+            limit: 10
+          }).then(() => {
+            console.log('got', this.relatedProducts)
+            // LOAD MORE BY VENDOR ONLY
+            if(this.$route.query.tag && this.relatedProducts.length < 10){
+              console.log('loading more');
+              this.$store.dispatch('load', {
+                vendor: this.product.vendor,
+                limit: 10
+              })
+            }
+          })
+        }
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -266,15 +345,20 @@ export default Vue.extend({
   },
   methods: {
     fetchProductColorData(productHandle){
-      // Load the product details
-      this.$store.dispatch('loadProduct', productHandle).then(product => {
+      Promise.all([
+        // Load the product details
+        this.$store.dispatch('load', {
+          handle: productHandle,
+          limit: 1
+        }),
 
-        // Load all products by this brand
-        this.$store.dispatch('loadCollectionWithProducts', product.vendor);
+        // Load product colors
+        this.$store.dispatch('loadProductColorOptions', productHandle)
+      ]).catch(e => {
+        // ERROR LOADING PRODUCT
+        console.log(e,'Error Loading Product')
+        this.$router.replace({ name: 'MissingPage'});
       })
-
-      // Load the color options.
-      this.$store.dispatch('loadProductColorOptions', productHandle);
     },
     selectColor(productHandle){
       this.$router.push({
@@ -348,8 +432,10 @@ export default Vue.extend({
     box-shadow: 0px 0px 20px #0005;
     display: flex;
     align-items: stretch;
-    gap: 0.5em;
-    z-index: 1;
+    z-index: 3;
+    > * + * {
+      margin-left: 0.5em;
+    }
     .placeholder-content{
       height: 3em;
       width: 100%;
@@ -357,13 +443,35 @@ export default Vue.extend({
   }
 
   .note{
-    padding: 1em;
+    padding: 0.3em 0;
     border-radius: 2px;
     background: #eee;
     margin-bottom: 1em;
-    i{
-      font-size: 1.25em;
+    display: flex;
+    flex-direction: column;
+    > div{
+      padding: 1em 1.25em;
+      display: flex;
+      gap: 0.4em;
+      align-items: center;
+      &:not(:last-child){
+        border-bottom: 1px solid fade(@white, 40%);
+      }
+    }
+    .link:hover{
+      color: @black;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    i, .icon, .icon-svg{
+      font-size: 2em;
       vertical-align: middle;
+      margin-right: 0.25em;
+      flex-shrink: 0;
+      &:before{
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+      }
     }
   }
 
@@ -384,7 +492,7 @@ export default Vue.extend({
   }
 
   .warning{
-    color: #ad0d0d;
+    color: @red;
     font-weight: bolder;
   }
 
@@ -396,6 +504,7 @@ export default Vue.extend({
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       grid-gap: 40px;
+      padding-bottom: 5em;
     }
     .product-images{
       grid-column: span 7;
