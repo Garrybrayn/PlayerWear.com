@@ -42,7 +42,7 @@ export default Vue.extend({
   },
   computed: {
     srcLarge(){
-      return this.src.replace('.jpg',`_1000x.jpg`)
+      return this.src ? this.src.replace('.jpg',`_1000x.jpg`) : null
     },
     srcset(){
       return [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map(width => {
