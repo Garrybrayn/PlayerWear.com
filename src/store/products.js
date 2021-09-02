@@ -8,7 +8,6 @@ function graphProductDetails(product){
   product.add('title');
   product.add('handle');
   product.add('vendor');
-  product.add('createdAt');
   product.add('descriptionHtml');
   product.add('options', (opts) => {
     opts.add('name')
@@ -57,6 +56,7 @@ export default {
   state: {
     cachedQueries: { },
     products: { },
+    productCount: 0,
     colorOptions: { },
     sortKey: 'BEST_SELLING',
     resultsPerPage: 6,
@@ -67,11 +67,21 @@ export default {
     SET_CACHED_QUERY(state, payload){
       Vue.set(state.cachedQueries, payload.key, payload.fetchNextPage)
     },
-    SET_PRODUCT(state, product){
-      // AGGREGATE DATA FOR METAFIELDS LIKE "soldOut" and "order"
-      product.soldOut = product.variants.every(variant => variant.availableForSale === false);
-      // product.order = Object.keys(state.products).length;
-      Vue.set(state.products, product.handle, product);
+    BULK_SET(state, products){
+      products.forEach(product => {
+        const productIsNew = !(product.handle in state.products);
+        product.soldOut = product.variants.every(variant => variant.availableForSale === false);
+        if(productIsNew){
+          // ONLY APPLY AN ORDER IF PRODUCT
+          // IS NEWLY ADDED
+          product.order = product.soldOut ? Infinity : state.productCount;
+          state.productCount++;
+        }else{
+          // KEEP THE ORDER THE SAME AS BEFORE
+          product.order = state.products[product.handle].order
+        }
+        Vue.set(state.products, product.handle, product)
+      })
     },
     SET_COLOR_OPTIONS(state, product){
       Vue.set(state.colorOptions, product.handle, product.colors);
@@ -82,7 +92,7 @@ export default {
   },
   actions: {
     handleProductsResponse: async (context, payload) => {
-      let fetchNextPage = false;
+      let fetchNextPage;
 
       // GET THE ARRAY OF PRODUCTS
       let products;
@@ -94,21 +104,18 @@ export default {
         products = payload.response.model.products;
       }
 
+      // FILTER PRODUCTS TO ENSURE ENTRIES ARE REAL PRODUCTS
+      products = products.filter(product => product.type.name === 'Product');
 
 
-      if(products){
+      if(products && products.length > 0){
 
-        // LOOP OVER THE PRODUCTS SETTING THEM TO THE STATE
-        let lastProduct = null;
-        products.forEach(product => {
-          if(product.type.name === 'Product'){
-            context.commit('SET_PRODUCT', product)
-            lastProduct = product;
-          }
-        })
+        // BULK SET PRODUCTS TO STATE
+        context.commit('BULK_SET', products)
 
         // HANDLE PAGINATION
         const hasNextPage = payload.response.data.products.pageInfo.hasNextPage;
+        const lastProduct = products[products.length - 1]
 
         if(hasNextPage && lastProduct && 'nextPageQueryAndPath' in lastProduct){
 
@@ -129,20 +136,22 @@ export default {
             // AUTOMATICALLY LOAD THE NEXT PAGE
             fetchNextPage();
           }else{
-            // RETURN A FUNCTION TO LOAD THE NEXT PAGE
             context.commit('SET_LOADING', false);
           }
         }else{
-          // NOT LOADING ANYTHING ANYMORE
           context.commit('SET_LOADING', false);
         }
       }
 
+      // RETURN EITHER A FUNCTION TO FETCH NEXT PAGE
+      // OR FALSE IF THERE IS NO NEXT PAGE
+      const result = fetchNextPage || false
+
       context.commit('SET_CACHED_QUERY', {
         key: payload.cacheKey,
-        fetchNextPage
+        fetchNextPage: result
       })
-      return fetchNextPage;
+      return result
     },
 
     graphQuery: async (context, query) => {
@@ -367,8 +376,8 @@ export default {
   getters: {
     products: state => {
       return Object
-        .values(state.products).reverse()
-        // .sort((a, b) => a.order < b.order  ? 0 : -1);
+        .values(state.products)
+        .sort((a, b) => a.order - b.order)
     },
     relatedProducts: (state, getters) => (handle, tag, count) => {
 

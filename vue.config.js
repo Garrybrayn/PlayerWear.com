@@ -8,34 +8,33 @@ const childProcess = require('child_process');
 const ArbitraryCodeAfterReload = function() {
   this.apply = function(compiler) {
     if (compiler.hooks && compiler.hooks.done) {
-      compiler.hooks.done.tap('done', function(clik) {
-        let appFileName;
-        let runtimeFile;
-        const tags = Array
-          .from(clik.compilation.assetsInfo.keys())
-          .filter(filename => filename.includes('.js'))
-          .map(filename => {
-            if(filename.includes('app.')){
-              appFileName = filename;
-            }
-            if(filename.includes('runtime.')){
-              runtimeFile = filename;
-            }
-            return `<script src="{{ '${filename.replace('js/','')}' | asset_url }}" async></script>`;
-          })
+      compiler.hooks.done.tap('optimizeChunkModules', function(compiler) {
+        const chunks = Array.from(compiler.compilation.assetsInfo.keys());
+        const runPostBuildScript = chunks.every(chunk => !chunk.includes('webpack-dev-server'));
 
-        // console.log('COPYING APP')
-        // childProcess.execSync(`cp -r ./dist/${appFileName} ./src/assets/${appFileName}`);
-        if(runtimeFile){
-          childProcess.execSync(`cp -r ./dist/${runtimeFile} ./src/assets/${runtimeFile}`);
+        if(runPostBuildScript){
+          let runtimeFile;
+          const scriptTags = chunks
+            .filter(filename => filename.includes('.js'))
+            .map(filename => {
+              if(filename.includes('runtime.')){
+                runtimeFile = filename;
+              }
+              return `<script src="{{ '${filename.replace('js/','')}' | asset_url }}" async></script>`;
+            })
+
+          if(runtimeFile){
+            console.log('COPYING APP')
+            childProcess.execSync(`cp -r ./dist/${runtimeFile} ./src/assets/${runtimeFile}`);
+          }
+          console.log('COPYING DEPS')
+          childProcess.execSync(`cp -r ./dist/js/* ./src/assets`);
+
+          console.log('UPDATING THEME FILE CONTENTS');
+          const fileContents = fs.readFileSync('./dist/theme.template.liquid', {encoding:'utf8'});
+          const newFileContents = fileContents.replace('{{ webpack_scripts }}', scriptTags.join("\n"));
+          fs.writeFileSync("./src/layout/theme.liquid", newFileContents);
         }
-        console.log('COPYING DEPS')
-        childProcess.execSync(`cp -r ./dist/js/* ./src/assets`);
-
-        console.log('UPDATING THEME FILE CONTENTS');
-        const fileContents = fs.readFileSync('./dist/theme.template.liquid', {encoding:'utf8'});
-        const newFileContents = fileContents.replace('{{ webpack_scripts }}', tags.join("\n"));
-        fs.writeFileSync("./src/layout/theme.liquid", newFileContents);
 
       });
     }

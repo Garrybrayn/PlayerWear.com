@@ -148,25 +148,36 @@ export default Vue.extend({
     },
     productsForGrid(){
       if(this.initialLoadFinished && this.$store.getters.products.length > 0){
-        const productsForGrid = this.$store.getters.products.filter(product => {
+        const collectionHandle = this.$route.params.collectionHandle;
+        const tag = this.$route.params.tag;
+        const isCollection = !!collectionHandle;
 
+        const productsForGrid = this.$store.getters.products.filter(product => {
           let include = true;
 
-          // Omit products if vendor is actually set
-          if(this.$route.params.collectionHandle && this.$route.params.collectionHandle !== 'all' && this.tagify(product.vendor) !== this.$route.params.collectionHandle){
-            include = false;
+          if(isCollection){
+            if(collectionHandle == 'all'){
+              // THIS PAGE IS "ALL" COLLECTION
+              // OMIT PRODUCTS NOT TAGGED WITH PW-GLOBAL
+              if(this.$route.params.collectionHandle === 'all' && !product.tags.find(tag => tag.value === 'pw-global')){
+                include = false;
+              }
+            }else{
+              // THIS PAGE IS A VENDOR COLLECTION
+              // ENSURE PRODUCT IS CORRECT VENDOR
+              if(this.tagify(product.vendor) !== collectionHandle){
+                // PRODUCT DOES NOT MATCH VENDOR. OMIT FROM LIST.
+                include = false;
+              }
+            }
           }
-          // Omit products by tags
-          if(this.$route.params.tag && product.tags.find(tag => tag.value === this.$route.params.tag) === undefined){
-            include = false;
-          }
-          // Omit products that aren't tagged with pw-global
-          if(this.$route.params.collectionHandle === 'all' && !product.tags.find(tag => tag.value === 'pw-global')){
+          if(tag && product.tags.find(t=>t.value===tag) === undefined){
+            // THIS PAGE IS FOR A TAG/CATEGORY
+            // PRODUCT DOES NOT HAVE TAG. OMIT FROM LIST.
             include = false;
           }
           return include;
         })
-        productsForGrid.sort((a, b) => (a.soldOut > b.soldOut) ? 1 : -1)
         return productsForGrid
       }
       return [];
@@ -260,7 +271,7 @@ export default Vue.extend({
   },
   methods: {
     shouldLoadNextPage(){
-      return this.loadNextPage && (window.innerHeight + window.scrollY) >= (this.$el.clientHeight - (window.innerHeight / 2))
+      return this.loadNextPage && (window.innerHeight + window.scrollY) >= (this.$el.clientHeight - (window.innerHeight))
     },
     async onScroll(){
       if (this.shouldLoadNextPage()) {

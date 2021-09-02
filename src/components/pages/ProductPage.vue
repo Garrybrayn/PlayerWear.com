@@ -53,7 +53,7 @@
             />
             <div v-if="!showSizeSelector && sizeGuide" class="note link" @click="showSizeGuide=true">
               <div>
-                <IconSvg name="shirt" />
+                <IconSvg name="shirt-filled" />
                 View Size Guide
               </div>
             </div>
@@ -366,7 +366,8 @@ export default Vue.extend({
         params: {
           collection: this.$route.params.collection ? this.$route.params.collection : null,
           productHandle: productHandle
-        }
+        },
+        query: this.$route.query
       })
     }
   }
@@ -458,7 +459,7 @@ export default Vue.extend({
         border-bottom: 1px solid fade(@white, 40%);
       }
     }
-    .link:hover{
+    &.link:hover{
       color: @black;
       text-decoration: underline;
       cursor: pointer;

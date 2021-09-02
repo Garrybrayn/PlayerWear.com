@@ -3,7 +3,7 @@
     <label>
       <b>SIZE:</b>
       <span v-if="sizeGuide" @click="$emit('clickShowSizeGuide')" role="link" aria-label="View Size Guide">
-        <IconSvg name="shirt" style="font-size: 1.25em; margin-right: 0.25em;" />Size Guide
+        <IconSvg name="shirt-filled" style="font-size: 1.25em; margin-right: 0.25em;" />Size Guide
       </span>
     </label>
     <div class="product-size-options">

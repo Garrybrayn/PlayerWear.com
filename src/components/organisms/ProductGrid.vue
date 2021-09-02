@@ -54,7 +54,7 @@ export default Vue.extend({
   computed: {
     productsForGrid(){
       // Include 5 empty placeholder products
-      return this.products || [null, null, null, null, null]
+      return this.products.length > 0 ? this.products : [null, null, null, null, null]
     }
   }
 });

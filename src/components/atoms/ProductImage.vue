@@ -91,7 +91,7 @@ export default Vue.extend({
       filter: brightness(94%);
       object-fit: cover;
       opacity: 0;
-      transition: opacity 200ms;
+      transition: opacity 300ms;
       &.loaded {
         opacity: 1;
       }

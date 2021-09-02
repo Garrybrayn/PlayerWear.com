@@ -63,8 +63,8 @@ export default Vue.extend({
       }
     }
 
-    // this.$store.dispatch('cart/initialize');
-    // this.$store.dispatch('customers/fetch').catch(() => {});
+    this.$store.dispatch('cart/initialize');
+    this.$store.dispatch('customers/fetch').catch(() => {});
   },
   computed: {
     brand(){

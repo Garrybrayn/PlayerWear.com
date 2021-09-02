@@ -19,20 +19,38 @@ export default {
     toggleCart(state, payload) {
       Vue.set(state,'isOpen', payload === 'open')
       return state;
+    },
+    DELETE_CHECKOUT(state){
+      state.checkoutId = null;
+      state.checkout = null;
     }
   },
   actions: {
     async initialize({commit, state, dispatch}){
       if(!state.checkout){
         if(!state.checkoutId){
-          // No existing checkout. Creating a new one.
+
+          // NO CHECKOUT EXISTS. CREATE A NEW ONE.
           await client.checkout.create().then(checkout => {
             commit('SET_CHECKOUT', checkout)
           })
+
         }else{
-          // Checkout exists. Fetch it.
-          await client.checkout.fetch(state.checkoutId).then(checkout => {
-            commit('SET_CHECKOUT', checkout)
+
+          // CHECKOUT EXISTS. FETCH IT.
+          await client.checkout.fetch(state.checkoutId).then(async checkout => {
+
+            if(checkout.completedAt){
+              // THIS CHECKOUT HAS ALREADY BEEN COMPLETED
+              // DELETE IT AND REINITIALIZE NEW ONE
+              console.log('Order Successful.')
+              commit('DELETE_CHECKOUT')
+              await dispatch('initialize');
+            }else{
+
+              // SETTING NEW CHECKOUT
+              commit('SET_CHECKOUT', checkout)
+            }
           });
         }
         await dispatch('updateEmail');
