@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersistence from 'vuex-persist'
-import cart from './cart';
-import brands from './brands';
-import products from './products';
-import pages from './pages';
-import customers from './customers';
+import cart from '@/store/cart';
+import brands from '@/store/brands';
+import products from '@/store/products';
+import pages from '@/store/pages';
+import customers from '@/store/customers';
+import roles from "@/store/roles";
 Vue.use(Vuex);
 
 const vuexLocal = new VuexPersistence({
@@ -31,7 +32,8 @@ const store = new Vuex.Store({
     brands,
     products,
     pages,
-    customers
+    customers,
+    roles
   }
 });
 

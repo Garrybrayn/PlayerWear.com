@@ -3,9 +3,9 @@
     <Form class="modal-contents">
       <h1>Calling all musicians!</h1>
       <p>Get access to our growing collection of apparel and goodies designed specifically for musicians. We're adding new products, new designs, and new brands weekly. Be the first to see new cool stuff inspired by the brands and music you love!</p>
-      <input :value="$store.state.customers.email" type="email" placeholder="Enter your Email" ref="emailInput"/>
-      <Button class="primary full-width" @click="submit">
-        Get on the list
+      <label for="mailingListEmail" style="display: none;">Enter your email</label>
+      <input :value="$store.state.customers.email" type="email" placeholder="Enter your Email" ref="emailInput" id="mailingListEmail" aria-label="Enter your email"/>
+      <Button class="primary full-width" @click="submit" label="Get on the list">
         <ProgressSpinner v-if="showProgressSpinner"/>
       </Button>
     </Form>

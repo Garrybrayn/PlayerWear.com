@@ -6,14 +6,14 @@
     </p>
     <div class="buttons">
       <div v-if="!sent && $store.state.customers.email">
-        <Button @click="resetPassword">Send me a new link</Button><br />
-        <Button @click="signin">I know my password</Button>
+        <Button @click="resetPassword" label="Send me a new link" /><br />
+        <Button @click="signin" label="I know my password" />
       </div>
       <div>
         <p>
           Or
         </p>
-        <Button @click="checkoutAsGuest">Checkout as Guest</Button>
+        <Button @click="checkoutAsGuest" label="Checkout as Guest" />
       </div>
     </div>
   </Page>
@@ -22,8 +22,10 @@
 import Vue from 'vue';
 import Page from "../atoms/Page.vue";
 import Button from "../atoms/Button.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
+  mixins: [pageMetaMixin],
   components: {
     Page,
     Button

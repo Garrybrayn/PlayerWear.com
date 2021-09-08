@@ -25,8 +25,10 @@ import Strip from '../atoms/Strip';
 import Page from '../atoms/Page';
 import Button from '../atoms/Button';
 import ProductGrid from '../organisms/ProductGrid';
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
+  mixins: [pageMetaMixin],
   components: {
     Page,
     Strip,

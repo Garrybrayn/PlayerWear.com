@@ -4,6 +4,7 @@
     :style="style"
     type="button"
     @click="onClick"
+    :aria-label="label"
   >
     <IconSvg
       v-if="icon"
@@ -179,6 +180,7 @@ export default Vue.extend({
     &.outline{
       background: transparent;
       border: 1px solid @black;
+      color: black;
     }
     &.round{
       border-radius: 100px;

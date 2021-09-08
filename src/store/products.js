@@ -8,6 +8,7 @@ function graphProductDetails(product){
   product.add('title');
   product.add('handle');
   product.add('vendor');
+  product.add('description');
   product.add('descriptionHtml');
   product.add('options', (opts) => {
     opts.add('name')

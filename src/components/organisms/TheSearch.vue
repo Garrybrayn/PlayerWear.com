@@ -4,7 +4,8 @@
       <div class="search-input-container">
         <IconSvg name="magnifying-glass" />
         <IconSvg name="x" v-if="showResults" @click.native="clearQuery"/>
-        <input type="text" placeholder="Search" v-debounce.lock:300ms="loadResults" ref="query"/>
+        <label for="search" style="display: none;">Search</label>
+        <input type="text" placeholder="Search" v-debounce.lock:300ms="loadResults" ref="query" id="search" aria-label="Search"/>
       </div>
       <div class="search-results-container">
         <div class="title" v-if="hasBothResults">Page Results</div>

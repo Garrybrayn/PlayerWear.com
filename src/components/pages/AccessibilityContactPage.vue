@@ -1,6 +1,17 @@
 <template>
   <Page class="narrow-fixed" :top-spacing="true">
-    <h1>Contact</h1>
+    <h1>Accessibility</h1>
+    <p>
+      We strive to make our products and services, and all of our web content, accessible to all customers. We care about the customer experience of everyone, regardless of disability. To accomplish this, we take steps to improve Player-Wear.com, improve functionality with assertive technology devices, and ensure consistency with the World Wide Web Consortium’s Content Accessibility Guidelines (WGAG 2.0). Our team employs accessibility and usability tests during regular content reviews to improve the accessibility of our site.
+    </p>
+    <p v-if="false">
+      For those who are vision impaired, we have implemented an additional functionality of a High Contrast Mod. You can access that using the link in the footer of any page on Player-Wear.com, plus there is a button above that will turn this functionality on site-wide.
+    </p>
+    <p>
+      In addition, we encourage customers and anyone else who visits our website to let us know if there are any problems with accessing any portion of the site. To share your feedback specific to Accessibility suggestions, please use the form below. Thanks for your interest in Player-Wear.com.
+    </p>
+    <br />
+    <br />
     <form action="/contact" method="post">
       <input type="hidden" name="form_type" value="contact">
       <input type="hidden" name="utf8" value="✓">
@@ -14,21 +25,12 @@
           <label>Your Email Address</label>
           <input type="text" v-model="email" name="contact[email]" ref="emailInput"/>
         </div>
-        <div class="input-container half">
-          <label>Your Order Number</label>
-          <input type="text" v-model="orderNumber" name="contact[order_number]"/>
-        </div>
-        <div class="input-container half">
-          <label>Inquiry Type</label>
-          <select v-model="inquiryType" name="contact[inquiry_type]">
-            <option disabled selected>Select an Option</option>
-            <option v-for="(value, index) in inquiryTypes" :key="index">
-              {{ value }}
-            </option>
-          </select>
+        <div class="input-container">
+          <label>Please give us the URL for the webpage with the reported problem.</label>
+          <input type="text" v-model="problemPageUrl" name="contact[problem_page]"/>
         </div>
         <div class="input-container">
-          <label>Tell Us How We Can Help You</label>
+          <label>Please describe the usability challenge that you encountered.</label>
           <textarea v-model="message"  name="contact[body]"/>
         </div>
         <p v-if="errorMessage" class="error">
@@ -69,27 +71,17 @@ export default Vue.extend({
   },
   data(){
     return {
-      pageTitle: 'Contact Us',
+      pageTitle: 'Accessibility',
       email: null,
       name: null,
       message: null,
-      orderNumber: null,
-      inquiryType: null,
-      inquiryTypes: [
-        'Product Question',
-        'Order Status',
-        'Help with my account',
-        'Request a return',
-        'Request a refund',
-        'Website Accessibility Issues'
-      ],
+      problemPageUrl: null
     }
   },
   methods: {
     resetForm(){
       this.message = '';
       this.orderNumber = '';
-      this.inquiryType = '';
     },
     getFormData(){
       if(!this.name){
@@ -98,18 +90,18 @@ export default Vue.extend({
       if(!this.$store.getters['customers/hasValidEmail']){
         return 'Please enter a valid email address to continue.'
       }
-      if(!this.message){
-        return 'Please enter your message.'
+      if(!this.problemPageUrl){
+        return 'Please enter the webpage URL.'
       }
-      if(!this.inquiryType){
-        return 'Please select an inquiry type.'
+      if(!this.message){
+        return 'Please describe the usability challenge you have encountered.'
       }
       return {
         name: this.name,
         email: this.email,
+        problemPageUrl: this.problemPageUrl,
         body: this.message,
-        orderNumber: this.orderNumber,
-        inquiryType: this.inquiryType,
+        inquiryType: 'Accessibility',
       }
     },
   }

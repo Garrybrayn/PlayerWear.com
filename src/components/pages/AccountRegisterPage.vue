@@ -11,8 +11,7 @@
       <div v-if="errorMessage" class="error">
         {{ errorMessage }}
       </div>
-      <Button @click="signIn" class="full-width">
-        Register
+      <Button @click="signIn" class="full-width" label="Register">
         <ProgressSpinner v-if="showLoadingSpinner" />
       </Button>
       <div class="link-list">
@@ -27,8 +26,10 @@ import Page from "../atoms/Page.vue";
 import Button from "../atoms/Button.vue";
 import ProgressSpinner from "../atoms/ProgressSpinner.vue";
 import Form from "../atoms/Form.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
+  mixins: [pageMetaMixin],
   components: {
     Page,
     Form,
@@ -40,7 +41,8 @@ export default Vue.extend({
       email: null,
       password: null,
       showLoadingSpinner: false,
-      errorMessage: null
+      errorMessage: null,
+      pageTitle: 'Create an Account'
     }
   },
   mounted(){

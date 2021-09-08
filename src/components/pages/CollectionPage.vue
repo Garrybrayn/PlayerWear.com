@@ -16,10 +16,18 @@
           title="Brands"
           aria-label="Brand Navigation"
         />
+        <TagSelector
+          v-if="$store.getters['brands/isCurrentBrandHouseBrand']"
+          :options="roleOptions"
+          :value="$route.params.tag"
+          title="Shop by Role"
+          aria-label="Category Navigation"
+        />
       </div>
       <div style="display: flex; flex-direction: column; width: 100%;">
         <ProductGrid
           role="navigation"
+          :selected-tag="selectedTag"
           :products="productsForGrid"
         />
         <div class="loading">
@@ -38,37 +46,10 @@ import Breadcrumbs from "../molecules/Breadcrumbs.vue";
 import TagSelector from "../molecules/TagSelector.vue";
 import ProductGrid from "../organisms/ProductGrid.vue";
 import ProgressSpinner from "../atoms/ProgressSpinner.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
-  metaInfo(){
-    let titleParts = [];
-    let currentTag = this.isDesignTag ? 'Logo' : this.tagReadable(this.$route.params.tag) || null;
-    if(this.$store.getters['brands/isCurrentBrandThirdParty']){
-      titleParts.push(this.$store.getters['brands/currentBrandName']);
-      if(this.$route.name === 'Collection'){
-        titleParts.push(`T-Shirts, Hats, Hoodies, Backpacks & more | Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`);
-      }else if(this.$route.name === 'TagInCollection'){
-        if(this.isDesignTag){
-          titleParts.push(`Logo T-Shirts, Hats, Hoodies, Backpacks & more | Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`)
-        }else{
-          titleParts.push(`${currentTag} | Official ${this.$store.getters['brands/currentBrandName']} T-Shirts, Long Sleeve, Sweatshirts and More | Player Wear`)
-        }
-      }
-    }else{
-      if(this.$route.name === 'Collection'){
-        titleParts.push('T-Shirts, Hats, Hoodies & More for Musicians. Player Wear officially licensed merch');
-      }else if(this.$route.name === 'TagInCollection'){
-        if(this.isDesignTag){
-          titleParts.push(`Shirts for Musicians - Officially licensed t shirts, long sleeve, sweatshirts and more from your favorite brands`)
-        }else{
-          titleParts.push(`${currentTag} for Musicians - Officially licensed t shirts, long sleeve, sweatshirts and more from your favorite brands`)
-        }
-      }
-    }
-    return {
-      title: titleParts.join(' ')
-    }
-  },
+  mixins: [pageMetaMixin],
   components: {
     Page,
     Breadcrumbs,
@@ -94,6 +75,59 @@ export default Vue.extend({
     }
   },
   computed: {
+    pageTitle(){
+      let parts = [];
+      let currentTag = this.isDesignTag ? 'Logo' : this.tagReadable(this.selectedTag) || null;
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        parts.push(this.$store.getters['brands/currentBrandName']);
+        if(this.$route.name === 'Collection'){
+          parts.push(`T-Shirts, Hats, Hoodies, Backpacks & more | Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`);
+        }else if(this.$route.name === 'TagInCollection'){
+          if(this.isDesignTag){
+            parts.push(`Logo T-Shirts, Hats, Hoodies, Backpacks & more | Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`)
+          }else{
+            parts.push(`${currentTag} | Official ${this.$store.getters['brands/currentBrandName']} T-Shirts, Long Sleeve, Sweatshirts and More | Player Wear`)
+          }
+        }
+      }else{
+        // if(this.$route.name === 'Collection'){
+        //   parts.push(``);
+        // }else if(this.$route.name === 'TagInCollection'){
+        //   if(this.isDesignTag){
+        //     parts.push(``)
+        //   }else{
+        //     parts.push(``)
+        //   }
+        // }
+      }
+      return parts.join(' ')
+    },
+    pageDescription(){
+      let parts = [];
+      let currentTag = this.isDesignTag ? 'Logo' : this.tagReadable(this.selectedTag) || null;
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        if(this.$route.name === 'Collection'){
+          // parts.push();
+        }else if(this.$route.name === 'TagInCollection'){
+          if(this.isDesignTag){
+            parts.push(`Your official source for ${this.$store.getters['brands/currentBrandName']} merch. Select from traditional, vintage and exclusive ${this.$store.getters['brands/currentBrandName']} designs, available on a wide range of products.`)
+          }else{
+            parts.push(`Your official source for ${this.$store.getters['brands/currentBrandName']} ${currentTag}. Select from a massive selection of ${this.$store.getters['brands/currentBrandName']} ${currentTag}, t-shirts, sweatshirts, hoodies and much more`)
+          }
+        }
+      }else{
+        // if(this.$route.name === 'Collection'){
+        //   parts.push();
+        // }else if(this.$route.name === 'TagInCollection'){
+        //   if(this.isDesignTag){
+        //     parts.push()
+        //   }else{
+        //     parts.push()
+        //   }
+        // }
+      }
+      return parts.join(' ')
+    },
     tagOptions(){
       return this.tags.map(tag => {
         return {
@@ -107,7 +141,21 @@ export default Vue.extend({
               tag
             }
           },
-          selected: this.$route.params.tag === tag
+          selected: this.selectedTag === tag
+        }
+      })
+    },
+    roleOptions(){
+      return this.$store.state.roles.roles.map(role => {
+        return {
+          value: `role-${role}`,
+          label: this.tagReadable(role),
+          name: this.tagReadable(role),
+          link: {
+            name: 'ShopByRole',
+            params: { tag: `role-${role}` }
+          },
+          selected: this.selectedTag === `role-${role}`
         }
       })
     },
@@ -120,10 +168,10 @@ export default Vue.extend({
             label: vendor.title,
             name: `See All ${vendor.title} Products`,
             link: {
-              name: this.$route.params.tag ? 'TagInCollection' : 'Collection',
+              name: this.selectedTag ? 'TagInCollection' : 'Collection',
               params: {
                 collectionHandle: vendor.handle,
-                tag: this.$route.params.tag
+                tag: this.isRoleTag ? 'shirts' : this.selectedTag
               }
             },
             selected: this.$route.params.collectionHandle === vendor.handle
@@ -136,10 +184,10 @@ export default Vue.extend({
           value: 'all',
           label: 'Shop All Brands',
           link: {
-            name: this.$route.params.tag ? 'TagInCollection' : 'Collection',
+            name: this.selectedTag ? 'TagInCollection' : 'Collection',
             params: {
               collectionHandle: 'all',
-              tag: this.$route.params.tag
+              tag: this.selectedTag
             }
           },
         })
@@ -149,7 +197,7 @@ export default Vue.extend({
     productsForGrid(){
       if(this.initialLoadFinished && this.$store.getters.products.length > 0){
         const collectionHandle = this.$route.params.collectionHandle;
-        const tag = this.$route.params.tag;
+        const tag = this.selectedTag;
         const isCollection = !!collectionHandle;
 
         const productsForGrid = this.$store.getters.products.filter(product => {
@@ -185,11 +233,17 @@ export default Vue.extend({
     lastProductHasLoaded(){
       return this.loadNextPage === false
     },
+    selectedTag(){
+      return this.$route.params.tag;
+    },
     isDesignTag(){
-      return this.$route.params.tag &&  this.$route.params.tag.includes('design')
+      return this.selectedTag &&  this.selectedTag.includes('design')
+    },
+    isRoleTag(){
+      return this.selectedTag &&  this.selectedTag.includes('role')
     },
     isInstrumentTag(){
-      return this.$route.params.tag &&  this.$store.getters['brands/houseBrandInstrumentTags'].includes(this.$route.params.tag)
+      return this.selectedTag &&  this.$store.getters['brands/houseBrandInstrumentTags'].includes(this.selectedTag)
     },
     breadcrumbs(){
       const breadcrumbs = [];
@@ -209,7 +263,7 @@ export default Vue.extend({
           url: { name: "Home" }
         });
       }
-      if(this.$route.params.tag){
+      if(this.selectedTag){
         if(this.isDesignTag){
           breadcrumbs.push({
             label: 'Shop By Design',
@@ -221,8 +275,17 @@ export default Vue.extend({
             }
           });
         }
+        if(this.isRoleTag){
+          breadcrumbs.push({
+            label: 'Shop By Role'
+          });
+        }
         breadcrumbs.push({
-          label: this.tagReadable(this.$route.params.tag.replace(this.$store.getters['brands/currentBrandTitle'].toLowerCase(),''))
+          label: this.tagReadable(
+            this.selectedTag
+              .replace(this.$store.getters['brands/currentBrandTitle'].toLowerCase(),'')
+            .replace('role', '')
+          )
         });
       }
       return breadcrumbs;
@@ -234,7 +297,7 @@ export default Vue.extend({
       handler(to){
         this.initialLoadFinished = false;
         this.$store.dispatch('load', {
-          tag: to.params.tag,
+          tag: this.selectedTag,
           vendor: to.params.collectionHandle,
           first: this.isDesktop() ? 6 : 4
         }).then(async loadNextPage => {
@@ -257,7 +320,7 @@ export default Vue.extend({
         if(this.lastProductHasLoaded && this.productsForGrid.length === 0){
           // There are zero products available on this page
           // redirect them to MissingPage
-          this.$router.replace({name: 'MissingPage'});
+          // this.$router.replace({name: 'MissingPage'});
         }
       }
     }

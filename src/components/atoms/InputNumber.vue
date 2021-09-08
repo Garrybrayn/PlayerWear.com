@@ -1,8 +1,8 @@
 <template>
   <div class="input-number">
-    <label for="quantity" style="display: none;">Quantity</label>
+    <label :for="`quantity-${uniqueKey}`" style="display: none;">Quantity</label>
     <span @click="$emit('change', Math.max(value - 1, min))" aria-label="Decrease Quantity">-</span>
-    <input type="text" :value="value" @change="$emit('change', Number($event.target.value))" :min="min" :max="max" id="quantity"/>
+    <input type="text" :value="value" @change="$emit('change', Number($event.target.value))" :min="min" :max="max" :id="`quantity-${uniqueKey}`"/>
     <span @click="$emit('change', Math.min(value + 1, max))" aria-label="Increase Quantity">+</span>
   </div>
 </template>
@@ -22,6 +22,10 @@ export default Vue.extend({
       type: Number,
       default: 20
     },
+    uniqueKey: {
+      type: String,
+      required: true
+    }
   }
 });
 </script>

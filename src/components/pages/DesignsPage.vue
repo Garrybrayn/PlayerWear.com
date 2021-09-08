@@ -21,28 +21,29 @@
 import Vue from 'vue';
 import Page from "../atoms/Page.vue";
 import Breadcrumbs from "../molecules/Breadcrumbs.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
-  metaInfo(){
-    let title = '';
-    if(this.$store.getters['brands/isCurrentBrandThirdParty']){
-      title = this.$store.getters['brands/currentBrandName'];
-    }
-    const tag = String(this.tagReadable(this.$route.params.tag)).replace(
-      this.$store.getters['brands/currentBrandName'],''
-    );
-    if(tag){
-      title += ` ${tag}`;
-    }else{
-      title += ` T-Shirts, Hoodies, Bags, Hats & More`;
-    }
-    return { title }
-  },
+  mixins: [pageMetaMixin],
   components: {
     Page,
     Breadcrumbs
   },
   computed: {
+    pageTitle(){
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        return `${this.$store.getters['brands/currentBrandName']} logo T-Shirts, Hats, Hoodies, Backpacks & more | Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`
+      }else{
+        return ``;
+      }
+    },
+    pageDescription(){
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        return `Your official source for ${this.$store.getters['brands/currentBrandName']} merch. Select from traditional, vintage and exclusive Korg designs, available on a wide range of products.`
+      }else{
+        return ``;
+      }
+    },
     designsForBrand(){
       if(this.$store.getters['brands/isCurrentBrandThirdParty']){
         return this.arrayShuffle(this.$store.getters['brands/currentBrandDesigns'])

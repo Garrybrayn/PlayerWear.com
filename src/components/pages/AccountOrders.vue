@@ -11,8 +11,10 @@ import Vue from 'vue';
 import Page from "../atoms/Page.vue";
 import Button from "../atoms/Button.vue";
 import Form from "../atoms/Form.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
+  mixins: [pageMetaMixin],
   components: {
     Form,
     Page

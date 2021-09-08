@@ -11,8 +11,7 @@
       <div v-if="errorMessage" class="error">
         {{ errorMessage }}
       </div>
-      <Button @click="signIn" class="full-width">
-        Sign In
+      <Button @click="signIn" class="full-width" label="Sign In">
         <ProgressSpinner v-if="showLoadingSpinner" />
       </Button>
       <div class="link-list">
@@ -40,8 +39,7 @@
         <div v-if="errorMessage" class="error">
           {{ errorMessage }}
         </div>
-        <Button @click="resetPassword" class="full-width">
-          Reset my Password
+        <Button @click="resetPassword" class="full-width" label="Reset my Password">
           <ProgressSpinner v-if="showLoadingSpinner" />
         </Button>
         <div class="link-list">
@@ -59,8 +57,10 @@ import Page from "../atoms/Page.vue";
 import Button from "../atoms/Button.vue";
 import ProgressSpinner from "../atoms/ProgressSpinner.vue";
 import Form from "../atoms/Form.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
+  mixins: [pageMetaMixin],
   components: {
     Page,
     Form,
@@ -79,7 +79,8 @@ export default Vue.extend({
 
       // View Switching
       showForgotPasswordForm: false,
-      showCheckEmailMessage: false
+      showCheckEmailMessage: false,
+      pageTitle: 'Sign In'
     }
   },
   mounted(){

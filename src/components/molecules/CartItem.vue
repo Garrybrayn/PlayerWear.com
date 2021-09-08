@@ -16,10 +16,10 @@
         </span>
       </div>
       <div>
-        <InputNumber :value="item.quantity" @change="changeQuantity"/>
+        <InputNumber :value="item.quantity" @change="changeQuantity" :uniqueKey="item.variant.product.handle"/>
       </div>
       <div class="button-delete-container">
-        <Button @click="remove" class="button-delete link">
+        <Button @click="remove" class="button-delete link" aria-label="Delete">
           <IconSvg name="trash" />
         </Button>
       </div>

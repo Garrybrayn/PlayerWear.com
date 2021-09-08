@@ -6,9 +6,10 @@
       class="page-content"
       rol="main"
       @addToCart="addToCart"
+      @pageMetadata="pageMetadata = $event"
     />
     <BrandFamilyStrip v-if="false && $store.getters['brands/currentBrandRelatedBrands']"/>
-    <TheFooter />
+    <TheFooter :page-metadata="pageMetadata"/>
     <TheCart :class="{closed: !showCart}" @close="showCart=false"/>
     <TheSearch :class="{closed: !showSearch}" @close="showSearch=false"/>
     <TheMailingListModal :class="{closed: !showMailingListModal}" @close="showMailingListModal=false"/>
@@ -24,14 +25,6 @@ import TheMailingListModal from './components/organisms/TheMailingListModal.vue'
 import BrandFamilyStrip from "./components/organisms/BrandFamilyStrip.vue";
 
 export default Vue.extend({
-  metaInfo: {
-    titleTemplate(titleChunk){
-      return `${titleChunk}${titleChunk.length < 30 ? ' - Player Wear' : ''}`
-    },
-    htmlAttrs: {
-      lang: 'en'
-    }
-  },
   components: {
     TheHeader,
     TheFooter,
@@ -46,25 +39,12 @@ export default Vue.extend({
       showCart: false,
       showSearch: false,
       showMailingListModal: false,
-      cacheBustingVersion: 0
-    }
-  },
-  mounted(){
-    // document.body.addEventListener('touchstart', () => {});
-    // document.body.addEventListener('touchend', () => {});
-
-    if('includeContentForLayout' in this.$route.meta){
-      const contentElement = document.getElementById('content_for_layout');
-      if(contentElement.innerHTML.length > 0){
-        console.log('inserting before');
-        this.$refs.contentForLayout.parentNode.insertBefore(contentElement, this.$refs.contentForLayout);
-        contentElement.style.display ='revert';
-        this.contentForLayout = contentElement
+      cacheBustingVersion: 0,
+      pageMetadata: {
+        title: '',
+        description: ''
       }
     }
-
-    this.$store.dispatch('cart/initialize');
-    this.$store.dispatch('customers/fetch').catch(() => {});
   },
   computed: {
     brand(){
@@ -122,9 +102,38 @@ export default Vue.extend({
           document.body.classList.add(to);
         }
       }
+    },
+    pageMetadata: {
+      immediate: true,
+      handler(){
+        this.setPageMetadata()
+      }
     }
   },
+  mounted(){
+    // document.body.addEventListener('touchstart', () => {});
+    // document.body.addEventListener('touchend', () => {});
+
+    if('includeContentForLayout' in this.$route.meta){
+      const contentElement = document.getElementById('content_for_layout');
+      if(contentElement.innerHTML.length > 0){
+        console.log('inserting before');
+        this.$refs.contentForLayout.parentNode.insertBefore(contentElement, this.$refs.contentForLayout);
+        contentElement.style.display ='revert';
+        this.contentForLayout = contentElement
+      }
+    }
+
+    this.$store.dispatch('cart/initialize');
+    this.$store.dispatch('customers/fetch').catch(() => {});
+  },
   methods: {
+    setPageMetadata(){
+      document.title = this.pageMetadata.title || "[NEEDS TITLE]"
+      const metaTags = document.getElementsByTagName('meta');
+      metaTags["description"].content = this.pageMetadata.description || "[NEEDS DESCRIPTION]";
+      metaTags["og:description"].content = this.pageMetadata.description || "[NEEDS DESCRIPTION]";
+    },
     addToCart(payload){
       this.$store.dispatch('cart/addItem', payload).then(() => {
         this.showCart = true;

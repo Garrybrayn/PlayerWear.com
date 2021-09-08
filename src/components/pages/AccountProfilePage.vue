@@ -11,9 +11,7 @@
       <div class="input-container">
         Last Name: <b>{{$store.state.customers.customer.lastName || "Not Set"}}</b>
       </div>
-      <Button @click="signOut">
-        Sign Out
-      </Button>
+      <Button @click="signOut" label="Sign Out" />
     </Form>
   </Page>
 </template>
@@ -22,12 +20,19 @@ import Vue from 'vue';
 import Page from "../atoms/Page.vue";
 import Button from "../atoms/Button.vue";
 import Form from "../atoms/Form.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
+  mixins: [pageMetaMixin],
   components: {
     Form,
     Page,
     Button
+  },
+  data(){
+    return {
+      pageTitle: 'My Account'
+    }
   },
   methods: {
     signOut(){

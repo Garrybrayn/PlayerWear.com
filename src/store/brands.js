@@ -84,7 +84,7 @@ export default {
       },
       korg: {
         handle: "korg",
-        title: "Korg",
+        title: "KORG",
         published: true,
         designs: [
           'synths',

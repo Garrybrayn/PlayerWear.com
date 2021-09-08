@@ -53,7 +53,9 @@
         {%- endcapture -%}
 
         <title>
-            {{- pageTitle | strip_newlines | split: "*" | join: " " | escape -}}
+            {% if false %}
+                {{- pageTitle | strip_newlines | split: "*" | join: " " | escape -}}
+            {% endif %}
         </title>
 
         <meta charset="utf-8">
@@ -63,10 +65,10 @@
 
         <meta property="og:locale" content="en_US" />
         <meta property="og:url" content="https://player-wear.com{{ request.path }}" />
-        {% if page_description %}
+        {% if page_description and false %}
             <meta name="description" content="{{- page_description | escape -}}"/>
             <meta name="og:description" content="{{- page_description | escape -}}"/>
-        {% else %}
+        {% elsif false%}
             <meta name="description" content="{{- fullPageTitle | escape -}}"/>
             <meta name="og:description" content="{{- fullPageTitle | escape -}}"/>
         {% endif %}

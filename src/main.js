@@ -22,7 +22,7 @@ Vue.mixin({
     tagify: Utilities.tagify,
     escape: Utilities.escape,
     arrayShuffle: Utilities.arrayShuffle,
-    isDesktop: () => window.innerWidth > 600
+    isDesktop: () => window.innerWidth > 600,
   }
 })
 

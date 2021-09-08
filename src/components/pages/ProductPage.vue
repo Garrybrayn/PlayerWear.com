@@ -124,22 +124,10 @@ import ProductPageSizeSelector from '../molecules/ProductPageSizeSelector.vue';
 import ProductCarousel from '../organisms/ProductCarousel.vue';
 
 import VueStickyDirective from '@renatodeleao/vue-sticky-directive'
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
-  metaInfo(){
-    const titleParts = [this.title];
-    if(this.$route.query.tag){
-      titleParts.push(`| ${this.tagReadable(this.$route.query.tag)}`)
-    }
-    if(this.$store.getters['brands/isCurrentBrandThirdParty']){
-      titleParts.push(`| Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`);
-    }else{
-      titleParts.push(`| Player Wear Officially Licensed Merch`);
-    }
-    return {
-      title: titleParts.join(' ')
-    }
-  },
+  mixins: [pageMetaMixin],
   components: {
     Page,
     Strip,
@@ -164,6 +152,21 @@ export default Vue.extend({
     }
   },
   computed: {
+    pageTitle(){
+      const titleParts = [this.title];
+      if(this.$route.query.tag){
+        titleParts.push(`| ${this.tagReadable(this.$route.query.tag)}`)
+      }
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        titleParts.push(`| Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`);
+      }else{
+        titleParts.push(`| Player Wear Officially Licensed Merch`);
+      }
+      return titleParts.join(' ')
+    },
+    pageDescription(){
+      return this.product && this.product.description
+    },
     product(){
       return this.$store.state.products.products[this.$route.params.productHandle];
     },
@@ -277,8 +280,17 @@ export default Vue.extend({
               }
             });
           }
+          if(this.$route.query.tag.includes('role')){
+            breadcrumbs.push({
+              label: 'Shop By Role'
+            });
+          }
           breadcrumbs.push({
-            label: this.tagReadable(this.$route.query.tag.replace(this.$store.getters['brands/currentBrandTitle'].toLowerCase(),'')),
+            label: this.tagReadable(
+              this.$route.query.tag
+                .replace(this.$store.getters['brands/currentBrandTitle'].toLowerCase(),'')
+                .replace('role','')
+            ),
             url: {
               name: "TagInCollection",
               params: {

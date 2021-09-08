@@ -9,12 +9,32 @@
       <div :class="{'product-page-image-grid': true, 'show-more-images': showMoreImages }">
           <ProductImage v-for="(image, index) in imagesToShow" :key="index" :src="image && image.src || null" :alt="`${alt} - Photo ${index + 1}`" @click.native="selectedImageIndex = index"/>
       </div>
-      <Button v-if="images && images.length > 7" class="button-show-more round" @click="showMoreImages = !showMoreImages">Show {{showMoreOrLessImagesLabel}} images</Button>
+      <Button
+        v-if="images && images.length > 7"
+        class="button-show-more round"
+        @click="showMoreImages = !showMoreImages"
+        :label="`Show ${showMoreOrLessImagesLabel} images`"
+      />
     </div>
     <Modal v-if="selectedImageIndex !== false" @close="selectedImageIndex=false">
-      <Carousel class="desktop" :navigateTo="[selectedImageIndex, false]" :per-page="1" pagination-position="bottom-overlay" pagination-color="rgba(128,128,128, 0.5)" pagination-active-color="rgba(128,128,128, 1)" :pagination-padding="5">
+      <Carousel
+        ref="desktopCarousel"
+        class="desktop"
+        pagination-position="bottom-overlay"
+        pagination-color="rgba(128,128,128, 0.5)"
+        pagination-active-color="rgba(128,128,128, 1)"
+        :navigateTo="[selectedImageIndex, false]"
+        :per-page="1"
+        :pagination-padding="5"
+        :style="{opacity: areMultipleDesktopCarouselImagesLoaded ? 1 : 0}"
+      >
         <Slide v-for="(image, index) in imagesToShow" :key="index">
-          <img :src="image && image.src" :alt="`${alt} - Photo ${index + 1}`" @load="$event.target.style.opacity=1" />
+          <img
+            loading="lazy"
+            :src="image && image.src"
+            :alt="`${alt} - Photo ${index + 1}`"
+            @load="onImageLoad($event, index)"
+          />
         </Slide>
       </Carousel>
     </Modal>
@@ -48,7 +68,8 @@ export default Vue.extend({
   data(){
     return {
       showMoreImages: false,
-      selectedImageIndex: false
+      selectedImageIndex: false,
+      desktopCarouselImagesLoaded: []
     }
   },
   computed:{
@@ -56,7 +77,10 @@ export default Vue.extend({
       return this.images ? this.images : [{},{},{},{}];
     },
     showMoreOrLessImagesLabel(){
-      return this.showMoreImages ? 'less':'more';
+      return this.showMoreImages ? 'less' : 'more';
+    },
+    areMultipleDesktopCarouselImagesLoaded(){
+      return this.desktopCarouselImagesLoaded.length > 1
     }
   },
   watch:{
@@ -64,6 +88,18 @@ export default Vue.extend({
       if(!this.showMoreImages){
         window.scrollTo(0, 0);
       }
+    },
+    selectedImageIndex(){
+      this.desktopCarouselImagesLoaded = [];
+    }
+  },
+  methods: {
+    onImageLoad(event, index){
+      event.target.style.opacity = 1;
+      this.desktopCarouselImagesLoaded.push(index);
+      const resizeEvent = window.document.createEvent('UIEvents');
+      resizeEvent.initUIEvent('resize', true, false, window, 0);
+      window.dispatchEvent(resizeEvent);
     }
   }
 });

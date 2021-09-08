@@ -6,20 +6,25 @@
       <img :src="imageUrl"/>
     </router-link>
     But check out our cool {{thirdPartyBrandName}} T-Shirts, hats, hoodies & more!
-    <Button class="full-width" icon="shirt-filled" @click="shopShirts">
-      Shop {{thirdPartyBrandName}} Player Wear
-    </Button>
+    <Button
+      class="full-width"
+      icon="shirt-filled"
+      @click="shopShirts"
+      :label="`Shop ${thirdPartyBrandName} Player Wear`"
+    />
   </Page>
 </template>
 <script lang="ts">
 import Vue from 'vue';
 import Page from "../atoms/Page.vue";
 import Button from "../atoms/Button.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
-  metaInfo(){
+  mixins: [pageMetaMixin],
+  data(){
     return {
-      title: 'Missing Page 404'
+      pageTitle: 'Missing Page 404'
     }
   },
   components: {

@@ -1,6 +1,6 @@
 <template>
   <div class="modal" @click="$emit('close')">
-    <Button class="round" icon="x" @click="$emit('close')">Close</Button>
+    <Button class="round" icon="x" @click="$emit('close')" label="close"/>
     <div @click.stop>
       <slot />
     </div>

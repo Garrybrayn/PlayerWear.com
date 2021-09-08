@@ -10,6 +10,16 @@
       :alt="escape(alt)"
       @load="loaded = true"
     />
+    <img
+      v-if="srcLarge"
+      :src="srcLarge"
+      :srcset="srcset"
+      :sizes="sizes"
+      loading="lazy"
+      :class="{loaded: loaded, sharpen: true}"
+      :alt="escape(alt)"
+      @load="loaded = true"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -93,6 +103,11 @@ export default Vue.extend({
       opacity: 0;
       transition: opacity 300ms;
       &.loaded {
+        opacity: 1;
+      }
+      &.sharpen {
+        filter: blur(2px) invert(1) contrast(.5);
+        mix-blend-mode: overlay;
         opacity: 1;
       }
     }

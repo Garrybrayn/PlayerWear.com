@@ -22,14 +22,14 @@
           </div>
         </div>
         <div class="form">
-          <input v-if="!$store.getters['customers/isSignedIn']" :value="$store.state.customers.email" type="email" placeholder="Enter your Email" ref="emailInput"/>
+          <label for="checkoutEmail" style="display: none">Enter your Email</label>
+          <input v-if="!$store.getters['customers/isSignedIn']" :value="$store.state.customers.email" type="email" placeholder="Enter your Email" ref="emailInput" id="checkoutEmail"/>
           <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
           <div  v-if="!$store.getters['customers/isSignedIn']" class="checkbox-input">
             <input type="checkbox" ref="acceptsMarketingInput" id="acceptsMarketingInput" checked/>
             <label for="acceptsMarketingInput">Send me discounts and specials.</label>
           </div>
-          <Button @click="checkout" class="button-checkout" :has-chevron="true">
-            Checkout
+          <Button @click="checkout" class="button-checkout" :has-chevron="true" label="Checkout">
             <ProgressSpinner v-if="showProgressSpinner"/>
           </Button>
         </div>
@@ -81,13 +81,7 @@ export default Vue.extend({
 
       // If the customer is on the upsell page
       // immediately redirect them to the checkout
-      if(this.$route.name === 'PreCheckout' || this.$route.name === 'Cart'){
-        this.showProgressSpinner = true;
-        this.$store.dispatch('cart/checkout');
-
-      // If the customer is on the checkout options page
-      // Leave them here.
-      }if(this.$route.name === 'CheckoutOptions'){
+      if(this.$route.name === 'PreCheckout' || this.$route.name === 'Cart' || this.$route.name === 'CheckoutOptions'){
         this.$emit('close');
 
       // Customer is signed in.

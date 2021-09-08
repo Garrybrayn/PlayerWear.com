@@ -1,10 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Meta from 'vue-meta'
 import store from '../store';
 
 Vue.use(VueRouter);
-Vue.use(Meta);
 
 const routes = [
 
@@ -21,6 +19,11 @@ const routes = [
     name: 'Contact',
     component: () => import('../components/pages/ContactPage.vue'),
   },
+  {
+    path: `/accessibility`,
+    name: 'Accessibility',
+    component: () => import('../components/pages/AccessibilityContactPage.vue'),
+  },
 
   // =============================================
   // Brand Homepages
@@ -35,6 +38,20 @@ const routes = [
     path: `/pages/:collectionHandle(${store.getters['brands/allHandles'].join('|')})`,
     name: 'BrandHome',
     component: () => import('../components/pages/HomePage.vue'),
+  },
+
+  // =============================================
+  // Roles Pages
+  // =============================================
+  {
+    path: `/shop-by-role`,
+    name: 'Roles',
+    component: () => import('../components/pages/RolesPage.vue'),
+  },
+  {
+    path: `/shop-by-role/:tag(${store.getters['roles/roleTags'].join('|')})`,
+    name: 'ShopByRole',
+    component: () => import('../components/pages/CollectionPage.vue'),
   },
 
   // =============================================

@@ -1,6 +1,6 @@
 <template>
   <div class="buy-button-container" role="form" @click.stop @click.prevent>
-    <InputNumber v-if="!showPlaceholders && showQuantitySelector" :value="quantity" @change="$emit('changeQuantity', $event)" />
+    <InputNumber v-if="!showPlaceholders && showQuantitySelector" :value="quantity" @change="$emit('changeQuantity', $event)" uniqueKey="product"/>
     <Button
       v-if="!showPlaceholders"
       aria-label="Add to Cart"

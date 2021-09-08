@@ -53,7 +53,9 @@
         {%- endcapture -%}
 
         <title>
-            {{- pageTitle | strip_newlines | split: "*" | join: " " | escape -}}
+            {% if false %}
+                {{- pageTitle | strip_newlines | split: "*" | join: " " | escape -}}
+            {% endif %}
         </title>
 
         <meta charset="utf-8">
@@ -63,10 +65,10 @@
 
         <meta property="og:locale" content="en_US" />
         <meta property="og:url" content="https://player-wear.com{{ request.path }}" />
-        {% if page_description %}
+        {% if page_description and false %}
             <meta name="description" content="{{- page_description | escape -}}"/>
             <meta name="og:description" content="{{- page_description | escape -}}"/>
-        {% else %}
+        {% elsif false%}
             <meta name="description" content="{{- fullPageTitle | escape -}}"/>
             <meta name="og:description" content="{{- fullPageTitle | escape -}}"/>
         {% endif %}
@@ -119,6 +121,10 @@
 <script src="{{ '15.js' | asset_url }}" async></script>
 <script src="{{ '16.js' | asset_url }}" async></script>
 <script src="{{ '17.js' | asset_url }}" async></script>
+<script src="{{ '18.js' | asset_url }}" async></script>
+<script src="{{ '19.js' | asset_url }}" async></script>
+<script src="{{ '20.js' | asset_url }}" async></script>
+<script src="{{ '21.js' | asset_url }}" async></script>
 <script src="{{ 'app.js' | asset_url }}" async></script>
 <script src="{{ 'npm.axios.js' | asset_url }}" async></script>
 <script src="{{ 'npm.babel.js' | asset_url }}" async></script>
@@ -133,12 +139,11 @@
 <script src="{{ 'npm.vue-carousel.js' | asset_url }}" async></script>
 <script src="{{ 'npm.vue-debounce.js' | asset_url }}" async></script>
 <script src="{{ 'npm.vue-loader.js' | asset_url }}" async></script>
-<script src="{{ 'npm.vue-meta.js' | asset_url }}" async></script>
 <script src="{{ 'npm.vue-router.js' | asset_url }}" async></script>
 <script src="{{ 'npm.vue-style-loader.js' | asset_url }}" async></script>
 <script src="{{ 'npm.vuex.js' | asset_url }}" async></script>
 <script src="{{ 'npm.vuex-persist.js' | asset_url }}" async></script>
 <script src="{{ 'npm.webpack.js' | asset_url }}" async></script>
-<script src="{{ 'runtime.06909ecc.js' | asset_url }}" async></script>
+<script src="{{ 'runtime.e7cb07d9.js' | asset_url }}" async></script>
     </body>
 </html>

@@ -39,9 +39,11 @@
             <div class="heading-1" >
               {{ $store.getters['brands/currentBrandPath']('sections.home.midHero.title') }}
             </div>
-            <Button class="uppercase" :style="{ backgroundColor: $store.getters['brands/currentBrandColorLight'], color: 'black' }">
-              {{ $store.getters['brands/currentBrandPath']('sections.home.midHero.buttonLabel') }}
-            </Button>
+            <Button
+              class="uppercase"
+              :style="{ backgroundColor: $store.getters['brands/currentBrandColorLight'], color: 'black' }"
+              :label="`${$store.getters['brands/currentBrandPath']('sections.home.midHero.buttonLabel')}`"
+            />
           </div>
         </div>
       </router-link>
@@ -71,13 +73,10 @@ import Button from "../atoms/Button.vue";
 import Strip from "../atoms/Strip.vue";
 import TagCard from "../molecules/TagCard.vue";
 import ProductCarousel from "../organisms/ProductCarousel.vue";
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
-  metaInfo(){
-    return {
-      title: this.pageTitle
-    }
-  },
+  mixins: [pageMetaMixin],
   components: {
     Button,
     Strip,
@@ -94,7 +93,14 @@ export default Vue.extend({
       if(this.$store.getters['brands/isCurrentBrandThirdParty']){
         return `${this.$store.getters['brands/currentBrandName']} T-Shirts, Hats, Hoodies | Player Wear Official ${this.$store.getters['brands/currentBrandName']} Gear`
       }else{
-        return `Player Wear Officially Licensed Merch for Musicians & Music Lovers. PlayerWear.com`
+        return ``;
+      }
+    },
+    pageDescription(){
+      if(this.$store.getters['brands/isCurrentBrandThirdParty']){
+        return `Official ${this.$store.getters['brands/currentBrandName']} Merch | T-Shirts, Hats, Hoodies & More for Musicians & Music Lovers by PlayerWear.com`
+      }else{
+        return ``;
       }
     },
     heroType(){

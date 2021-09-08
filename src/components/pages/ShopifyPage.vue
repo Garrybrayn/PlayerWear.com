@@ -4,20 +4,22 @@
 <script lang="ts">
 import Vue from 'vue';
 import Page from '../atoms/Page';
+import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
+  mixins: [pageMetaMixin],
   components: {
     Page
   },
-  metaInfo(){
-    return {
-      title: this.tagReadable(this.$route.params.pageHandle)
-    }
-  },
   computed: {
+    page(){
+      return this.$store.state.pages.pages[this.$route.params.pageHandle];
+    },
+    pageTitle(){
+      return this.page ? this.page.title : null;
+    },
     htmlContents(){
-      const page = this.$store.state.pages.pages[this.$route.params.pageHandle];
-      return page ? page.body : null;
+      return this.page ? this.page.body : null;
     }
   },
   watch:{

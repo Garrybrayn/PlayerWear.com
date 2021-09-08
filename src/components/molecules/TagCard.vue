@@ -1,9 +1,12 @@
 <template>
   <router-link class="tag-card" :to="route" role="tab" :aria-label="alt" :aria-hidden="false">
     <ProductImage :src="src" :alt="alt"/>
-    <Button class="white" v-if="buttonLabelReadable">
-      {{ buttonLabelReadable }}
-    </Button>
+    <Button
+      v-if="buttonLabelReadable"
+      class="white"
+      :label="buttonLabelReadable"
+    />
+
   </router-link>
 </template>
 <script lang="ts">
