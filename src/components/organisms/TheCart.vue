@@ -69,7 +69,7 @@ export default Vue.extend({
       return `${this.$store.getters['cart/itemCount']} item${this.$store.getters['cart/itemCount'] === 1 ? '':'s'}`
     },
     empty(){
-      return this.items.length === 0
+      return !this.items || this.items.length === 0
     }
   },
   methods: {

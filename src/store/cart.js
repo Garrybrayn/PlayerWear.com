@@ -4,7 +4,7 @@ import Vue from 'vue';
 import Utilities from '../utilities';
 import client from './ShopifyGraphqlClient';
 
-export default {
+const module = {
   namespaced: true,
   state: {
     checkoutId: null,
@@ -134,7 +134,7 @@ export default {
     upsellProducts: (state, getters, another, rootGetters) => limit => {
       let products = [];
       getters.vendorsInCart.forEach(vendor => {
-        products = products.concat(rootGetters.productsByTagAndVendor('upsell', vendor, limit || 3))
+        products = products.concat(rootGetters['products/byTagAndVendor']('upsell', vendor, limit || 3))
       });
       products = products.filter(product => {
         const hasOneVariant = product.variants.length === 1;
@@ -145,4 +145,16 @@ export default {
       return Utilities.arrayShuffle(products).slice(0, limit || 3);
     }
   },
+}
+
+
+export const state = () => module.state
+export const mutations = module.mutations;
+export const actions = module.actions;
+export const getters = module.getters;
+export default {
+  state,
+  mutations,
+  actions,
+  getters
 }

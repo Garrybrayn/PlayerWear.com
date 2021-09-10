@@ -59,7 +59,7 @@ export default Vue.extend({
       const classes = {
         'house-brand': this.$store.getters['brands/isCurrentBrandHouseBrand'],
         'third-party-brand': this.$store.getters['brands/isCurrentBrandThirdParty'],
-        'safari-only': /Safari/i.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor) && !/Mobi|Android/i.test(navigator.userAgent)
+        'safari-only': process.client && /Safari/i.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor) && !/Mobi|Android/i.test(navigator.userAgent)
       }
       if(this.$store.getters['brands/isThirdPartyBrand']){
         classes[this.brand] = true;
@@ -129,10 +129,14 @@ export default Vue.extend({
   },
   methods: {
     setPageMetadata(){
-      document.title = this.pageMetadata.title || "[NEEDS TITLE]"
-      const metaTags = document.getElementsByTagName('meta');
-      metaTags["description"].content = this.pageMetadata.description || "[NEEDS DESCRIPTION]";
-      metaTags["og:description"].content = this.pageMetadata.description || "[NEEDS DESCRIPTION]";
+      if(process.client){
+        document.title = this.pageMetadata.title || "[NEEDS TITLE]"
+        // TODO: FIX THIS
+        // const metaTags = document.getElementsByTagName('meta');
+        //
+        // metaTags["description"].content = this.pageMetadata.description || "[NEEDS DESCRIPTION]";
+        // metaTags["og:description"].content = this.pageMetadata.description || "[NEEDS DESCRIPTION]";
+      }
     },
     addToCart(payload){
       this.$store.dispatch('cart/addItem', payload).then(() => {
@@ -141,10 +145,12 @@ export default Vue.extend({
     },
     repositionChatButton(){
       // Reorder the shopify chat button
-      const shopifyChatButtonElement = document.getElementById('shopify-chat');
-      if(shopifyChatButtonElement){
-        shopifyChatButtonElement.style.zIndex = "2";
-        shopifyChatButtonElement.children[0].style.zIndex = "2";
+      if(process.client){
+        const shopifyChatButtonElement = document.getElementById('shopify-chat');
+        if(shopifyChatButtonElement){
+          shopifyChatButtonElement.style.zIndex = "2";
+          shopifyChatButtonElement.children[0].style.zIndex = "2";
+        }
       }
     }
   }

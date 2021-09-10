@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import client from './ShopifyGraphqlClient';
 
-export default {
+const module = {
   namespaced: true,
   state: {
     pages: { }
@@ -35,4 +35,16 @@ export default {
       }
     })
   }
+}
+
+
+export const state = () => module.state
+export const mutations = module.mutations;
+export const actions = module.actions;
+export const getters = module.getters;
+export default {
+  state,
+  mutations,
+  actions,
+  getters
 }

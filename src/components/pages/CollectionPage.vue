@@ -195,12 +195,12 @@ export default Vue.extend({
       return options
     },
     productsForGrid(){
-      if(this.initialLoadFinished && this.$store.getters.products.length > 0){
+      if(this.initialLoadFinished && this.$store.getters['products/all'].length > 0){
         const collectionHandle = this.$route.params.collectionHandle;
         const tag = this.selectedTag;
         const isCollection = !!collectionHandle;
 
-        const productsForGrid = this.$store.getters.products.filter(product => {
+        const productsForGrid = this.$store.getters['products/all'].filter(product => {
           let include = true;
 
           if(isCollection){
@@ -296,12 +296,11 @@ export default Vue.extend({
       immediate: true,
       handler(to){
         this.initialLoadFinished = false;
-        this.$store.dispatch('load', {
+        this.$store.dispatch('products/load', {
           tag: this.selectedTag,
           vendor: to.params.collectionHandle,
           first: this.isDesktop() ? 6 : 4
         }).then(async loadNextPage => {
-
           // Initial load has finished.
           this.initialLoadFinished = true;
           this.loadNextPage = loadNextPage || false;
@@ -326,15 +325,23 @@ export default Vue.extend({
     }
   },
   mounted(){
-    this.width = window.innerWidth;
-    window.addEventListener('scroll', this.onScroll, { passive: true });
+    if(process.client){
+      this.width = window.innerWidth;
+      window.addEventListener('scroll', this.onScroll, { passive: true });
+    }
   },
   beforeDestroy(){
-    window.removeEventListener('scroll', this.onScroll)
+    if(process.client){
+      window.removeEventListener('scroll', this.onScroll)
+    }
   },
   methods: {
     shouldLoadNextPage(){
-      return this.loadNextPage && (window.innerHeight + window.scrollY) >= (this.$el.clientHeight - (window.innerHeight))
+      if(process.client){
+        return this.loadNextPage && (window.innerHeight + window.scrollY) >= (this.$el.clientHeight - (window.innerHeight))
+      }else{
+        return false;
+      }
     },
     async onScroll(){
       if (this.shouldLoadNextPage()) {

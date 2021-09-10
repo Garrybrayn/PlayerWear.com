@@ -1,6 +1,5 @@
 
-export default {
-  namespaced: true,
+const module = {
   state: {
     roles: [
       'guitar',
@@ -12,4 +11,17 @@ export default {
   getters:{
     roleTags: state => state.roles.map(role => `role-${role}`)
   }
+}
+
+
+export const state = () => module.state
+export const mutations = module.mutations;
+export const actions = module.actions;
+export const getters = module.getters;
+
+export default {
+  state,
+  mutations,
+  actions,
+  getters
 }

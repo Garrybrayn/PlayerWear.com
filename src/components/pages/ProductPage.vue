@@ -171,7 +171,7 @@ export default Vue.extend({
       return this.$store.state.products.products[this.$route.params.productHandle];
     },
     relatedProducts(){
-      return this.$store.getters.relatedProducts(this.$route.params.productHandle, this.$route.query.tag, 8);
+      return this.$store.getters['products/relatedToProduct'](this.$route.params.productHandle, this.$route.query.tag, 8);
     },
     selectedVariant(){
       if(this.variants){
@@ -326,7 +326,7 @@ export default Vue.extend({
         if(this.product && this.product.id){
           // LOAD RELATED PRODUCTS BY VENDOR/TAG
           console.log('loading related products')
-          this.$store.dispatch('load', {
+          this.$store.dispatch('products/load', {
             tag: this.$route.query.tag,
             vendor: this.product.vendor,
             limit: 10
@@ -335,7 +335,7 @@ export default Vue.extend({
             // LOAD MORE BY VENDOR ONLY
             if(this.$route.query.tag && this.relatedProducts.length < 10){
               console.log('loading more');
-              this.$store.dispatch('load', {
+              this.$store.dispatch('products/load', {
                 vendor: this.product.vendor,
                 limit: 10
               })
@@ -359,13 +359,13 @@ export default Vue.extend({
     fetchProductColorData(productHandle){
       Promise.all([
         // Load the product details
-        this.$store.dispatch('load', {
+        this.$store.dispatch('products/load', {
           handle: productHandle,
           limit: 1
         }),
 
         // Load product colors
-        this.$store.dispatch('loadProductColorOptions', productHandle)
+        this.$store.dispatch('products/loadColorOptions', productHandle)
       ]).catch(e => {
         // ERROR LOADING PRODUCT
         console.log(e,'Error Loading Product')

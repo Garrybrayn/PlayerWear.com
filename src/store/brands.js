@@ -1,7 +1,6 @@
 import Vue from 'vue';
 
-export default {
-  namespaced: true,
+const module = {
   state: {
     route: null,
     houseBrandHandle: 'player-wear',
@@ -358,7 +357,13 @@ export default {
   },
   mutations: {
     SET_ROUTE(state, route){
-      Vue.set(state, 'route', route);
+      Vue.set(state, 'route', {
+        path: route.path,
+        name: route.name,
+        query: route.query,
+        params: route.params,
+        meta: route.meta
+      });
     }
   },
   getters: {
@@ -452,4 +457,15 @@ export default {
       return getters.allHandles.find(brand => str.toLowerCase().includes(brand))
     }
   }
+}
+
+export const state = () => module.state
+export const mutations = module.mutations;
+export const actions = module.actions;
+export const getters = module.getters;
+export default {
+  state,
+  mutations,
+  actions,
+  getters
 }

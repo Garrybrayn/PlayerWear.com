@@ -72,7 +72,7 @@ import Vue from 'vue';
 import Button from "../atoms/Button.vue";
 import Strip from "../atoms/Strip.vue";
 import TagCard from "../molecules/TagCard.vue";
-import ProductCarousel from "../organisms/ProductCarousel.vue";
+// import ProductCarousel from "../organisms/ProductCarousel.vue";
 import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
@@ -80,7 +80,7 @@ export default Vue.extend({
   components: {
     Button,
     Strip,
-    ProductCarousel,
+    // ProductCarousel,
     TagCard
   },
   data(){
@@ -123,7 +123,7 @@ export default Vue.extend({
     },
     featuredProducts(){
       return this.arrayShuffle(
-        this.$store.getters.productsByTagAndVendor(
+        this.$store.getters['products/byTagAndVendor'](
           'featured',
           this.$store.getters['brands/isCurrentBrandThirdParty'] ? this.brand : null,
           10
@@ -132,7 +132,7 @@ export default Vue.extend({
     },
     featuredTShirts(){
       return this.arrayShuffle(
-        this.$store.getters.productsByTagAndVendor(
+        this.$store.getters['products/byTagAndVendor'](
           'featured-t-shirt',
           this.$store.getters['brands/isCurrentBrandThirdParty'] ? this.brand : null,
           10
@@ -149,14 +149,14 @@ export default Vue.extend({
   beforeMount(){
 
     // Load featured products
-    this.$store.dispatch('load', {
+    this.$store.dispatch('products/load', {
       tag: 'featured AND -tag:featured-t-shirt',
       vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all',
       limit: 10,
     });
 
     // Load featured t-shirts
-    this.$store.dispatch('load', {
+    this.$store.dispatch('products/load', {
       limit: 10,
       tag: 'featured-t-shirt',
       vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all'

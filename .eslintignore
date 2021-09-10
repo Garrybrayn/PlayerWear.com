@@ -1,2 +1,4 @@
 src/store/shopify-buy/index.es.js
 src/store/shopify-buy/index.unoptimized.umd.js
+src/entry-client.js
+src/entry-server.js

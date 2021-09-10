@@ -53,7 +53,7 @@ function graphProductDetails(product){
   });
 }
 
-export default {
+const module = {
   state: {
     cachedQueries: { },
     products: { },
@@ -297,10 +297,10 @@ export default {
     //
     //   }
     // },
-    loadProduct(context, handle) {
-      return context.dispatch('graphQuery', {query: `title:"${handle}"`})
-    },
-    loadProductColorOptions: (context, handle) => new Promise((resolve, reject) => {
+    // load(context, handle) {
+    //   return context.dispatch('graphQuery', {query: `title:"${handle}"`})
+    // },
+    loadColorOptions: (context, handle) => new Promise((resolve, reject) => {
       if(context.state.colorOptions[handle]){
         resolve()
       }else{
@@ -375,12 +375,12 @@ export default {
     })
   },
   getters: {
-    products: state => {
+    all: state => {
       return Object
         .values(state.products)
         .sort((a, b) => a.order - b.order)
     },
-    relatedProducts: (state, getters) => (handle, tag, count) => {
+    relatedToProduct: (state, getters) => (handle, tag, count) => {
 
       let relatedProducts = [];
 
@@ -389,7 +389,7 @@ export default {
 
       if(product){
         // Find products with identically matching titles
-        relatedProducts = getters.products.filter(
+        relatedProducts = getters.all.filter(
           relatedProduct => (
             relatedProduct.handle !== product.handle &&
             relatedProduct.title === product.title
@@ -398,8 +398,8 @@ export default {
 
         if(relatedProducts.length < count){
           // Add more of same tag from the same vendor
-          for(let i=0; i<getters.products.length; i++){
-            const relatedProduct = getters.products[i];
+          for(let i=0; i<getters.all.length; i++){
+            const relatedProduct = getters.all[i];
             const isDifferent = relatedProduct.handle !== product.handle;
             const hasSameVendor = relatedProduct.vendor === product.vendor;
             const hasSameTag = !tag || relatedProduct.tags.find(foundTag => foundTag.value === tag) ? true : false;
@@ -420,8 +420,8 @@ export default {
 
         if(relatedProducts.length < count){
           // Add more of same tag from the same vendor
-          for(let i=0; i<getters.products.length; i++){
-            const relatedProduct = getters.products[i];
+          for(let i=0; i<getters.all.length; i++){
+            const relatedProduct = getters.all[i];
             const isDifferent = relatedProduct.handle !== product.handle;
             const hasSameVendor = relatedProduct.vendor === product.vendor;
             if(isDifferent && hasSameVendor){
@@ -441,8 +441,8 @@ export default {
       }
       return relatedProducts;
     },
-    productsByTagAndVendor: (state, getters) => (tag, vendor, limit) => {
-      const products = getters.products.filter(product => {
+    byTagAndVendor: (state, getters) => (tag, vendor, limit) => {
+      const products = getters.all.filter(product => {
         const foundTag = product.tags.find(productTag => productTag.value.toLowerCase() === tag.toLowerCase());
         const foundVendor = vendor ? product.vendor.toLowerCase() === vendor.toLowerCase() : true;
 
@@ -460,4 +460,18 @@ export default {
       return limit ? products.slice(0, limit) : products;
     }
   }
+}
+
+
+export const state = () => module.state
+export const mutations = module.mutations;
+export const actions = module.actions;
+export const getters = module.getters;
+
+
+export default {
+  state,
+  mutations,
+  actions,
+  getters
 }

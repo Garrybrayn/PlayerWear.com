@@ -2,8 +2,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import client from './ShopifyGraphqlClient';
 
-export default {
-  namespaced: true,
+const module = {
   state: {
     geolocation: null,
     email: null,
@@ -154,4 +153,18 @@ export default {
       return state.email && re.test(String(state.email).toLowerCase());
     }
   }
+}
+
+
+export const state = () => module.state
+export const mutations = module.mutations;
+export const actions = module.actions;
+export const getters = module.getters;
+
+
+export default {
+  state,
+  mutations,
+  actions,
+  getters
 }

@@ -6,7 +6,7 @@ const data = {
     }
     return a;
   },
-  assetUrl: filename => `${window.assetUrl}${filename}?v=${window.buildVersion}`,
+  assetUrl: filename => `/${filename}`,
   escape: string => string.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/["']/g, ""),
   tagify: content => content.toLowerCase().replace(' ','-'),
   tagReadable: tag => String(tag || "")

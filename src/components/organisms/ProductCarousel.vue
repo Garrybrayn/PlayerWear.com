@@ -1,5 +1,5 @@
 <template>
-  <Carousel class="product-carousel"
+  <Carousel v-if="false" class="product-carousel"
       :per-page="slidesPerPage"
       :pagination-enabled="paginationEnabled"
       :navigation-enabled="navigationEnabled"

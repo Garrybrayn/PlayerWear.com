@@ -1,15 +1,17 @@
 import Vue from 'vue';
 import App from './App.vue';
-import router from './router';
-import store from './store';
+import { createRouter } from './router';
+import { createStore } from './store';
 import Utilities from './utilities';
 
-const insertBefore = Node.prototype.insertBefore;
-Node.prototype.insertBefore = function(newNode, referenceNode) {
-  try {
-    return insertBefore.bind(this)(newNode, referenceNode);
-  } catch(e) {
-    console.error(`Insert Error: ${e}`);
+if(process.client){
+  const insertBefore = Node.prototype.insertBefore;
+  Node.prototype.insertBefore = function(newNode, referenceNode) {
+    try {
+      return insertBefore.bind(this)(newNode, referenceNode);
+    } catch(e) {
+      console.error(`Insert Error: ${e}`);
+    }
   }
 }
 
@@ -22,12 +24,30 @@ Vue.mixin({
     tagify: Utilities.tagify,
     escape: Utilities.escape,
     arrayShuffle: Utilities.arrayShuffle,
-    isDesktop: () => window.innerWidth > 600,
+    isDesktop: () => {
+      if(process.client){
+        window.innerWidth > 600
+      }else{
+        return true;
+      }
+    },
   }
 })
 
-window.playerwear = new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount('#vue-app');
+export async function createApp ({beforeApp = () => {}, afterApp = () => {}} = {}) {
+  const store = createStore()
+  const router = createRouter(store)
+  await beforeApp({ router, store, })
+  const app = new Vue({
+    router,
+    store,
+    render: (h) => h(App),
+  })
+  const result = {
+    app,
+    router,
+    store,
+  }
+  await afterApp(result)
+  return result
+}

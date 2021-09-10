@@ -26,6 +26,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+
+const axios = require('axios');
+
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -1872,26 +1875,43 @@ function httpFetcher(url) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   return function fetcher(graphQLParams, headers) {
-    return fetch(url, _extends({
-      body: JSON.stringify(graphQLParams),
-      method: 'POST',
-      mode: 'cors'
-    }, options, {
-      headers: _extends({
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }, options.headers, headers)
-    })).then(function (response) {
-      var contentType = response.headers.get('content-type');
 
-      if (contentType.indexOf('application/json') > -1) {
-        return response.json();
+    const requestOptions = _extends(
+      {
+        url,
+        data: JSON.stringify(graphQLParams),
+        method: 'POST',
+        withCredentials: false,
+        mode: 'cors'
+      },
+      options,
+      {
+        headers: _extends(
+          {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          options.headers,
+          headers
+        )
+      }
+    );
+    console.log({requestOptions})
+
+    return axios(requestOptions).then(function (response) {
+
+      console.log('GOT DATA', response.data, response.headers['content-type']);
+
+      if (response.headers['content-type'].includes('application/json')) {
+        return response.data;
       }
 
-      return response.text().then(function (text) {
-        return { text: text };
-      });
-    });
+      return new Promise(resolve => {
+        return { text: response.data }
+      })
+    }).catch(e => {
+      console.error('AXIOS ERROR', e);
+    })
   };
 }
 
