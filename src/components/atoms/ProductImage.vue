@@ -1,12 +1,11 @@
 <template>
-  <div :class="{'product-image': true, placeholder: !loaded }">
+  <div :class="{'product-image': true, placeholder: !showImage }">
     <img
-      v-if="srcLarge"
+      loading="lazy"
       :src="srcLarge"
       :srcset="srcset"
       :sizes="sizes"
-      loading="lazy"
-      :class="{loaded: loaded}"
+      :class="{visible: showImage}"
       :alt="escape(alt)"
       @load="loaded = true"
     />
@@ -41,13 +40,28 @@ export default Vue.extend({
     }
   },
   computed: {
+    showImage(){
+      return this.loaded || this.isSsr || process.server;
+    },
     srcLarge(){
-      return this.src ? this.src.replace('.jpg',`_1000x.jpg`) : null
+      if(this.src) {
+        return this.src;
+        // TODO: FIX THIS BY IMPLEMENTING A CDN THAT AUTO-RESIZES IMAGES
+        // return this.src.replace('.jpg', `_1000x.jpg`)
+      }else{
+        return './1x1.png'
+      }
     },
     srcset(){
-      return [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map(width => {
-        return `${this.src.replace('.jpg', `_${width}x.jpg`)} ${width}w`
-      }).join(',')
+      // TODO: FIX THIS BY IMPLEMENTING A CDN THAT AUTO-RESIZES IMAGES
+      // if(this.src) {
+      //   return [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map(width => {
+      //     return `${this.src.replace('.jpg', `_${width}x.jpg`)} ${width}w`
+      //   }).join(',')
+      // }else{
+      //   return null;
+      // }
+      return null;
     }
   },
   watch:{
@@ -55,16 +69,13 @@ export default Vue.extend({
       immediate: true,
       handler(){
         this.loaded = false;
-        if(this.srcLarge && this.preload){
-          this.preloadImage();
+        if(process.client){
+          if(this.srcLarge && this.preload){
+            const image = new Image();
+            image.src = this.srcLarge;
+          }
         }
       }
-    }
-  },
-  methods: {
-    preloadImage(){
-      const image = new Image();
-      image.src = this.srcLarge;
     }
   }
 });
@@ -92,7 +103,7 @@ export default Vue.extend({
       object-fit: cover;
       opacity: 0;
       transition: opacity 300ms;
-      &.loaded {
+      &.visible {
         opacity: 1;
       }
     }

@@ -18,6 +18,22 @@ if(process.client){
 Vue.config.productionTip = false;
 
 Vue.mixin({
+  data(){
+    return {
+      isSrr: false
+    }
+  },
+  watch: {
+    '$route':{
+      immediate: true,
+      handler(to, from){
+        // coming from nowhere.
+        // That means this is the initial route
+        // which means it was rendered on the server
+        this.isSsr = to && !from;
+      }
+    }
+  },
   methods: {
     assetUrl: Utilities.assetUrl,
     tagReadable: Utilities.tagReadable,
@@ -25,10 +41,10 @@ Vue.mixin({
     escape: Utilities.escape,
     arrayShuffle: Utilities.arrayShuffle,
     isDesktop: () => {
-      if(process.client){
-        window.innerWidth > 600
+      if(process.server){
+        return false;
       }else{
-        return true;
+        return window.innerWidth > 600
       }
     },
   }

@@ -31,8 +31,8 @@
           :products="productsForGrid"
         />
         <div class="loading">
-          <ProgressSpinner class="center" v-if="!lastProductHasLoaded"/>
-          <span class="bottom" v-if="lastProductHasLoaded" />
+          <ProgressSpinner class="center" v-show="!lastProductHasLoaded"/>
+          <span class="bottom" v-show="lastProductHasLoaded" />
         </div>
       </div>
     </div>
@@ -75,6 +75,17 @@ export default Vue.extend({
     }
   },
   computed: {
+    productsPerPage(){
+      if(process.server){
+        return 16 // server side render
+      }else{
+        if(this.isDesktop()){
+          return 6 // desktop
+        }else{
+          return 4; // mobile devices
+        }
+      }
+    },
     pageTitle(){
       let parts = [];
       let currentTag = this.isDesignTag ? 'Logo' : this.tagReadable(this.selectedTag) || null;
@@ -195,7 +206,9 @@ export default Vue.extend({
       return options
     },
     productsForGrid(){
-      if(this.initialLoadFinished && this.$store.getters['products/all'].length > 0){
+      // TODO: FIX THIS BY RE-INSTATING INITIALLOADFINISHED
+      // if(this.initialLoadFinished && this.$store.getters['products/all'].length > 0){
+      if(this.$store.getters['products/all'].length > 0){
         const collectionHandle = this.$route.params.collectionHandle;
         const tag = this.selectedTag;
         const isCollection = !!collectionHandle;
@@ -294,23 +307,8 @@ export default Vue.extend({
   watch: {
     $route: {
       immediate: true,
-      handler(to){
-        this.initialLoadFinished = false;
-        this.$store.dispatch('products/load', {
-          tag: this.selectedTag,
-          vendor: to.params.collectionHandle,
-          first: this.isDesktop() ? 6 : 4
-        }).then(async loadNextPage => {
-          // Initial load has finished.
-          this.initialLoadFinished = true;
-          this.loadNextPage = loadNextPage || false;
-          console.log(this.shouldLoadNextPage())
-          if(this.shouldLoadNextPage()){
-            // There's empty space and more content to load
-            // Load the next page.
-            this.loadNextPage = await this.loadNextPage() || false;
-          }
-        });
+      handler(){
+        this.loadFirstPage();
       }
     },
     lastProductHasLoaded:{
@@ -324,6 +322,9 @@ export default Vue.extend({
       }
     }
   },
+  serverPrefetch() {
+    return this.loadFirstPage();
+  },
   mounted(){
     if(process.client){
       this.width = window.innerWidth;
@@ -336,11 +337,30 @@ export default Vue.extend({
     }
   },
   methods: {
+    loadFirstPage(){
+      this.initialLoadFinished = false;
+      return this.$store
+        .dispatch('products/load', {
+          tag: this.selectedTag,
+          vendor: this.$route.params.collectionHandle,
+          first: this.productsPerPage
+        })
+      .then(async loadNextPage => {
+        // Initial load has finished.
+        this.initialLoadFinished = true;
+        this.loadNextPage = loadNextPage || false;
+        if(this.shouldLoadNextPage()){
+          // There's empty space and more content to load
+          // Load the next page.
+          this.loadNextPage = await this.loadNextPage() || false;
+        }
+      });
+    },
     shouldLoadNextPage(){
-      if(process.client){
-        return this.loadNextPage && (window.innerHeight + window.scrollY) >= (this.$el.clientHeight - (window.innerHeight))
-      }else{
+      if(process.server){
         return false;
+      }else{
+        return this.loadNextPage && (window.innerHeight + window.scrollY) >= (this.$el.clientHeight - (window.innerHeight))
       }
     },
     async onScroll(){

@@ -1,11 +1,21 @@
 <template>
-  <component :is="componentType" :class="{'product-card': true, placeholder, 'sold-out': soldOut }" :to="route" :disabled="product?false:true" role="tab" :aria-label="escape(title)" aria-hidden="false">
+  <div
+    aria-hidden="false"
+    @click="route ? $router.push(route) : null"
+    :disabled="product?false:true"
+    :class="{
+      'product-card': true,
+      placeholder,
+      'sold-out': soldOut
+    }"
+    :aria-label="escape(title)"
+  >
     <ProductImage
       :src="imageOne"
       :alt="altText"
       class="first" />
     <ProductImage
-      v-if="isDesktop()"
+      v-show="isDesktop()"
       :src="imageTwo || imageOne"
       :alt="altText"
       :class="{second: true, zoom:imageTwo?false:true}"
@@ -16,17 +26,17 @@
     </div>
     <div v-if="showProductPrice" class="product-price">
       {{ price }}
-      <span v-if="placeholder" class="placeholder-content" />
+      <span v-show="placeholder" class="placeholder-content" />
     </div>
     <div v-if="showProductTitle" class="product-title">
       {{ title }}
-      <span v-if="placeholder" class="placeholder-content" />
+      <span v-show="placeholder" class="placeholder-content" />
     </div>
     <div v-if="showProductColor && (color || placeholder)" class="product-color">
       {{ color }}
-      <span v-if="placeholder" class="placeholder-content" />
+      <span v-show="placeholder" class="placeholder-content" />
     </div>
-    <div v-if="soldOut" class="product-sold-out">
+    <div v-show="soldOut" class="product-sold-out">
       SOLD OUT<IconSvg name="fire" />
     </div>
     <div v-if="showBuyButton">
@@ -39,7 +49,7 @@
         @addToCart="$emit('addToCart', $event)"
       />
     </div>
-  </component>
+  </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';

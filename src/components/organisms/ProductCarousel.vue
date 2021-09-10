@@ -1,5 +1,5 @@
 <template>
-  <Carousel v-if="false" class="product-carousel"
+  <Carousel class="product-carousel"
       :per-page="slidesPerPage"
       :pagination-enabled="paginationEnabled"
       :navigation-enabled="navigationEnabled"
@@ -23,7 +23,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Carousel, Slide } from 'vue-carousel';
+import Carousel from '../Carousel.vue';
+import Slide from '../Slide.vue';
 import ProductCard from '../molecules/ProductCard.vue';
 export default Vue.extend({
   props: {

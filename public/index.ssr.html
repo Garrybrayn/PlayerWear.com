@@ -8,6 +8,25 @@
     <title>{{ title }}</title>
     {{{ renderResourceHints() }}}
     {{{ renderStyles() }}}
+    <style>
+      html, body{
+        padding: 0;
+        margin: 0;
+        font-family: 'Open Sans', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: #2c3e50;
+      }
+
+      #vue-app{
+        line-height: 1.5em;
+      }
+
+    </style>
+    <script>
+        window.assetUrl = "//cdn.shopify.com/s/files/1/0568/7957/9295/t/4/assets/";
+        window.buildVersion = "11160318154034397263";
+    </script>
   </head>
   <body>
     <!--vue-ssr-outlet-->

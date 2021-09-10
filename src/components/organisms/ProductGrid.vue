@@ -69,6 +69,9 @@ export default Vue.extend({
     grid-row-gap: 2em;
     grid-template-columns: 1fr 1fr;
   }
+  .product-card{
+    cursor: pointer;
+  }
   @media(min-width: @fourthbreakpoint){
     .product-grid{
       grid-template-columns: 1fr 1fr 1fr;

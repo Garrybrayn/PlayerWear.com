@@ -1,8 +1,9 @@
-//
-// import {getDocument, getWindow, extend} from './server/vendors/ssr-window.esm.js'
-//
-// global.window = getWindow();
-// global.document = getDocument();
+
+import {getDocument, getWindow, extend} from './server/vendors/ssr-window.esm.js'
+
+global.window = getWindow();
+global.document = getDocument();
+
 //
 // extend(global.document, {
 //   getElementsByTagName(){

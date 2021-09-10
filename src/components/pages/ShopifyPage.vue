@@ -40,19 +40,20 @@ export default Vue.extend({
       }
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.fetchPage(to.params.pageHandle);
-    })
+  serverPrefetch() {
+    return this.fetchPage(this.$route.params.pageHandle);
   },
-  beforeRouteUpdate(to, from, next) {
-    this.fetchPage(to.params.pageHandle);
-    next();
+  mounted(){
+    console.warn('IGNORE NODE COUNTING ERROR ABOVE in development mode. This is an vue-ssr bug. The node comparison strategy does not account for html being injected via v-html prop');
   },
+  // beforeRouteEnter(to, from, next) {
+  //   this.fetchPage(to.params.pageHandle);
+  //   next();
+  // },
   methods: {
     fetchPage(pageHandle) {
       // Load the product details
-      this.$store.dispatch('pages/fetch', pageHandle).then(page => {
+      return this.$store.dispatch('pages/fetch', pageHandle).then(page => {
         if(!page){
           this.$router.replace({
             name: 'MissingPage'

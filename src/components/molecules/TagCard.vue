@@ -6,7 +6,6 @@
       class="white"
       :label="buttonLabelReadable"
     />
-
   </router-link>
 </template>
 <script lang="ts">

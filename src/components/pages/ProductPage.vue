@@ -123,7 +123,7 @@ import ProductColorSelector from '../molecules/ProductColorSelector.vue';
 import ProductPageSizeSelector from '../molecules/ProductPageSizeSelector.vue';
 import ProductCarousel from '../organisms/ProductCarousel.vue';
 
-import VueStickyDirective from '@renatodeleao/vue-sticky-directive'
+import VueStickyDirective from '../../directives/sticky'
 import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
@@ -320,57 +320,52 @@ export default Vue.extend({
         }
       }
     },
-    'product.id': {
+    $route: {
       immediate: true,
       handler(){
-        if(this.product && this.product.id){
-          // LOAD RELATED PRODUCTS BY VENDOR/TAG
-          console.log('loading related products')
-          this.$store.dispatch('products/load', {
-            tag: this.$route.query.tag,
-            vendor: this.product.vendor,
-            limit: 10
-          }).then(() => {
-            console.log('got', this.relatedProducts)
-            // LOAD MORE BY VENDOR ONLY
-            if(this.$route.query.tag && this.relatedProducts.length < 10){
-              console.log('loading more');
-              this.$store.dispatch('products/load', {
-                vendor: this.product.vendor,
-                limit: 10
-              })
-            }
-          })
-        }
+        // this.fetch();
       }
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.fetchProductColorData(to.params.productHandle);
-      vm.$store.dispatch('customers/getGeoLocation');
-    })
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.fetchProductColorData(to.params.productHandle);
-    next();
+  serverPrefetch() {
+    return this.fetch()
   },
   methods: {
-    fetchProductColorData(productHandle){
-      Promise.all([
-        // Load the product details
-        this.$store.dispatch('products/load', {
-          handle: productHandle,
-          limit: 1
-        }),
-
-        // Load product colors
-        this.$store.dispatch('products/loadColorOptions', productHandle)
-      ]).catch(e => {
-        // ERROR LOADING PRODUCT
-        console.log(e,'Error Loading Product')
-        this.$router.replace({ name: 'MissingPage'});
-      })
+    fetch(){
+      return Promise
+        .all([
+          // Load the product details
+          this.$store.dispatch('products/load', {
+            handle: this.$route.params.productHandle,
+            limit: 1
+          }),
+          // Load product colors
+          this.$store.dispatch('products/loadColorOptions', this.$route.params.productHandle)
+        ])
+        .then(() => {
+          if(this.product && this.product.id){
+            // LOAD RELATED PRODUCTS BY VENDOR/TAG
+            console.log('loading related products')
+            this.$store.dispatch('products/load', {
+              tag: this.$route.query.tag,
+              vendor: this.product.vendor,
+              limit: 10
+            }).then(() => {
+              // Load more by tag if there's not enough related products
+              if(this.relatedProducts.length < 10 && this.$route.query.tag){
+                this.$store.dispatch('products/load', {
+                  vendor: this.product.vendor,
+                  limit: 10
+                })
+              }
+            })
+          }
+        })
+        .catch(e => {
+          // ERROR LOADING PRODUCT
+          console.log(e,'Error Loading Product');
+          // this.$router.replace({ name: 'MissingPage'});
+        })
     },
     selectColor(productHandle){
       this.$router.push({

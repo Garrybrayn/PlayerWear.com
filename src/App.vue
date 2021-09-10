@@ -1,18 +1,17 @@
 <template>
   <div id="vue-app" :class="classes" role="application">
-    <TheHeader @toggleCart="showCart = !showCart" @toggleSearch="showSearch = !showSearch"/>
-    <div ref="contentForLayout" />
-    <router-view
-      class="page-content"
-      rol="main"
-      @addToCart="addToCart"
-      @pageMetadata="pageMetadata = $event"
-    />
-    <BrandFamilyStrip v-if="false && $store.getters['brands/currentBrandRelatedBrands']"/>
-    <TheFooter :page-metadata="pageMetadata"/>
-    <TheCart :class="{closed: !showCart}" @close="showCart=false"/>
-    <TheSearch :class="{closed: !showSearch}" @close="showSearch=false"/>
-    <TheMailingListModal :class="{closed: !showMailingListModal}" @close="showMailingListModal=false"/>
+      <TheHeader @toggleCart="showCart = !showCart" @toggleSearch="showSearch = !showSearch"/>
+      <router-view
+        class="page-content"
+        rol="main"
+        @addToCart="addToCart"
+        @pageMetadata="pageMetadata = $event"
+      />
+      <BrandFamilyStrip v-if="false && $store.getters['brands/currentBrandRelatedBrands']"/>
+      <TheFooter :page-metadata="pageMetadata"/>
+      <TheCart :class="{closed: !showCart}" @close="showCart=false"/>
+      <TheSearch :class="{closed: !showSearch}" @close="showSearch=false"/>
+      <TheMailingListModal :class="{closed: !showMailingListModal}" @close="showMailingListModal=false"/>
   </div>
 </template>
 <script lang="ts">
@@ -35,7 +34,6 @@ export default Vue.extend({
   },
   data(){
     return {
-      contentForLayout: null,
       showCart: false,
       showSearch: false,
       showMailingListModal: false,
@@ -73,10 +71,7 @@ export default Vue.extend({
   watch: {
     $route: {
       immediate: true,
-      handler(to, from){
-        if(this.contentForLayout && to && from){
-          this.contentForLayout.remove();
-        }
+      handler(to){
         if(to){
           this.$store.commit('brands/SET_ROUTE', to);
         }
@@ -95,11 +90,13 @@ export default Vue.extend({
     bodyClass:{
       immediate: true,
       handler(to, from){
-        if(from){
-          document.body.classList.remove(from);
-        }
-        if(to){
-          document.body.classList.add(to);
+        if(process.client){
+          if(from){
+            document.body.classList.remove(from);
+          }
+          if(to){
+            document.body.classList.add(to);
+          }
         }
       }
     },
@@ -113,16 +110,6 @@ export default Vue.extend({
   mounted(){
     // document.body.addEventListener('touchstart', () => {});
     // document.body.addEventListener('touchend', () => {});
-
-    if('includeContentForLayout' in this.$route.meta){
-      const contentElement = document.getElementById('content_for_layout');
-      if(contentElement.innerHTML.length > 0){
-        console.log('inserting before');
-        this.$refs.contentForLayout.parentNode.insertBefore(contentElement, this.$refs.contentForLayout);
-        contentElement.style.display ='revert';
-        this.contentForLayout = contentElement
-      }
-    }
 
     this.$store.dispatch('cart/initialize');
     this.$store.dispatch('customers/fetch').catch(() => {});

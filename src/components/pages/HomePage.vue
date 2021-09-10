@@ -72,7 +72,7 @@ import Vue from 'vue';
 import Button from "../atoms/Button.vue";
 import Strip from "../atoms/Strip.vue";
 import TagCard from "../molecules/TagCard.vue";
-// import ProductCarousel from "../organisms/ProductCarousel.vue";
+import ProductCarousel from "../organisms/ProductCarousel.vue";
 import pageMetaMixin from '../mixins/pageMetaMixin'
 
 export default Vue.extend({
@@ -80,7 +80,7 @@ export default Vue.extend({
   components: {
     Button,
     Strip,
-    // ProductCarousel,
+    ProductCarousel,
     TagCard
   },
   data(){
@@ -146,21 +146,10 @@ export default Vue.extend({
       return this.arrayShuffle(this.$store.getters['brands/allDesigns']);
     }
   },
+  serverPrefetch(){
+    return this.load()
+  },
   beforeMount(){
-
-    // Load featured products
-    this.$store.dispatch('products/load', {
-      tag: 'featured AND -tag:featured-t-shirt',
-      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all',
-      limit: 10,
-    });
-
-    // Load featured t-shirts
-    this.$store.dispatch('products/load', {
-      limit: 10,
-      tag: 'featured-t-shirt',
-      vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all'
-    });
     window.addEventListener('resize', this.setWindowWidth)
     this.setWindowWidth();
   },
@@ -168,6 +157,21 @@ export default Vue.extend({
     window.removeEventListener('resize', this.setWindowWidth)
   },
   methods: {
+    load(){
+      return Promise.all([
+        this.$store.dispatch('products/load', {
+          tag: 'featured AND -tag:featured-t-shirt',
+          vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all',
+          limit: 10,
+        }),
+        // Load featured t-shirts
+        this.$store.dispatch('products/load', {
+          limit: 10,
+          tag: 'featured-t-shirt',
+          vendor: this.$route.params.collectionHandle ? this.$route.params.collectionHandle : 'all'
+        })
+      ])
+    },
     setWindowWidth(){
       this.isMobileOrDesktop = window.innerWidth < '800' ? 'mobile' : 'desktop'
     }

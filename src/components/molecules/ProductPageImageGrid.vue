@@ -43,8 +43,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Carousel, Slide } from 'vue-carousel';
-
+import Carousel from '../Carousel.vue';
+import Slide from '../Slide.vue';
 import Modal from '../molecules/Modal.vue';
 import Button from '../atoms/Button.vue';
 import ProductImage from '../atoms/ProductImage.vue';

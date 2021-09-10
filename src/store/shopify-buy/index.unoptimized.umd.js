@@ -1896,11 +1896,9 @@ function httpFetcher(url) {
         )
       }
     );
-    console.log({requestOptions})
 
     return axios(requestOptions).then(function (response) {
 
-      console.log('GOT DATA', response.data, response.headers['content-type']);
 
       if (response.headers['content-type'].includes('application/json')) {
         return response.data;
